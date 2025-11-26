@@ -1,0 +1,23 @@
+{
+  "home": {
+    "href": "/nl",
+    "en": "/",
+    "title": "Home"
+  },
+
+  "privacyPolicy": {
+    "href": "/nl/privacybeleid",
+    "en": "/privacy-policy",
+    "title": "Privacybeleid"
+  },
+
+  "termsAndConditions": {
+    "href": "/nl/algemene-voorwaarden",
+    "en": "/terms-and-conditions",
+    "title": "Algemene voorwaarden"
+  },
+
+  "pageNotFound": {
+    "paragraph": "De pagina die je zoekt bestaat niet."
+  }
+}

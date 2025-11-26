@@ -1,0 +1,5 @@
+/node_modules
+/.next
+/build
+/src/app/(payload)
+/src/app/payload-types.ts

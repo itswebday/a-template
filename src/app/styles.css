@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap")
+layer(base);
+
+@import "tailwindcss";
+
+@source "../**/*.{css,js,ts,jsx,tsx,mdx}";
+
+@theme {
+  --breakpoint-xs: 550px;
+  --breakpoint-de: 900px;
+  --breakpoint-me: 1100px;
+  --breakpoint-mx: 2000px;
+
+  --color-primary-blue: #2e344a;
+
+  --animate-fade-in: fadeIn 0.3s ease-in 0.2s forwards;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+@layer components {
+  body {
+    @apply relative min-w-[375px];
+  }
+
+  button {
+    @apply cursor-pointer disabled:cursor-auto;
+  }
+
+  figure {
+    @apply select-none pointer-events-none;
+  }
+
+  .font-open-sans {
+    font-family: "Open Sans", sans-serif;
+  }
+}
