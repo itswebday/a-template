@@ -10,13 +10,13 @@ const baseConfig = {
       {
         protocol: "https",
         // TODO: Change to correct domain
-        hostname: "website.com",
+        hostname: "a-template.com",
         pathname: "/api/media/file/**",
       },
       {
         protocol: "https",
         // TODO: Change to correct domain
-        hostname: "website.vercel.app",
+        hostname: "a-template.vercel.app",
         pathname: "/api/media/file/**",
       },
       {
@@ -58,11 +58,11 @@ const baseConfig = {
           {
             type: "host",
             // TODO: Change to correct domain
-            value: "website.com",
+            value: "a-template.com",
           },
         ],
         // TODO: Change to correct domain
-        destination: "https://www.website.com/:path*",
+        destination: "https://www.a-template.com/:path*",
         permanent: true,
       },
       {

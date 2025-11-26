@@ -1,7 +1,7 @@
 {
-  "name": "a-boilerplate",
+  "name": "a-template",
   "version": "1.0.0",
-  "description": "Boilerplate for It's Webday A-Projects",
+  "description": "Template for It's Webday A-Projects",
   "license": "MIT",
   "type": "module",
   "scripts": {
