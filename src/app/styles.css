@@ -41,4 +41,30 @@ layer(base);
   .font-open-sans {
     font-family: "Open Sans", sans-serif;
   }
+
+  h1 {
+    /* Page heading */
+    @apply text-[36px] leading-tight;
+  }
+
+  h2 {
+    /* Section heading */
+    @apply text-[30px] font-medium leading-tight;
+  }
+
+  h3 {
+    @apply text-[24px] leading-tight;
+  }
+
+  h4 {
+    @apply text-[20px] font-semibold leading-tight;
+  }
+
+  h5 {
+    @apply text-[16px] leading-tight;
+  }
+
+  h6 {
+    @apply text-[15px] leading-tight;
+  }
 }

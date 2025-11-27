@@ -1,3 +1,4 @@
+import { PreviewListener } from "@/components";
 import { NavMenuProvider, PageProvider } from "@/contexts";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -12,7 +13,7 @@ const HomeLayout = async ({
 
   return (
     <NextIntlClientProvider>
-      <html lang={locale}>
+      <html lang={locale} suppressHydrationWarning>
         <head>
           <link href="/favicon.ico" rel="icon" sizes="32x32" />
           <link href="/icon.svg" rel="icon" type="image/svg+xml" />
@@ -21,7 +22,10 @@ const HomeLayout = async ({
 
         <body className="font-open-sans">
           <PageProvider initialPage="home">
-            <NavMenuProvider>{children}</NavMenuProvider>
+            <NavMenuProvider>
+              <PreviewListener />
+              {children}
+            </NavMenuProvider>
           </PageProvider>
         </body>
       </html>

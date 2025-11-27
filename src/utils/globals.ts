@@ -9,12 +9,15 @@ type Global = keyof Config["globals"];
 export const getGlobal = async <GlobalType extends Global>(
   slug: GlobalType,
   locale: LocaleOption,
+  draft?: boolean,
 ) => {
   const payload = await getPayload({ config: configPromise });
   const global = await payload.findGlobal({
     slug: slug,
     depth: 1,
     locale: locale,
+    draft: draft,
+    overrideAccess: draft || false,
   });
 
   return global;

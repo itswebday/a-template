@@ -1,11 +1,23 @@
 import {
+  AlignFeature,
+  BlockquoteFeature,
   BoldFeature,
+  ChecklistFeature,
   FixedToolbarFeature,
   HeadingFeature,
+  HorizontalRuleFeature,
+  IndentFeature,
+  InlineCodeFeature,
   InlineToolbarFeature,
   ItalicFeature,
   lexicalEditor,
+  LinkFeature,
+  OrderedListFeature,
+  StrikethroughFeature,
+  SubscriptFeature,
+  SuperscriptFeature,
   UnderlineFeature,
+  UnorderedListFeature,
 } from "@payloadcms/richtext-lexical";
 import { Field } from "payload";
 
@@ -27,8 +39,7 @@ export const RichTextField = ({
     features: ({ rootFeatures }) => {
       return [
         ...rootFeatures.filter(
-          (feature) =>
-            !["upload", "textAlign", "relationship"].includes(feature.key),
+          (feature) => !["upload", "relationship"].includes(feature.key),
         ),
         HeadingFeature({
           enabledHeadingSizes: ["h1", "h2", "h3", "h4", "h5", "h6"],
@@ -36,6 +47,18 @@ export const RichTextField = ({
         BoldFeature(),
         ItalicFeature(),
         UnderlineFeature(),
+        StrikethroughFeature(),
+        SubscriptFeature(),
+        SuperscriptFeature(),
+        InlineCodeFeature(),
+        AlignFeature(),
+        IndentFeature(),
+        UnorderedListFeature(),
+        OrderedListFeature(),
+        ChecklistFeature(),
+        LinkFeature(),
+        BlockquoteFeature(),
+        HorizontalRuleFeature(),
         FixedToolbarFeature(),
         InlineToolbarFeature(),
       ];
