@@ -11,11 +11,11 @@ const PageNotFoundPage = async () => {
       <div
         className={`
           flex flex-col items-center text-center gap-6
-          w-11/12 max-w-[700px]
+          w-11/12 max-w-200
         `}
       >
         {/* 404 */}
-        <span className="text-6xl font-bold text-secondary-blue">404</span>
+        <span className="text-6xl font-bold">404</span>
 
         {/* Message */}
         <p className="mb-4">{pageNotFoundT("paragraph")}</p>

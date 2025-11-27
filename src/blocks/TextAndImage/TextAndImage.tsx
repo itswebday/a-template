@@ -9,16 +9,12 @@ const TextAndImage: React.FC<TextAndImageBlock> = ({
   imageLeft,
 }) => {
   return (
-    <section
-      className={`
-        p-16 my-8 bg-gray-100
-      `}
-    >
+    <section className="p-16 bg-gray-100">
       {/* Container */}
       <div
         className={`
-          container-medium flex flex-col gap-8 w-5/6 max-w-[550px] mx-auto
-          de:flex-row de:max-w-none
+          flex flex-col gap-8 w-5/6 max-w-120 mx-auto
+          de:flex-row de:max-w-300
           ${imageLeft ? "de:flex-row-reverse" : ""}
         `}
       >

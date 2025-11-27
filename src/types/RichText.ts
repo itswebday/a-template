@@ -63,7 +63,7 @@ type LinkNode = {
   type: "link";
   fields?: {
     text: string;
-    customUrl: boolean;
+    customHref: boolean;
     href?: string;
     page?: {
       value: {

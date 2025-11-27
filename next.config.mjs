@@ -44,6 +44,10 @@ const baseConfig = {
         destination: "/:locale/privacy-policy/:path*",
       },
       {
+        source: "/:locale/cookiebeleid/:path*",
+        destination: "/:locale/cookie-policy/:path*",
+      },
+      {
         source: "/:locale/algemene-voorwaarden/:path*",
         destination: "/:locale/terms-and-conditions/:path*",
       },
@@ -63,26 +67,6 @@ const baseConfig = {
         ],
         // TODO: Change to correct domain
         destination: "https://www.a-template.com/:path*",
-        permanent: true,
-      },
-      {
-        source: "/privacybeleid/:path*",
-        destination: "/privacy-policy/:path*",
-        permanent: true,
-      },
-      {
-        source: "/nl/privacy-policy/:path*",
-        destination: "/nl/privacybeleid/:path*",
-        permanent: true,
-      },
-      {
-        source: "/algemene-voorwaarden/:path*",
-        destination: "/terms-and-conditions/:path*",
-        permanent: true,
-      },
-      {
-        source: "/nl/terms-and-conditions/:path*",
-        destination: "/nl/algemene-voorwaarden/:path*",
         permanent: true,
       },
     ];

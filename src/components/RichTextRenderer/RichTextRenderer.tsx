@@ -146,7 +146,7 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
       case "link": {
         let href = "";
 
-        if (blockNode.fields?.customUrl) {
+        if (blockNode.fields?.customHref) {
           href =
             blockNode.fields.href ||
             `${locale === DEFAULT_LOCALE ? "/" : `/${locale}`}`;
@@ -163,6 +163,7 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
             href={href}
             target={blockNode.fields?.newTab ? "_blank" : "_self"}
             rel={blockNode.fields?.newTab ? "noopener noreferrer" : undefined}
+            prefetch={true}
           >
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </Link>
@@ -173,7 +174,7 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         return <br key={index} />;
 
       case "horizontalrule":
-        return <hr key={index} className="my-2 border-primary-lightgray" />;
+        return <hr key={index} className="my-2 border-black/20" />;
 
       case "text": {
         const format = blockNode.format || 0;

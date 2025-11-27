@@ -1,6 +1,13 @@
 import { Media, Pages, Users } from "@/collections";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
-import { Home } from "@/globals";
+import {
+  CookiePolicy,
+  Footer,
+  Home,
+  Navigation,
+  PrivacyPolicy,
+  TermsAndConditions,
+} from "@/globals";
 import { plugins } from "@/plugins";
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
@@ -42,7 +49,14 @@ export default buildConfig({
     },
   },
   collections: [Media, Users, Pages],
-  globals: [Home],
+  globals: [
+    Home,
+    Navigation,
+    Footer,
+    PrivacyPolicy,
+    CookiePolicy,
+    TermsAndConditions,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

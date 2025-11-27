@@ -1,2 +1,2 @@
-export { scrollToTop } from "./helpers";
+export { getMediaUrlAndAlt, scrollToTop } from "./helpers";
 export { request } from "./requests";

@@ -12,12 +12,20 @@ export const getGlobal = async <GlobalType extends Global>(
   draft?: boolean,
 ) => {
   const payload = await getPayload({ config: configPromise });
+  const allowedSlugs = [
+    "cookiePolicy",
+    "footer",
+    "navigation",
+    "privacyPolicy",
+    "termsAndConditions",
+    "home",
+  ];
   const global = await payload.findGlobal({
     slug: slug,
     depth: 1,
     locale: locale,
     draft: draft,
-    overrideAccess: draft || false,
+    overrideAccess: draft || allowedSlugs.includes(slug) ? true : false,
   });
 
   return global;

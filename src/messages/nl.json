@@ -1,4 +1,11 @@
 {
+  "general": {
+    "cookieNotification": "Wij gebruiken cookies om uw ervaring te verbeteren en ons verkeer te analyseren. Door onze website te blijven gebruiken, stemt u in met ons gebruik van cookies. Voor meer informatie, lees ons",
+    "cookiePolicy": "cookiebeleid",
+    "accept": "Accepteren",
+    "decline": "Weigeren"
+  },
+
   "home": {
     "href": "/nl",
     "en": "/",
@@ -8,17 +15,42 @@
   "privacyPolicy": {
     "href": "/nl/privacybeleid",
     "en": "/privacy-policy",
-    "title": "Privacybeleid"
+    "title": "Privacybeleid",
+    "description": "Privacybeleid voor A Template."
+  },
+
+  "cookiePolicy": {
+    "title": "Cookiebeleid",
+    "href": "/nl/cookiebeleid",
+    "description": "Cookiebeleid voor A Template."
   },
 
   "termsAndConditions": {
     "href": "/nl/algemene-voorwaarden",
     "en": "/terms-and-conditions",
-    "title": "Algemene voorwaarden"
+    "title": "Algemene voorwaarden",
+    "description": "Algemene voorwaarden voor A Template."
   },
 
   "pageNotFound": {
     "title": "Pagina Niet Gevonden",
     "paragraph": "De pagina die u zoekt bestaat niet."
+  },
+
+  "footer": {
+    "contact": {
+      "heading": "CONTACT",
+      "email": "E-MAIL",
+      "phone": "TELEFOON"
+    },
+    "location": {
+      "heading": "LOCATIE",
+      "address": "ADRES"
+    },
+    "legalLinks": {
+      "heading": "NAVIGATIE",
+      "kvk": "KvK",
+      "vat": "BTW"
+    }
   }
 }

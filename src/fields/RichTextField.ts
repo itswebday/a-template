@@ -65,7 +65,7 @@ export const RichTextField = ({
                 required: true,
               },
               {
-                name: "customUrl",
+                name: "customHref",
                 label: "Custom URL",
                 type: "checkbox",
                 defaultValue: false,
@@ -76,7 +76,7 @@ export const RichTextField = ({
                 type: "text",
                 required: true,
                 admin: {
-                  condition: (_, siblingData) => siblingData?.customUrl,
+                  condition: (_, siblingData) => siblingData?.customHref,
                 },
               },
               {
@@ -86,7 +86,7 @@ export const RichTextField = ({
                 relationTo: ["pages"],
                 required: true,
                 admin: {
-                  condition: (_, siblingData) => !siblingData?.customUrl,
+                  condition: (_, siblingData) => !siblingData?.customHref,
                 },
               },
               {

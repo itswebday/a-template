@@ -1,4 +1,11 @@
 {
+  "general": {
+    "cookieNotification": "We use cookies to improve your experience and analyze our traffic. By using our website, you agree to our use of cookies. For more information, read our",
+    "cookiePolicy": "cookie policy",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+
   "home": {
     "href": "/",
     "nl": "/nl",
@@ -8,17 +15,42 @@
   "privacyPolicy": {
     "href": "/privacy-policy",
     "nl": "/nl/privacybeleid",
-    "title": "Privacy Policy"
+    "title": "Privacy Policy",
+    "description": "Privacy policy for A Template."
+  },
+
+  "cookiePolicy": {
+    "title": "Cookie Policy",
+    "href": "/cookie-policy",
+    "description": "Cookie policy for A Template."
   },
 
   "termsAndConditions": {
     "href": "/terms-and-conditions",
     "nl": "/nl/algemene-voorwaarden",
-    "title": "Terms and Conditions"
+    "title": "Terms and Conditions",
+    "description": "Terms and conditions for A Template."
   },
 
   "pageNotFound": {
     "title": "Page Not Found",
     "paragraph": "The page you're looking for doesn't exist."
+  },
+
+  "footer": {
+    "contact": {
+      "heading": "CONTACT",
+      "email": "EMAIL",
+      "phone": "PHONE"
+    },
+    "location": {
+      "heading": "LOCATION",
+      "address": "ADDRESS"
+    },
+    "legalLinks": {
+      "heading": "NAVIGATION",
+      "kvk": "KvK",
+      "vat": "VAT"
+    }
   }
 }

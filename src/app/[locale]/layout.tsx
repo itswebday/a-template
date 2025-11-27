@@ -1,4 +1,9 @@
-import { PreviewListener } from "@/components";
+import {
+  CookieNotification,
+  Footer,
+  NavBarNavMenu,
+  PreviewListener,
+} from "@/components";
 import { NavMenuProvider, PageProvider } from "@/contexts";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -24,7 +29,10 @@ const HomeLayout = async ({
           <PageProvider initialPage="home">
             <NavMenuProvider>
               <PreviewListener />
+              <NavBarNavMenu />
               {children}
+              <Footer />
+              <CookieNotification />
             </NavMenuProvider>
           </PageProvider>
         </body>
