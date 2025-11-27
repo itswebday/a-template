@@ -13,9 +13,9 @@ export const SlugField = ({
   name = "slug",
   label = "Slug",
   generatedFrom = "title",
-  description = `Automatisch gegenereerd op basis van de ${generatedFrom}`,
+  description = `Automatically generated from the ${generatedFrom} field`,
   sidebar = true,
-  readOnly = true,
+  readOnly = false,
 }: SlugFieldProps = {}): Field => ({
   name: name,
   label: label,

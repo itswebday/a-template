@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import { PageWrapper, PreviewListener } from "@/components";
 import { blockComponents } from "@/blocks";
 import { DEFAULT_LOCALE } from "@/constants";
 import { getGlobal } from "@/utils/globals";
-import { LocaleOption } from "@/types";
+import { getMetadata } from "@/utils/metadata";
+import type { LocaleOption } from "@/types";
 import { draftMode } from "next/headers";
-import React from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ const HomePage = async ({ params }: HomePageProps) => {
   const draft = await draftMode();
   const { locale = DEFAULT_LOCALE } = await params;
   const homepage = await getGlobal(
-    "homepage",
+    "home",
     locale as LocaleOption,
     draft.isEnabled,
   );
@@ -50,3 +51,12 @@ const HomePage = async ({ params }: HomePageProps) => {
 };
 
 export default HomePage;
+
+export const generateMetadata = async ({
+  params,
+}: HomePageProps): Promise<Metadata> => {
+  const { locale = DEFAULT_LOCALE } = await params;
+  const homepage = await getGlobal("home", locale as LocaleOption, false);
+
+  return getMetadata({ doc: homepage, locale });
+};

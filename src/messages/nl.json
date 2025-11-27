@@ -18,6 +18,7 @@
   },
 
   "pageNotFound": {
-    "paragraph": "De pagina die je zoekt bestaat niet."
+    "title": "Pagina Niet Gevonden",
+    "paragraph": "De pagina die u zoekt bestaat niet."
   }
 }

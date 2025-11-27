@@ -16,8 +16,6 @@ export const Media: CollectionConfig = {
   },
   admin: {
     group: "Database",
-    useAsTitle: "alt",
-    defaultColumns: ["alt", "createdAt"],
   },
   fields: [
     {

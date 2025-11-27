@@ -61,11 +61,16 @@ type CodeBlock = {
 
 type LinkNode = {
   type: "link";
-  url?: string;
   fields?: {
-    url: string;
+    text: string;
+    customUrl: boolean;
+    href?: string;
+    page?: {
+      value: {
+        url: string;
+      };
+    };
     newTab?: boolean;
-    linkType?: string;
   };
   children: BlockNode[];
 };

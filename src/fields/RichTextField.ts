@@ -2,7 +2,6 @@ import {
   AlignFeature,
   BlockquoteFeature,
   BoldFeature,
-  ChecklistFeature,
   FixedToolbarFeature,
   HeadingFeature,
   HorizontalRuleFeature,
@@ -39,7 +38,8 @@ export const RichTextField = ({
     features: ({ rootFeatures }) => {
       return [
         ...rootFeatures.filter(
-          (feature) => !["upload", "relationship"].includes(feature.key),
+          (feature) =>
+            !["upload", "relationship", "checklist"].includes(feature.key),
         ),
         HeadingFeature({
           enabledHeadingSizes: ["h1", "h2", "h3", "h4", "h5", "h6"],
@@ -55,8 +55,49 @@ export const RichTextField = ({
         IndentFeature(),
         UnorderedListFeature(),
         OrderedListFeature(),
-        ChecklistFeature(),
-        LinkFeature(),
+        LinkFeature({
+          fields: () => {
+            return [
+              {
+                name: "text",
+                label: "Text",
+                type: "text",
+                required: true,
+              },
+              {
+                name: "customUrl",
+                label: "Custom URL",
+                type: "checkbox",
+                defaultValue: false,
+              },
+              {
+                name: "href",
+                label: "URL",
+                type: "text",
+                required: true,
+                admin: {
+                  condition: (_, siblingData) => siblingData?.customUrl,
+                },
+              },
+              {
+                name: "page",
+                label: "Page",
+                type: "relationship",
+                relationTo: ["pages"],
+                required: true,
+                admin: {
+                  condition: (_, siblingData) => !siblingData?.customUrl,
+                },
+              },
+              {
+                name: "newTab",
+                label: "Open in a new tab",
+                type: "checkbox",
+                defaultValue: false,
+              },
+            ];
+          },
+        }),
         BlockquoteFeature(),
         HorizontalRuleFeature(),
         FixedToolbarFeature(),

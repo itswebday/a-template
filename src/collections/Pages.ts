@@ -1,7 +1,8 @@
-import { authenticated, authenticatedOrPublished } from "@/access";
+import type { CollectionConfig } from "payload";
 import { blockConfigs } from "@/blocks/config";
-import { revalidateHomepage } from "@/hooks";
-import { getPreviewPath } from "@/utils/preview";
+import { authenticated, authenticatedOrPublished } from "@/access";
+import { URLField } from "@/fields";
+import { revalidatePage, revalidateDelete } from "@/hooks/revalidatePage";
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -9,23 +10,42 @@ import {
   OverviewField,
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
-import type { GlobalConfig } from "payload";
+import { getPreviewPathCollection } from "@/utils/preview";
 
-export const Homepage: GlobalConfig = {
-  slug: "homepage",
-  label: "Homepage",
+export const Pages: CollectionConfig = {
+  slug: "pages",
   access: {
+    create: authenticated,
+    delete: authenticated,
     read: authenticatedOrPublished,
     update: authenticated,
   },
   admin: {
-    livePreview: {
-      url: async ({ req }) => await getPreviewPath({ req }),
-    },
-    preview: async (_data, { req }) => await getPreviewPath({ req }),
+    useAsTitle: "title",
+    defaultColumns: ["title", "url", "updatedAt"],
     group: "Pages",
+    livePreview: {
+      url: ({ data, req }) =>
+        getPreviewPathCollection({
+          url: data?.url,
+          collection: "pages",
+          req,
+        }),
+    },
+    preview: (data, { req }) =>
+      getPreviewPathCollection({
+        url: data?.url as string,
+        collection: "pages",
+        req,
+      }),
   },
   fields: [
+    {
+      name: "title",
+      type: "text",
+      required: true,
+      localized: true,
+    },
     {
       type: "tabs",
       tabs: [
@@ -84,16 +104,16 @@ export const Homepage: GlobalConfig = {
         ],
       },
     },
+    URLField({ label: "Page URL" }),
   ],
   hooks: {
-    afterChange: [revalidateHomepage],
+    afterChange: [revalidatePage],
+    afterDelete: [revalidateDelete],
   },
   versions: {
     drafts: {
-      autosave: {
-        interval: 100,
-      },
-      schedulePublish: true,
+      autosave: true,
     },
+    maxPerDoc: 50,
   },
 };
