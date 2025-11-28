@@ -1,6 +1,6 @@
-import type { LocaleOption } from "@/types";
-import type { Config } from "@/payload-types";
 import configPromise from "@/payload.config";
+import type { Config } from "@/payload-types";
+import type { LocaleOption } from "@/types";
 import { unstable_cache } from "next/cache";
 import { getPayload } from "payload";
 
@@ -12,21 +12,24 @@ export const getGlobal = async <GlobalType extends Global>(
   draft?: boolean,
 ) => {
   const payload = await getPayload({ config: configPromise });
-  const allowedSlugs = [
-    "blog",
-    "cookiePolicy",
-    "footer",
-    "navigation",
-    "privacyPolicy",
-    "termsAndConditions",
-    "home",
-  ];
   const global = await payload.findGlobal({
     slug: slug,
     depth: 1,
     locale: locale,
     draft: draft,
-    overrideAccess: draft || allowedSlugs.includes(slug) ? true : false,
+    overrideAccess:
+      draft ||
+      [
+        "home",
+        "navigation",
+        "footer",
+        "blog",
+        "privacyPolicy",
+        "cookiePolicy",
+        "termsAndConditions",
+      ].includes(slug)
+        ? true
+        : false,
   });
 
   return global;

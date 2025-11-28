@@ -51,16 +51,16 @@ const baseConfig = {
   async rewrites() {
     return [
       {
-        source: "/:locale/privacybeleid/:path*",
-        destination: "/:locale/privacy-policy/:path*",
+        source: "/nl/privacybeleid",
+        destination: "/nl/privacy-policy",
       },
       {
-        source: "/:locale/cookiebeleid/:path*",
-        destination: "/:locale/cookie-policy/:path*",
+        source: "/nl/cookiebeleid",
+        destination: "/nl/cookie-policy",
       },
       {
-        source: "/:locale/algemene-voorwaarden/:path*",
-        destination: "/:locale/terms-and-conditions/:path*",
+        source: "/nl/algemene-voorwaarden",
+        destination: "/nl/terms-and-conditions",
       },
     ];
   },

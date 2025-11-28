@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
 import { PageWrapper, PreviewListener } from "@/components";
 import { blockComponents } from "@/blocks";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
-import { getMetadata } from "@/utils/metadata";
-import { LocaleOption } from "@/types";
-import { draftMode } from "next/headers";
 import configPromise from "@/payload.config";
+import type { Page } from "@/payload-types";
+import type { LocaleOption } from "@/types";
+import { getMetadata } from "@/utils/metadata";
+import { draftMode } from "next/headers";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import React from "react";
-import type { Page } from "@/payload-types";
-import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 

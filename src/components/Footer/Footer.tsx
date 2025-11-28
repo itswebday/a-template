@@ -1,7 +1,8 @@
 "use server";
 
 import FooterLink from "./FooterLink";
-import { LocaleOption } from "@/types";
+import type { LocaleOption } from "@/types";
+import { getLinkHref } from "@/utils";
 import { getGlobal } from "@/utils/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -12,9 +13,26 @@ type FooterProps = {
 
 const Footer: React.FC<FooterProps> = async () => {
   const locale = (await getLocale()) as LocaleOption;
-  const footerT = await getTranslations("footer");
-  const footer = await getGlobal("footer", locale);
-  const homeT = await getTranslations("home");
+  const [footerT, homeT] = await Promise.all([
+    getTranslations("footer"),
+    getTranslations("home"),
+  ]);
+  const [footer, home, blog, privacyPolicy, cookiePolicy, termsAndConditions] =
+    await Promise.all([
+      getGlobal("footer", locale),
+      getGlobal("home", locale),
+      getGlobal("blog", locale),
+      getGlobal("privacyPolicy", locale),
+      getGlobal("cookiePolicy", locale),
+      getGlobal("termsAndConditions", locale),
+    ]);
+  const globals = {
+    home,
+    blog,
+    privacyPolicy,
+    cookiePolicy,
+    termsAndConditions,
+  };
 
   return (
     <footer
@@ -78,10 +96,37 @@ const Footer: React.FC<FooterProps> = async () => {
         <div className="flex flex-col mt-auto de:w-1/3">
           {/* Links */}
           <div className="flex flex-col gap-2 items-end">
-            {(footer?.footerLinks || []).map((link, index) => (
+            {(
+              (
+                footer as {
+                  links?: Array<{
+                    text?: string | null;
+                    customHref?: boolean | null;
+                    href?: string | null;
+                    linkType?:
+                      | "page"
+                      | "home"
+                      | "blog"
+                      | "blog-post"
+                      | "privacy-policy"
+                      | "cookie-policy"
+                      | "terms-and-conditions"
+                      | null;
+                    page?: {
+                      relationTo: "pages" | "blog-posts";
+                      value:
+                        | number
+                        | { url?: string | null; slug?: string | null }
+                        | null;
+                    } | null;
+                    newTab?: boolean | null;
+                  }>;
+                } | null
+              )?.links || []
+            ).map((link, index) => (
               <FooterLink
                 key={index}
-                href={link.href || ""}
+                href={getLinkHref(link, globals)}
                 target={link.newTab ? "_blank" : "_self"}
               >
                 <span>{link.text || ""}</span>

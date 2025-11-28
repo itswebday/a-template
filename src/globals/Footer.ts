@@ -1,3 +1,4 @@
+import { getLinkFields } from "@/utils";
 import type { GlobalConfig } from "payload";
 
 export const Footer: GlobalConfig = {
@@ -53,32 +54,14 @@ export const Footer: GlobalConfig = {
       ],
     },
     {
-      name: "footerLinks",
-      label: "Links",
+      name: "links",
+      labels: {
+        singular: "Link",
+        plural: "Links",
+      },
       type: "array",
       defaultValue: [],
-      fields: [
-        {
-          name: "text",
-          label: "Text",
-          type: "text",
-          defaultValue: "",
-          localized: true,
-        },
-        {
-          name: "href",
-          label: "URL",
-          type: "text",
-          defaultValue: "",
-          localized: true,
-        },
-        {
-          name: "newTab",
-          label: "Open in a new tab",
-          type: "checkbox",
-          defaultValue: false,
-        },
-      ],
+      fields: getLinkFields(),
     },
     {
       name: "companyDetails",

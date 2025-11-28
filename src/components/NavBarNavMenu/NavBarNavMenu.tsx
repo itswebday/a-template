@@ -4,9 +4,8 @@ import HamburgerButton from "./HamburgerButton";
 import NavBar from "./NavBar";
 import NavMenu from "./NavMenu";
 import { LogoLink, TranslateButton } from "@/components";
-import { DEFAULT_LOCALE } from "@/constants";
-import { LocaleOption } from "@/types";
-import { getMediaUrlAndAlt } from "@/utils";
+import type { LocaleOption } from "@/types";
+import { getLinkHref, getMediaUrlAndAlt } from "@/utils";
 import { getGlobal } from "@/utils/server";
 import { getLocale } from "next-intl/server";
 
@@ -16,41 +15,38 @@ type NavBarNavMenuProps = {
 
 const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
   const locale = (await getLocale()) as LocaleOption;
-  const navigation = await getGlobal("navigation", locale);
+  const [
+    navigation,
+    home,
+    blog,
+    privacyPolicy,
+    cookiePolicy,
+    termsAndConditions,
+  ] = await Promise.all([
+    getGlobal("navigation", locale),
+    getGlobal("home", locale),
+    getGlobal("blog", locale),
+    getGlobal("privacyPolicy", locale),
+    getGlobal("cookiePolicy", locale),
+    getGlobal("termsAndConditions", locale),
+  ]);
   const { url: logoUrl, alt: logoAlt } = getMediaUrlAndAlt(navigation?.logo);
-
-  const getLinkHref = (link: {
-    customHref?: boolean | null;
-    href?: string | null;
-    page?: {
-      relationTo: "pages" | "blog-posts";
-      value: number | { url?: string | null; slug?: string | null } | null;
-    } | null;
-  }): string => {
-    if (link.customHref) {
-      return link.href || (locale === DEFAULT_LOCALE ? "/" : `/${locale}`);
-    } else {
-      const pageValue = link.page?.value;
-      const pageUrl =
-        typeof pageValue === "object" &&
-        pageValue !== null &&
-        "url" in pageValue
-          ? pageValue.url || ""
-          : "";
-
-      return pageUrl;
-    }
+  const globals = {
+    home,
+    blog,
+    privacyPolicy,
+    cookiePolicy,
+    termsAndConditions,
   };
-
   const links = (navigation?.links || []).map((link) => ({
     text: link.text || "",
-    href: getLinkHref(link),
+    href: getLinkHref(link, globals),
     dropdown: link.dropdown || false,
     clickable: link.clickable || false,
     newTab: link.newTab || false,
     subLinks: (link.sublinks || []).map((sublink) => ({
       text: sublink.text || "",
-      href: getLinkHref(sublink),
+      href: getLinkHref(sublink, globals),
       newTab: sublink.newTab || false,
     })),
   }));

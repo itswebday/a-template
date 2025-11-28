@@ -1,7 +1,6 @@
+import type { LocaleOption } from "@/types";
 import { getMessages } from "next-intl/server";
 import { NextResponse } from "next/server";
-
-import { LocaleOption } from "@/types";
 
 export const handleApiError = async (
   errorResponse: unknown,

@@ -8,13 +8,16 @@
 
   "home": {
     "href": "/nl",
-    "en": "/",
     "title": "Home"
+  },
+
+  "blog": {
+    "href": "/nl/blog",
+    "title": "Blog"
   },
 
   "privacyPolicy": {
     "href": "/nl/privacybeleid",
-    "en": "/privacy-policy",
     "title": "Privacybeleid",
     "description": "Privacybeleid voor A Template."
   },
@@ -27,7 +30,6 @@
 
   "termsAndConditions": {
     "href": "/nl/algemene-voorwaarden",
-    "en": "/terms-and-conditions",
     "title": "Algemene voorwaarden",
     "description": "Algemene voorwaarden voor A Template."
   },

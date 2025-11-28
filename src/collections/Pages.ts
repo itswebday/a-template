@@ -1,7 +1,12 @@
-import { blockConfigs } from "@/blocks/config";
 import { authenticated, authenticatedOrPublished } from "@/access";
+import { blockConfigs } from "@/blocks/config";
 import { URLField } from "@/fields";
-import { revalidatePage, revalidateDelete } from "@/hooks/revalidatePage";
+import {
+  generateUrlWithoutLocale,
+  populatePublishedAtCollection,
+} from "@/hooks";
+import { revalidatePage, revalidateDelete } from "@/hooks/revalidate";
+import { getPreviewPathCollection } from "@/utils";
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -9,9 +14,7 @@ import {
   OverviewField,
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
-import { getPreviewPathCollection } from "@/utils";
 import type { CollectionConfig } from "payload";
-import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -97,14 +100,7 @@ export const Pages: CollectionConfig = {
         position: "sidebar",
       },
       hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === "published" && !value) {
-              return new Date();
-            }
-            return value;
-          },
-        ],
+        beforeChange: [populatePublishedAtCollection],
       },
     },
     URLField({ label: "Page URL" }),
@@ -120,38 +116,7 @@ export const Pages: CollectionConfig = {
           "Automatically generated from URL field without locale prefix",
       },
       hooks: {
-        beforeChange: [
-          ({ data, req }) => {
-            const url = data?.url;
-            const locale = req?.locale || DEFAULT_LOCALE;
-
-            if (!url) {
-              return "";
-            }
-
-            const urlValue = Array.isArray(url) ? url[0] : url;
-
-            if (!urlValue || typeof urlValue !== "string") {
-              return "";
-            }
-
-            if (locale === DEFAULT_LOCALE) {
-              return urlValue;
-            }
-
-            for (const loc of LOCALES) {
-              if (loc !== DEFAULT_LOCALE && urlValue.startsWith(`/${loc}/`)) {
-                return urlValue.slice(`/${loc}`.length);
-              }
-
-              if (loc !== DEFAULT_LOCALE && urlValue === `/${loc}`) {
-                return "/";
-              }
-            }
-
-            return urlValue;
-          },
-        ],
+        beforeChange: [generateUrlWithoutLocale],
       },
     },
   ],

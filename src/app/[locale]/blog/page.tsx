@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import { PageWrapper } from "@/components";
 import { getCollection, getGlobal } from "@/utils/server";
-import { LocaleOption } from "@/types";
-import { getLocale } from "next-intl/server";
-import Link from "next/link";
+import type { LocaleOption } from "@/types";
+import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { getLocale } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 

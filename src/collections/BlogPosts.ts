@@ -1,9 +1,11 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
 import { RichTextField, SlugField } from "@/fields";
+import { generateBlogPostUrl, populatePublishedAtCollection } from "@/hooks";
 import {
   revalidateBlogPost,
   revalidateBlogPostDelete,
-} from "@/hooks/revalidateBlogPost";
+} from "@/hooks/revalidate";
+import { getPreviewPathCollection } from "@/utils";
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -12,8 +14,6 @@ import {
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
 import type { CollectionConfig } from "payload";
-import { getPreviewPathCollection } from "@/utils";
-import { DEFAULT_LOCALE } from "@/constants";
 
 export const BlogPosts: CollectionConfig = {
   slug: "blog-posts",
@@ -109,14 +109,7 @@ export const BlogPosts: CollectionConfig = {
         position: "sidebar",
       },
       hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === "published" && !value) {
-              return new Date();
-            }
-            return value;
-          },
-        ],
+        beforeChange: [populatePublishedAtCollection],
       },
     },
     SlugField({ readOnly: true }),
@@ -131,25 +124,7 @@ export const BlogPosts: CollectionConfig = {
         description: "Automatically generated from the slug field",
       },
       hooks: {
-        beforeChange: [
-          ({ data, req }) => {
-            const slug = data?.slug;
-            const locale = req?.locale || DEFAULT_LOCALE;
-
-            if (slug) {
-              const slugValue = Array.isArray(slug) ? slug[0] : slug;
-
-              if (slugValue && typeof slugValue === "string") {
-                const basePath = `/blog/${slugValue}`;
-
-                return locale === DEFAULT_LOCALE
-                  ? basePath
-                  : `/${locale}${basePath}`;
-              }
-            }
-            return "";
-          },
-        ],
+        beforeChange: [generateBlogPostUrl],
       },
     },
   ],

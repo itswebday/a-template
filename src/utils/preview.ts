@@ -1,21 +1,24 @@
-import { DEFAULT_LOCALE, PREVIEW_URL } from "@/constants";
-import { PayloadRequest } from "payload";
+import { PREVIEW_URL } from "@/constants";
+import type { PayloadRequest } from "payload";
 
 export const getPreviewPathGlobal = async ({
-  req,
   global,
+  data,
 }: {
-  req: PayloadRequest;
   global: string;
+  data?: Record<string, unknown>;
 }) => {
-  const locale = req?.locale || DEFAULT_LOCALE;
-  let basePath = "/";
-
-  if (global === "blog") {
-    basePath = "/blog";
+  if (!data || typeof data !== "object" || !("url" in data) || !data.url) {
+    return null;
   }
 
-  const path = locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
+  const urlValue = Array.isArray(data.url) ? data.url[0] : data.url;
+  if (!urlValue || typeof urlValue !== "string") {
+    return null;
+  }
+
+  const path = urlValue;
+
   const encodedParams = new URLSearchParams({
     global: global,
     path: path,
@@ -38,15 +41,14 @@ export const getPreviewPathCollection = ({
     return null;
   }
 
-  const locale = req?.locale || DEFAULT_LOCALE;
   const urlValue = Array.isArray(url) ? url[0] : url;
-  let basePath = urlValue === null || !urlValue ? "/" : urlValue;
-
-  if (collection === "blog-posts" && basePath !== "/") {
-    basePath = `/blog${basePath}`;
+  if (urlValue === null || !urlValue || typeof urlValue !== "string") {
+    return null;
   }
 
-  const path = locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
+  // The URL from the collection already includes the locale prefix and /blog for blog posts
+  const path = urlValue;
+
   const encodedParams = new URLSearchParams({
     collection: collection,
     url: urlValue,

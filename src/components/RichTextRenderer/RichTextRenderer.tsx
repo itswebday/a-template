@@ -1,5 +1,6 @@
-import { DEFAULT_LOCALE } from "@/constants";
 import type { BlockNode, LocaleOption, RichText } from "@/types";
+import { getLinkHref } from "@/utils";
+import { getGlobal } from "@/utils/server";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import React from "react";
@@ -14,6 +15,21 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
   richText,
 }) => {
   const locale = (await getLocale()) as LocaleOption;
+  const [home, blog, privacyPolicy, cookiePolicy, termsAndConditions] =
+    await Promise.all([
+      getGlobal("home", locale),
+      getGlobal("blog", locale),
+      getGlobal("privacyPolicy", locale),
+      getGlobal("cookiePolicy", locale),
+      getGlobal("termsAndConditions", locale),
+    ]);
+  const globals = {
+    home,
+    blog,
+    privacyPolicy,
+    cookiePolicy,
+    termsAndConditions,
+  };
 
   const renderBlockNode = (
     blockNode: BlockNode,
@@ -144,17 +160,21 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         );
 
       case "link": {
-        let href = "";
-
-        if (blockNode.fields?.customHref) {
-          href =
-            blockNode.fields.href ||
-            `${locale === DEFAULT_LOCALE ? "/" : `/${locale}`}`;
-        } else {
-          href = `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}${
-            blockNode.fields?.page?.value.url
-          }`;
-        }
+        const pageField = blockNode.fields?.page;
+        const href = getLinkHref(
+          {
+            customHref: blockNode.fields?.customHref,
+            href: blockNode.fields?.href,
+            linkType: blockNode.fields?.linkType,
+            page: pageField
+              ? {
+                  relationTo: "pages" as const,
+                  value: pageField.value,
+                }
+              : null,
+          },
+          globals,
+        );
 
         return (
           <Link

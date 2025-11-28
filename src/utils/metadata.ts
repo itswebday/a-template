@@ -1,6 +1,6 @@
-import type { Home, Page } from "@/payload-types";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import type { Home, Page } from "@/payload-types";
 
 type DocWithMeta = Home | Page;
 
@@ -18,9 +18,6 @@ export const getMetadata = async (args: {
     };
   }
 
-  const title =
-    doc?.meta?.title || ("title" in doc ? (doc.title as string) : "") || "";
-  const description = doc?.meta?.description ?? undefined;
   const ogImage =
     typeof doc?.meta?.image === "object" &&
     doc.meta.image !== null &&

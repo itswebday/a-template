@@ -12,8 +12,8 @@ import {
 import { plugins } from "@/plugins";
 import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import path from "path";
 import { buildConfig } from "payload";
+import path from "path";
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 

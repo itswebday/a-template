@@ -1,6 +1,7 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
 import { blockConfigs } from "@/blocks/config";
-import { revalidateHomepage } from "@/hooks";
+import { generateHomeUrl, populatePublishedAtGlobalField } from "@/hooks";
+import { revalidateHomepage } from "@/hooks/revalidate";
 import { getPreviewPathGlobal } from "@/utils/preview";
 import {
   MetaDescriptionField,
@@ -21,11 +22,11 @@ export const Home: GlobalConfig = {
   admin: {
     group: "Pages",
     livePreview: {
-      url: async ({ req }) =>
-        await getPreviewPathGlobal({ req, global: "home" }),
+      url: async ({ data }) =>
+        await getPreviewPathGlobal({ global: "home", data }),
     },
-    preview: async (_data, { req }) =>
-      await getPreviewPathGlobal({ req, global: "home" }),
+    preview: async (data) =>
+      await getPreviewPathGlobal({ global: "home", data }),
   },
   fields: [
     {
@@ -76,14 +77,21 @@ export const Home: GlobalConfig = {
         position: "sidebar",
       },
       hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === "published" && !value) {
-              return new Date();
-            }
-            return value;
-          },
-        ],
+        beforeChange: [populatePublishedAtGlobalField],
+      },
+    },
+    {
+      name: "url",
+      label: "Page URL",
+      type: "text",
+      localized: true,
+      admin: {
+        readOnly: true,
+        position: "sidebar",
+        description: "Automatically set",
+      },
+      hooks: {
+        beforeChange: [generateHomeUrl],
       },
     },
   ],

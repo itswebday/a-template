@@ -1,67 +1,85 @@
+import { PageWrapper } from "@/components";
 import { RichTextRenderer } from "@/components/server";
-import { DEFAULT_LOCALE } from "@/constants";
-import { LocaleOption, RichText } from "@/types";
+import type { LocaleOption, RichText } from "@/types";
 import { getGlobal } from "@/utils/server";
 import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 
-type CookiePolicyPageProps = {
-  params: Promise<{
-    locale: string;
-  }>;
-};
+export const dynamic = "force-dynamic";
 
-const CookiePolicyPage = async ({ params }: CookiePolicyPageProps) => {
-  const { locale = DEFAULT_LOCALE } = await params;
-  const cookiePolicy = await queryCookiePolicy({
-    locale: locale,
-  });
+const CookiePolicyPage = async () => {
+  const locale = (await getLocale()) as LocaleOption;
+  const cookiePolicyT = await getTranslations("cookiePolicy");
+  const cookiePolicy = await getGlobal("cookiePolicy", locale);
 
   if (!cookiePolicy) {
     notFound();
   }
 
+  const url =
+    typeof cookiePolicy === "object" &&
+    cookiePolicy !== null &&
+    "url" in cookiePolicy &&
+    cookiePolicy.url
+      ? Array.isArray(cookiePolicy.url)
+        ? cookiePolicy.url[0]
+        : cookiePolicy.url
+      : cookiePolicyT("href");
+
   return (
-    <main className="w-full py-12 de:py-20">
-      {/* Container */}
-      <section className="w-11/12 max-w-300 mx-auto">
-        {/* Content */}
-        {cookiePolicy.content && (
-          <RichTextRenderer richText={cookiePolicy.content as RichText} />
-        )}
-      </section>
-    </main>
+    <PageWrapper pageLabel={url}>
+      <main className="w-full py-12 de:py-20">
+        <section className="w-11/12 max-w-300 mx-auto">
+          {cookiePolicy &&
+            typeof cookiePolicy === "object" &&
+            "content" in cookiePolicy &&
+            cookiePolicy.content && (
+              <RichTextRenderer richText={cookiePolicy.content as RichText} />
+            )}
+        </section>
+      </main>
+    </PageWrapper>
   );
 };
 
 export default CookiePolicyPage;
 
-export const generateMetadata = async ({
-  params,
-}: CookiePolicyPageProps): Promise<Metadata> => {
-  const { locale = DEFAULT_LOCALE } = await params;
-  const cookiePolicyT = await getTranslations({
-    locale,
-    namespace: "cookiePolicy",
-  });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = (await getLocale()) as LocaleOption;
+  const cookiePolicyT = await getTranslations("cookiePolicy");
+  const cookiePolicy = (await getGlobal("cookiePolicy", locale)) as {
+    meta?: {
+      title?: string;
+      description?: string;
+      image?: unknown;
+    };
+    url?: string | string[];
+  } | null;
+
+  const ogImage =
+    typeof cookiePolicy?.meta?.image === "object" &&
+    cookiePolicy.meta.image !== null &&
+    "url" in cookiePolicy.meta.image
+      ? `${process.env.NEXT_PUBLIC_SERVER_URL}${cookiePolicy.meta.image.url}`
+      : undefined;
+
+  const url =
+    cookiePolicy?.url && typeof cookiePolicy.url === "string"
+      ? cookiePolicy.url
+      : Array.isArray(cookiePolicy?.url) && cookiePolicy.url[0]
+        ? cookiePolicy.url[0]
+        : cookiePolicyT("href");
 
   return {
-    title: cookiePolicyT("title"),
-    description: cookiePolicyT("description"),
+    title: cookiePolicy?.meta?.title,
+    description: cookiePolicy?.meta?.description,
+    openGraph: {
+      type: "website",
+      title: cookiePolicy?.meta?.title || "",
+      description: cookiePolicy?.meta?.description ?? undefined,
+      images: ogImage ? [{ url: ogImage }] : undefined,
+      url: url,
+    },
   };
-};
-
-const queryCookiePolicy = async ({ locale }: { locale: string }) => {
-  try {
-    const cookiePolicy = await getGlobal(
-      "cookiePolicy",
-      locale as LocaleOption,
-    );
-    return cookiePolicy;
-  } catch (err) {
-    console.error(err);
-
-    return null;
-  }
 };

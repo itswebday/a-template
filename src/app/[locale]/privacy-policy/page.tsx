@@ -1,67 +1,85 @@
+import { PageWrapper } from "@/components";
 import { RichTextRenderer } from "@/components/server";
-import { DEFAULT_LOCALE } from "@/constants";
-import { LocaleOption, RichText } from "@/types";
+import type { LocaleOption, RichText } from "@/types";
 import { getGlobal } from "@/utils/server";
 import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 
-type PrivacyPolicyPageProps = {
-  params: Promise<{
-    locale: string;
-  }>;
-};
+export const dynamic = "force-dynamic";
 
-const PrivacyPolicyPage = async ({ params }: PrivacyPolicyPageProps) => {
-  const { locale = DEFAULT_LOCALE } = await params;
-  const privacyPolicy = await queryPrivacyPolicy({
-    locale: locale,
-  });
+const PrivacyPolicyPage = async () => {
+  const locale = (await getLocale()) as LocaleOption;
+  const privacyPolicyT = await getTranslations("privacyPolicy");
+  const privacyPolicy = await getGlobal("privacyPolicy", locale);
 
   if (!privacyPolicy) {
     notFound();
   }
 
+  const url =
+    typeof privacyPolicy === "object" &&
+    privacyPolicy !== null &&
+    "url" in privacyPolicy &&
+    privacyPolicy.url
+      ? Array.isArray(privacyPolicy.url)
+        ? privacyPolicy.url[0]
+        : privacyPolicy.url
+      : privacyPolicyT("href");
+
   return (
-    <main className="w-full py-12 de:py-20">
-      {/* Container */}
-      <section className="container-medium w-11/12 mx-auto">
-        {/* Content */}
-        {privacyPolicy.content && (
-          <RichTextRenderer richText={privacyPolicy.content as RichText} />
-        )}
-      </section>
-    </main>
+    <PageWrapper pageLabel={url}>
+      <main className="w-full py-12 de:py-20">
+        <section className="w-11/12 max-w-300 mx-auto">
+          {privacyPolicy &&
+            typeof privacyPolicy === "object" &&
+            "content" in privacyPolicy &&
+            privacyPolicy.content && (
+              <RichTextRenderer richText={privacyPolicy.content as RichText} />
+            )}
+        </section>
+      </main>
+    </PageWrapper>
   );
 };
 
 export default PrivacyPolicyPage;
 
-export const generateMetadata = async ({
-  params,
-}: PrivacyPolicyPageProps): Promise<Metadata> => {
-  const { locale = DEFAULT_LOCALE } = await params;
-  const privacyPolicyT = await getTranslations({
-    locale,
-    namespace: "privacyPolicy",
-  });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = (await getLocale()) as LocaleOption;
+  const privacyPolicyT = await getTranslations("privacyPolicy");
+  const privacyPolicy = (await getGlobal("privacyPolicy", locale)) as {
+    meta?: {
+      title?: string;
+      description?: string;
+      image?: unknown;
+    };
+    url?: string | string[];
+  } | null;
+
+  const ogImage =
+    typeof privacyPolicy?.meta?.image === "object" &&
+    privacyPolicy.meta.image !== null &&
+    "url" in privacyPolicy.meta.image
+      ? `${process.env.NEXT_PUBLIC_SERVER_URL}${privacyPolicy.meta.image.url}`
+      : undefined;
+
+  const url =
+    privacyPolicy?.url && typeof privacyPolicy.url === "string"
+      ? privacyPolicy.url
+      : Array.isArray(privacyPolicy?.url) && privacyPolicy.url[0]
+        ? privacyPolicy.url[0]
+        : privacyPolicyT("href");
 
   return {
-    title: privacyPolicyT("title"),
-    description: privacyPolicyT("description"),
+    title: privacyPolicy?.meta?.title,
+    description: privacyPolicy?.meta?.description,
+    openGraph: {
+      type: "website",
+      title: privacyPolicy?.meta?.title || "",
+      description: privacyPolicy?.meta?.description ?? undefined,
+      images: ogImage ? [{ url: ogImage }] : undefined,
+      url: url,
+    },
   };
-};
-
-const queryPrivacyPolicy = async ({ locale }: { locale: string }) => {
-  try {
-    const privacyPolicy = await getGlobal(
-      "privacyPolicy",
-      locale as LocaleOption,
-    );
-    return privacyPolicy;
-  } catch (err) {
-    console.error(err);
-
-    return null;
-  }
 };

@@ -65,6 +65,14 @@ type LinkNode = {
     text: string;
     customHref: boolean;
     href?: string;
+    linkType?:
+      | "page"
+      | "home"
+      | "blog"
+      | "blog-post"
+      | "privacy-policy"
+      | "cookie-policy"
+      | "terms-and-conditions";
     page?: {
       value: {
         url: string;

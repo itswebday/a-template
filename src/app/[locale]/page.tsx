@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
 import { PageWrapper, PreviewListener } from "@/components";
 import { blockComponents } from "@/blocks";
 import { DEFAULT_LOCALE } from "@/constants";
+import type { LocaleOption } from "@/types";
 import { getGlobal } from "@/utils/globals";
 import { getMetadata } from "@/utils/metadata";
-import type { LocaleOption } from "@/types";
 import { draftMode } from "next/headers";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 

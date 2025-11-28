@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import { PageWrapper, PreviewListener } from "@/components";
 import { RichTextRenderer } from "@/components/server";
 import { DEFAULT_LOCALE } from "@/constants";
-import { getDocument } from "@/utils/server";
-import { LocaleOption, RichText } from "@/types";
-import { draftMode } from "next/headers";
 import type { Config } from "@/payload-types";
-import { redirect } from "next/navigation";
-import Link from "next/link";
+import type { LocaleOption, RichText } from "@/types";
+import { getDocument } from "@/utils/server";
+import { draftMode } from "next/headers";
+import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 

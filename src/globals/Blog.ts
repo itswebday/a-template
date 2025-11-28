@@ -1,5 +1,6 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
-import { revalidateBlog } from "@/hooks/revalidateBlog";
+import { generateBlogUrl, populatePublishedAtGlobalField } from "@/hooks";
+import { revalidateBlog } from "@/hooks/revalidate";
 import { getPreviewPathGlobal } from "@/utils/preview";
 import {
   MetaDescriptionField,
@@ -20,11 +21,11 @@ export const Blog: GlobalConfig = {
   admin: {
     group: "Pages",
     livePreview: {
-      url: async ({ req }) =>
-        await getPreviewPathGlobal({ req, global: "blog" }),
+      url: async ({ data }) =>
+        await getPreviewPathGlobal({ global: "blog", data }),
     },
-    preview: async (_data, { req }) =>
-      await getPreviewPathGlobal({ req, global: "blog" }),
+    preview: async (data) =>
+      await getPreviewPathGlobal({ global: "blog", data }),
   },
   fields: [
     {
@@ -80,14 +81,21 @@ export const Blog: GlobalConfig = {
         position: "sidebar",
       },
       hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === "published" && !value) {
-              return new Date();
-            }
-            return value;
-          },
-        ],
+        beforeChange: [populatePublishedAtGlobalField],
+      },
+    },
+    {
+      name: "url",
+      label: "Page URL",
+      type: "text",
+      localized: true,
+      admin: {
+        readOnly: true,
+        position: "sidebar",
+        description: "Automatically set",
+      },
+      hooks: {
+        beforeChange: [generateBlogUrl],
       },
     },
   ],

@@ -1,3 +1,4 @@
+import { getLinkFields } from "@/utils";
 import {
   AlignFeature,
   BlockquoteFeature,
@@ -18,7 +19,7 @@ import {
   UnderlineFeature,
   UnorderedListFeature,
 } from "@payloadcms/richtext-lexical";
-import { Field } from "payload";
+import type { Field } from "payload";
 
 type RichTextFieldProps = {
   name?: string;
@@ -56,47 +57,7 @@ export const RichTextField = ({
         UnorderedListFeature(),
         OrderedListFeature(),
         LinkFeature({
-          fields: () => {
-            return [
-              {
-                name: "text",
-                label: "Text",
-                type: "text",
-                required: true,
-              },
-              {
-                name: "customHref",
-                label: "Custom URL",
-                type: "checkbox",
-                defaultValue: false,
-              },
-              {
-                name: "href",
-                label: "URL",
-                type: "text",
-                required: true,
-                admin: {
-                  condition: (_, siblingData) => siblingData?.customHref,
-                },
-              },
-              {
-                name: "page",
-                label: "Page",
-                type: "relationship",
-                relationTo: ["pages", "blog-posts"],
-                required: true,
-                admin: {
-                  condition: (_, siblingData) => !siblingData?.customHref,
-                },
-              },
-              {
-                name: "newTab",
-                label: "Open in a new tab",
-                type: "checkbox",
-                defaultValue: false,
-              },
-            ];
-          },
+          fields: () => getLinkFields({ localizedText: false }),
         }),
         BlockquoteFeature(),
         HorizontalRuleFeature(),

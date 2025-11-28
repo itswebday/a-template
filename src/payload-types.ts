@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -70,40 +70,29 @@ export interface Config {
     media: Media;
     users: User;
     pages: Page;
-    "blog-posts": BlogPost;
-    "payload-kv": PayloadKv;
-    "payload-jobs": PayloadJob;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'blog-posts': BlogPost;
+    'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
-    "blog-posts": BlogPostsSelect<false> | BlogPostsSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-jobs": PayloadJobsSelect<false> | PayloadJobsSelect<true>;
-    "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences":
-      | PayloadPreferencesSelect<false>
-      | PayloadPreferencesSelect<true>;
-    "payload-migrations":
-      | PayloadMigrationsSelect<false>
-      | PayloadMigrationsSelect<true>;
+    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
-  fallbackLocale:
-    | ("false" | "none" | "null")
-    | false
-    | null
-    | ("en" | "nl")
-    | ("en" | "nl")[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'nl') | ('en' | 'nl')[];
   globals: {
     home: Home;
     blog: Blog;
@@ -120,13 +109,11 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     privacyPolicy: PrivacyPolicySelect<false> | PrivacyPolicySelect<true>;
     cookiePolicy: CookiePolicySelect<false> | CookiePolicySelect<true>;
-    termsAndConditions:
-      | TermsAndConditionsSelect<false>
-      | TermsAndConditionsSelect<true>;
+    termsAndConditions: TermsAndConditionsSelect<false> | TermsAndConditionsSelect<true>;
   };
-  locale: "en" | "nl";
+  locale: 'en' | 'nl';
   user: User & {
-    collection: "users";
+    collection: 'users';
   };
   jobs: {
     tasks: {
@@ -264,7 +251,7 @@ export interface Page {
   urlWithoutLocale?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -279,8 +266,8 @@ export interface TextAndImageBlock {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -290,7 +277,7 @@ export interface TextAndImageBlock {
   imageLeft?: boolean | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: "textAndImage";
+  blockType: 'textAndImage';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -299,7 +286,7 @@ export interface TextAndImageBlock {
 export interface WhiteSpaceBlock {
   id?: string | null;
   blockName?: string | null;
-  blockType: "whiteSpace";
+  blockType: 'whiteSpace';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -318,8 +305,8 @@ export interface BlogPost {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -344,7 +331,7 @@ export interface BlogPost {
   url?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -415,7 +402,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: "inline" | "schedulePublish";
+        taskSlug: 'inline' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -435,7 +422,7 @@ export interface PayloadJob {
           | number
           | boolean
           | null;
-        state: "failed" | "succeeded";
+        state: 'failed' | 'succeeded';
         error?:
           | {
               [k: string]: unknown;
@@ -448,7 +435,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ("inline" | "schedulePublish") | null;
+  taskSlug?: ('inline' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -463,24 +450,24 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: "media";
+        relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: "pages";
+        relationTo: 'pages';
         value: number | Page;
       } | null)
     | ({
-        relationTo: "blog-posts";
+        relationTo: 'blog-posts';
         value: number | BlogPost;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -493,7 +480,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
@@ -759,7 +746,11 @@ export interface Home {
     image?: (number | null) | Media;
   };
   publishedAt?: string | null;
-  _status?: ("draft" | "published") | null;
+  /**
+   * Automatically set
+   */
+  url?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -780,7 +771,11 @@ export interface Blog {
     image?: (number | null) | Media;
   };
   publishedAt?: string | null;
-  _status?: ("draft" | "published") | null;
+  /**
+   * Automatically set
+   */
+  url?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -796,13 +791,16 @@ export interface Navigation {
         text: string;
         customHref?: boolean | null;
         href?: string | null;
+        linkType?:
+          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+          | null;
         page?:
           | ({
-              relationTo: "pages";
+              relationTo: 'pages';
               value: number | Page;
             } | null)
           | ({
-              relationTo: "blog-posts";
+              relationTo: 'blog-posts';
               value: number | BlogPost;
             } | null);
         newTab?: boolean | null;
@@ -813,13 +811,16 @@ export interface Navigation {
               text: string;
               customHref?: boolean | null;
               href?: string | null;
+              linkType?:
+                | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+                | null;
               page?:
                 | ({
-                    relationTo: "pages";
+                    relationTo: 'pages';
                     value: number | Page;
                   } | null)
                 | ({
-                    relationTo: "blog-posts";
+                    relationTo: 'blog-posts';
                     value: number | BlogPost;
                   } | null);
               newTab?: boolean | null;
@@ -849,10 +850,23 @@ export interface Footer {
     text?: string | null;
     href?: string | null;
   };
-  footerLinks?:
+  links?:
     | {
-        text?: string | null;
+        text: string;
+        customHref?: boolean | null;
         href?: string | null;
+        linkType?:
+          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+          | null;
+        page?:
+          | ({
+              relationTo: 'pages';
+              value: number | Page;
+            } | null)
+          | ({
+              relationTo: 'blog-posts';
+              value: number | BlogPost;
+            } | null);
         newTab?: boolean | null;
         id?: string | null;
       }[]
@@ -878,13 +892,27 @@ export interface PrivacyPolicy {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
     [k: string]: unknown;
   } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  publishedAt?: string | null;
+  /**
+   * Automatically set
+   */
+  url?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -902,13 +930,27 @@ export interface CookiePolicy {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
     [k: string]: unknown;
   } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  publishedAt?: string | null;
+  /**
+   * Automatically set
+   */
+  url?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -926,13 +968,27 @@ export interface TermsAndCondition {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
     [k: string]: unknown;
   } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  publishedAt?: string | null;
+  /**
+   * Automatically set
+   */
+  url?: string | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -955,6 +1011,7 @@ export interface HomeSelect<T extends boolean = true> {
         image?: T;
       };
   publishedAt?: T;
+  url?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -975,6 +1032,7 @@ export interface BlogSelect<T extends boolean = true> {
         image?: T;
       };
   publishedAt?: T;
+  url?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -992,6 +1050,7 @@ export interface NavigationSelect<T extends boolean = true> {
         text?: T;
         customHref?: T;
         href?: T;
+        linkType?: T;
         page?: T;
         newTab?: T;
         dropdown?: T;
@@ -1002,6 +1061,7 @@ export interface NavigationSelect<T extends boolean = true> {
               text?: T;
               customHref?: T;
               href?: T;
+              linkType?: T;
               page?: T;
               newTab?: T;
               id?: T;
@@ -1034,11 +1094,14 @@ export interface FooterSelect<T extends boolean = true> {
         text?: T;
         href?: T;
       };
-  footerLinks?:
+  links?:
     | T
     | {
         text?: T;
+        customHref?: T;
         href?: T;
+        linkType?: T;
+        page?: T;
         newTab?: T;
         id?: T;
       };
@@ -1058,6 +1121,16 @@ export interface FooterSelect<T extends boolean = true> {
  */
 export interface PrivacyPolicySelect<T extends boolean = true> {
   content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  publishedAt?: T;
+  url?: T;
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1068,6 +1141,16 @@ export interface PrivacyPolicySelect<T extends boolean = true> {
  */
 export interface CookiePolicySelect<T extends boolean = true> {
   content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  publishedAt?: T;
+  url?: T;
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1078,6 +1161,16 @@ export interface CookiePolicySelect<T extends boolean = true> {
  */
 export interface TermsAndConditionsSelect<T extends boolean = true> {
   content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  publishedAt?: T;
+  url?: T;
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1088,9 +1181,9 @@ export interface TermsAndConditionsSelect<T extends boolean = true> {
  */
 export interface TaskSchedulePublish {
   input: {
-    type?: ("publish" | "unpublish") | null;
+    type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    global?: ("home" | "blog") | null;
+    global?: ('home' | 'blog' | 'privacyPolicy' | 'cookiePolicy' | 'termsAndConditions') | null;
     user?: (number | null) | User;
   };
   output?: unknown;
@@ -1103,6 +1196,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }
