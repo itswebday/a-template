@@ -1,7 +1,9 @@
-import { blockConfigs } from "@/blocks/config";
 import { authenticated, authenticatedOrPublished } from "@/access";
-import { URLField } from "@/fields";
-import { revalidatePage, revalidateDelete } from "@/hooks/revalidatePage";
+import { RichTextField, SlugField } from "@/fields";
+import {
+  revalidateBlogPost,
+  revalidateBlogPostDelete,
+} from "@/hooks/revalidateBlogPost";
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -9,12 +11,16 @@ import {
   OverviewField,
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
-import { getPreviewPathCollection } from "@/utils";
 import type { CollectionConfig } from "payload";
-import { DEFAULT_LOCALE, LOCALES } from "@/constants";
+import { getPreviewPathCollection } from "@/utils";
+import { DEFAULT_LOCALE } from "@/constants";
 
-export const Pages: CollectionConfig = {
-  slug: "pages",
+export const BlogPosts: CollectionConfig = {
+  slug: "blog-posts",
+  labels: {
+    singular: "Blog post",
+    plural: "Blog posts",
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -29,14 +35,14 @@ export const Pages: CollectionConfig = {
       url: ({ data, req }) =>
         getPreviewPathCollection({
           url: data?.url,
-          collection: "pages",
+          collection: "blog-posts",
           req,
         }),
     },
     preview: (data, { req }) =>
       getPreviewPathCollection({
         url: data?.url as string,
-        collection: "pages",
+        collection: "blog-posts",
         req,
       }),
   },
@@ -49,18 +55,24 @@ export const Pages: CollectionConfig = {
       localized: true,
     },
     {
+      name: "minRead",
+      label: "Reading time (minutes)",
+      type: "number",
+      defaultValue: 5,
+    },
+    {
       type: "tabs",
       tabs: [
         {
           label: "Content",
           fields: [
             {
-              name: "blocks",
-              label: "Blocks",
-              type: "blocks",
-              blocks: blockConfigs,
-              defaultValue: [],
+              name: "image",
+              label: "Image",
+              type: "upload",
+              relationTo: "media",
             },
+            RichTextField({ name: "content", label: "Content" }),
           ],
         },
         {
@@ -107,57 +119,43 @@ export const Pages: CollectionConfig = {
         ],
       },
     },
-    URLField({ label: "Page URL" }),
+    SlugField({ readOnly: true }),
     {
-      name: "urlWithoutLocale",
-      label: "URL without locale",
+      name: "url",
+      label: "URL",
       type: "text",
       localized: true,
       admin: {
         readOnly: true,
         position: "sidebar",
-        description:
-          "Automatically generated from URL field without locale prefix",
+        description: "Automatically generated from the slug field",
       },
       hooks: {
         beforeChange: [
           ({ data, req }) => {
-            const url = data?.url;
+            const slug = data?.slug;
             const locale = req?.locale || DEFAULT_LOCALE;
 
-            if (!url) {
-              return "";
-            }
+            if (slug) {
+              const slugValue = Array.isArray(slug) ? slug[0] : slug;
 
-            const urlValue = Array.isArray(url) ? url[0] : url;
+              if (slugValue && typeof slugValue === "string") {
+                const basePath = `/blog/${slugValue}`;
 
-            if (!urlValue || typeof urlValue !== "string") {
-              return "";
-            }
-
-            if (locale === DEFAULT_LOCALE) {
-              return urlValue;
-            }
-
-            for (const loc of LOCALES) {
-              if (loc !== DEFAULT_LOCALE && urlValue.startsWith(`/${loc}/`)) {
-                return urlValue.slice(`/${loc}`.length);
-              }
-
-              if (loc !== DEFAULT_LOCALE && urlValue === `/${loc}`) {
-                return "/";
+                return locale === DEFAULT_LOCALE
+                  ? basePath
+                  : `/${locale}${basePath}`;
               }
             }
-
-            return urlValue;
+            return "";
           },
         ],
       },
     },
   ],
   hooks: {
-    afterChange: [revalidatePage],
-    afterDelete: [revalidateDelete],
+    afterChange: [revalidateBlogPost],
+    afterDelete: [revalidateBlogPostDelete],
   },
   versions: {
     drafts: {

@@ -9,7 +9,13 @@ export const getPreviewPathGlobal = async ({
   global: string;
 }) => {
   const locale = req?.locale || DEFAULT_LOCALE;
-  const path = locale === DEFAULT_LOCALE ? "/" : `/${locale}`;
+  let basePath = "/";
+
+  if (global === "blog") {
+    basePath = "/blog";
+  }
+
+  const path = locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
   const encodedParams = new URLSearchParams({
     global: global,
     path: path,
@@ -25,7 +31,7 @@ export const getPreviewPathCollection = ({
   url,
 }: {
   req: PayloadRequest;
-  collection: "pages";
+  collection: "pages" | "blog-posts";
   url: string | string[];
 }) => {
   if (url === undefined || url === null) {
@@ -34,7 +40,12 @@ export const getPreviewPathCollection = ({
 
   const locale = req?.locale || DEFAULT_LOCALE;
   const urlValue = Array.isArray(url) ? url[0] : url;
-  const basePath = urlValue === null || !urlValue ? "/" : urlValue;
+  let basePath = urlValue === null || !urlValue ? "/" : urlValue;
+
+  if (collection === "blog-posts" && basePath !== "/") {
+    basePath = `/blog${basePath}`;
+  }
+
   const path = locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
   const encodedParams = new URLSearchParams({
     collection: collection,

@@ -11,7 +11,7 @@ layer(base);
   --breakpoint-me: 1100px;
   --breakpoint-mx: 2000px;
 
-  --height-nav-bar: 64px;
+  --height-nav-bar: 80px;
 
   --animate-fade-in: fadeIn 0.3s ease-in 0.2s forwards;
 

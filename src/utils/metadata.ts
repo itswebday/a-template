@@ -34,12 +34,12 @@ export const getMetadata = async (args: {
       : "/";
 
   return {
-    title,
-    description,
+    title: doc?.meta?.title,
+    description: doc?.meta?.description,
     openGraph: {
       type: "website",
-      title: title,
-      description: description,
+      title: doc?.meta?.title || "",
+      description: doc?.meta?.description ?? undefined,
       images: ogImage ? [{ url: ogImage }] : undefined,
       url: url,
     },

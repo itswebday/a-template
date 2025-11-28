@@ -13,7 +13,7 @@ const HamburgerButton: React.FC<HamburgerButtonProps> = ({ className }) => {
   return (
     <button
       className={`
-        flex-col justify-between h-nav-bar aspect-square px-5 py-[23px]
+        flex-col justify-between w-16 h-nav-bar px-5 py-8
         ${className}
       `}
       onClick={navMenu.toggle}

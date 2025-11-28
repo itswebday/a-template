@@ -83,7 +83,7 @@ export const RichTextField = ({
                 name: "page",
                 label: "Page",
                 type: "relationship",
-                relationTo: ["pages"],
+                relationTo: ["pages", "blog-posts"],
                 required: true,
                 admin: {
                   condition: (_, siblingData) => !siblingData?.customHref,

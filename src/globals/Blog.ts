@@ -1,0 +1,106 @@
+import { authenticated, authenticatedOrPublished } from "@/access";
+import { revalidateBlog } from "@/hooks/revalidateBlog";
+import { getPreviewPathGlobal } from "@/utils/preview";
+import {
+  MetaDescriptionField,
+  MetaImageField,
+  MetaTitleField,
+  OverviewField,
+  PreviewField,
+} from "@payloadcms/plugin-seo/fields";
+import type { GlobalConfig } from "payload";
+
+export const Blog: GlobalConfig = {
+  slug: "blog",
+  label: "Blog",
+  access: {
+    read: authenticatedOrPublished,
+    update: authenticated,
+  },
+  admin: {
+    group: "Pages",
+    livePreview: {
+      url: async ({ req }) =>
+        await getPreviewPathGlobal({ req, global: "blog" }),
+    },
+    preview: async (_data, { req }) =>
+      await getPreviewPathGlobal({ req, global: "blog" }),
+  },
+  fields: [
+    {
+      type: "tabs",
+      tabs: [
+        {
+          label: "Content",
+          fields: [
+            {
+              name: "heading",
+              label: "Heading",
+              type: "text",
+              localized: true,
+            },
+            {
+              name: "paragraph",
+              label: "Paragraph",
+              type: "textarea",
+              localized: true,
+            },
+          ],
+        },
+        {
+          name: "meta",
+          label: "SEO",
+          fields: [
+            OverviewField({
+              titlePath: "meta.title",
+              descriptionPath: "meta.description",
+              imagePath: "meta.image",
+            }),
+            MetaTitleField({}),
+            MetaDescriptionField({}),
+            MetaImageField({
+              relationTo: "media",
+            }),
+            PreviewField({
+              titlePath: "meta.title",
+              descriptionPath: "meta.description",
+            }),
+          ],
+        },
+      ],
+    },
+    {
+      name: "publishedAt",
+      type: "date",
+      admin: {
+        date: {
+          pickerAppearance: "dayAndTime",
+          displayFormat: "dd-MM-yyyy HH:mm",
+        },
+        position: "sidebar",
+      },
+      hooks: {
+        beforeChange: [
+          ({ siblingData, value }) => {
+            if (siblingData._status === "published" && !value) {
+              return new Date();
+            }
+            return value;
+          },
+        ],
+      },
+    },
+  ],
+  hooks: {
+    afterChange: [revalidateBlog],
+  },
+  versions: {
+    drafts: {
+      autosave: {
+        interval: 100,
+      },
+      schedulePublish: true,
+    },
+    max: 50,
+  },
+};

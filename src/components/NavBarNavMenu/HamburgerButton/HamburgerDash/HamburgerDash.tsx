@@ -12,11 +12,11 @@ const HamburgerDash: React.FC<HamburgerDashProps> = ({ dashIndex }) => {
   return (
     <div
       className={`
-        w-full h-[2px] bg-white rounded-full duration-500
+        w-full h-0.5 bg-white duration-300
         ${
           dashIndex === 0
             ? navMenu.isOpen && !navMenu.isClosing
-              ? "rotate-45 translate-y-[7.5px] transition-transform"
+              ? "rotate-45 translate-y-[7px] transition-transform"
               : ""
             : ""
         }
@@ -30,7 +30,7 @@ const HamburgerDash: React.FC<HamburgerDashProps> = ({ dashIndex }) => {
         ${
           dashIndex === 2
             ? navMenu.isOpen && !navMenu.isClosing
-              ? "-rotate-45 -translate-y-[7.5px] transition-transform"
+              ? "-rotate-45 -translate-y-[7px] transition-transform"
               : ""
             : ""
         }

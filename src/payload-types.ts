@@ -70,6 +70,7 @@ export interface Config {
     media: Media;
     users: User;
     pages: Page;
+    "blog-posts": BlogPost;
     "payload-kv": PayloadKv;
     "payload-jobs": PayloadJob;
     "payload-locked-documents": PayloadLockedDocument;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    "blog-posts": BlogPostsSelect<false> | BlogPostsSelect<true>;
     "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
     "payload-jobs": PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     "payload-locked-documents":
@@ -104,6 +106,7 @@ export interface Config {
     | ("en" | "nl")[];
   globals: {
     home: Home;
+    blog: Blog;
     navigation: Navigation;
     footer: Footer;
     privacyPolicy: PrivacyPolicy;
@@ -112,6 +115,7 @@ export interface Config {
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     privacyPolicy: PrivacyPolicySelect<false> | PrivacyPolicySelect<true>;
@@ -251,9 +255,13 @@ export interface Page {
   };
   publishedAt?: string | null;
   /**
-   * URL path for this page (e.g., /about or /services/websites)
+   * URL path for the page (e.g., /about or /nl/diensten/websites)
    */
   url?: string | null;
+  /**
+   * Automatically generated from URL field without locale prefix
+   */
+  urlWithoutLocale?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ("draft" | "published") | null;
@@ -292,6 +300,51 @@ export interface WhiteSpaceBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: "whiteSpace";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number;
+  title: string;
+  minRead?: number | null;
+  image?: (number | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  publishedAt?: string | null;
+  /**
+   * Automatically generated from the title field
+   */
+  slug?: string | null;
+  /**
+   * Automatically generated from the slug field
+   */
+  url?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ("draft" | "published") | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -420,6 +473,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: "pages";
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: "blog-posts";
+        value: number | BlogPost;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -568,6 +625,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   publishedAt?: T;
   url?: T;
+  urlWithoutLocale?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -590,6 +648,29 @@ export interface TextAndImageBlockSelect<T extends boolean = true> {
 export interface WhiteSpaceBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  title?: T;
+  minRead?: T;
+  image?: T;
+  content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  publishedAt?: T;
+  slug?: T;
+  url?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -684,6 +765,27 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog".
+ */
+export interface Blog {
+  id: number;
+  heading?: string | null;
+  paragraph?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  publishedAt?: string | null;
+  _status?: ("draft" | "published") | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navigation".
  */
 export interface Navigation {
@@ -694,10 +796,15 @@ export interface Navigation {
         text: string;
         customHref?: boolean | null;
         href?: string | null;
-        page?: {
-          relationTo: "pages";
-          value: number | Page;
-        } | null;
+        page?:
+          | ({
+              relationTo: "pages";
+              value: number | Page;
+            } | null)
+          | ({
+              relationTo: "blog-posts";
+              value: number | BlogPost;
+            } | null);
         newTab?: boolean | null;
         dropdown?: boolean | null;
         clickable?: boolean | null;
@@ -706,10 +813,15 @@ export interface Navigation {
               text: string;
               customHref?: boolean | null;
               href?: string | null;
-              page?: {
-                relationTo: "pages";
-                value: number | Page;
-              } | null;
+              page?:
+                | ({
+                    relationTo: "pages";
+                    value: number | Page;
+                  } | null)
+                | ({
+                    relationTo: "blog-posts";
+                    value: number | BlogPost;
+                  } | null);
               newTab?: boolean | null;
               id?: string | null;
             }[]
@@ -850,6 +962,26 @@ export interface HomeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog_select".
+ */
+export interface BlogSelect<T extends boolean = true> {
+  heading?: T;
+  paragraph?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  publishedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navigation_select".
  */
 export interface NavigationSelect<T extends boolean = true> {
@@ -958,7 +1090,7 @@ export interface TaskSchedulePublish {
   input: {
     type?: ("publish" | "unpublish") | null;
     locale?: string | null;
-    global?: "home" | null;
+    global?: ("home" | "blog") | null;
     user?: (number | null) | User;
   };
   output?: unknown;

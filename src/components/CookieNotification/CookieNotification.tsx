@@ -38,7 +38,7 @@ const CookieNotification: React.FC<CookieNotificationProps> = ({
   return (
     <div
       className={`
-        z-100 fixed left-0 right-0 bottom-0 bg-white
+        z-50 fixed left-0 right-0 bottom-0 bg-white
         border-t border-gray-200 shadow-md
         ${className}
       `}
@@ -47,7 +47,7 @@ const CookieNotification: React.FC<CookieNotificationProps> = ({
       <div
         className={`
           flex flex-col justify-between items-start gap-4
-          w-11/12 max-w-300 py-4 mx-auto
+          w-11/12 max-w-300 py-4 mx-auto text-[14px]
           md:flex-row md:items-center
         `}
       >

@@ -8,8 +8,5 @@ export const Users: CollectionConfig = {
     group: "Database",
   },
   auth: true,
-  fields: [
-    // Email added by default
-    // Add more fields as needed
-  ],
+  fields: [],
 };

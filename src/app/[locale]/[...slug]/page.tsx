@@ -21,26 +21,32 @@ export const generateStaticParams = async () => {
     for (const locale of LOCALES) {
       const pages = await payload.find({
         collection: "pages",
-        draft: false,
-        limit: 1000,
-        overrideAccess: false,
-        pagination: false,
-        locale,
+        locale: locale,
         select: {
-          url: true,
+          urlWithoutLocale: true,
         },
+        limit: 1000,
+        pagination: false,
+        draft: false,
+        overrideAccess: false,
       });
 
       pages.docs?.forEach((doc) => {
-        const url = Array.isArray(doc.url) ? doc.url[0] : doc.url;
+        const urlWithoutLocale = Array.isArray(doc.urlWithoutLocale)
+          ? doc.urlWithoutLocale[0]
+          : doc.urlWithoutLocale;
 
-        if (url === null || !url || url === "/") {
+        if (
+          urlWithoutLocale === null ||
+          !urlWithoutLocale ||
+          urlWithoutLocale === "/"
+        ) {
           return;
         }
 
-        const slug = url.startsWith("/")
-          ? url.slice(1).split("/")
-          : url.split("/");
+        const slug = urlWithoutLocale.startsWith("/")
+          ? urlWithoutLocale.slice(1).split("/")
+          : urlWithoutLocale.split("/");
         params.push({ locale, slug });
       });
     }
@@ -66,7 +72,10 @@ type PageProps = {
 const PageComponent = async ({ params }: PageProps) => {
   const { locale = DEFAULT_LOCALE, slug } = await params;
   const draft = await draftMode();
-  const urlPath = slug && slug.length > 0 ? `/${slug.join("/")}` : "/";
+  const urlPath =
+    slug && slug.length > 0
+      ? `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/${slug.join("/")}`
+      : "/";
   const page = await queryPageByUrl({
     url: urlPath,
     locale: locale as LocaleOption,

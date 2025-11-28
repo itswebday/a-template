@@ -25,7 +25,7 @@ const HomeLayout = async ({
           <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
         </head>
 
-        <body className="font-open-sans">
+        <body className="text-[15px] font-open-sans">
           <PageProvider initialPage="home">
             <NavMenuProvider>
               <PreviewListener />

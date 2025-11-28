@@ -1,17 +1,20 @@
-import { Field } from "payload";
+import { DEFAULT_LOCALE } from "@/constants";
+import type { Field } from "payload";
 
 type URLFieldProps = {
   name?: string;
   label?: string;
   description?: string;
   sidebar?: boolean;
+  generatedFrom?: string;
 };
 
 export const URLField = ({
   name = "url",
   label = "URL",
-  description = "URL path for this page (e.g., /about or /services/websites)",
+  description = "URL path for the page (e.g., /about or /nl/diensten/websites)",
   sidebar = true,
+  generatedFrom = "title",
 }: URLFieldProps): Field => ({
   name: name,
   label: label,
@@ -58,28 +61,48 @@ export const URLField = ({
   },
   hooks: {
     beforeValidate: [
-      ({ value }) => {
-        if (!value || typeof value !== "string" || value.trim() === "") {
-          return value;
+      ({ value, data, req }) => {
+        if (value && typeof value === "string" && value.trim() !== "") {
+          let normalized = value.trim();
+
+          if (!normalized.startsWith("/")) {
+            normalized = `/${normalized}`;
+          }
+
+          if (normalized.endsWith("/")) {
+            normalized = normalized.slice(0, -1);
+          }
+
+          normalized = normalized.replace(/(?<!^)\/+/g, "/");
+
+          if (normalized === "/") {
+            return "";
+          }
+
+          return normalized;
         }
 
-        let normalized = value.trim();
+        const source = data?.[generatedFrom] || "";
 
-        if (!normalized.startsWith("/")) {
-          normalized = `/${normalized}`;
-        }
-
-        if (normalized.endsWith("/")) {
-          normalized = normalized.slice(0, -1);
-        }
-
-        normalized = normalized.replace(/(?<!^)\/+/g, "/");
-
-        if (normalized === "/") {
+        if (!source || typeof source !== "string") {
           return "";
         }
 
-        return normalized;
+        const slug = source
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+
+        if (!slug) {
+          return "";
+        }
+
+        const basePath = `/${slug}`;
+        const locale = req?.locale || DEFAULT_LOCALE;
+
+        return locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
       },
     ],
   },

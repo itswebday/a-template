@@ -7,10 +7,5 @@ export const CookiePolicy: GlobalConfig = {
   admin: {
     group: "Legal",
   },
-  fields: [
-    RichTextField({
-      name: "content",
-      label: "Content",
-    }),
-  ],
+  fields: [RichTextField({ name: "content", label: "Content" })],
 };

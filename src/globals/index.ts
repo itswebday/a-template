@@ -1,3 +1,4 @@
+export { Blog } from "./Blog";
 export { CookiePolicy } from "./CookiePolicy";
 export { Footer } from "./Footer";
 export { Home } from "./Home";

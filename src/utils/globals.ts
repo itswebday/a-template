@@ -13,6 +13,7 @@ export const getGlobal = async <GlobalType extends Global>(
 ) => {
   const payload = await getPayload({ config: configPromise });
   const allowedSlugs = [
+    "blog",
     "cookiePolicy",
     "footer",
     "navigation",

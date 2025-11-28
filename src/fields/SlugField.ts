@@ -30,12 +30,12 @@ export const SlugField = ({
   },
   hooks: {
     beforeValidate: [
-      ({ value, data }) => {
-        if (value) {
-          return value;
-        }
-
+      ({ data }) => {
         const source = data?.[generatedFrom] || "";
+
+        if (!source || typeof source !== "string") {
+          return "";
+        }
 
         return source
           .toLowerCase()

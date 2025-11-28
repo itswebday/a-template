@@ -24,7 +24,18 @@ const baseConfig = {
         hostname: "localhost",
         pathname: "/api/media/file/**",
       },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        pathname: "/api/media/file/**",
+      },
+      {
+        protocol: "http",
+        hostname: "::1",
+        pathname: "/api/media/file/**",
+      },
     ],
+    unoptimized: process.env.NODE_ENV === "development",
   },
 
   webpack: (webpackConfig) => {

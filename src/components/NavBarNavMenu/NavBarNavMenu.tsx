@@ -23,8 +23,8 @@ const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
     customHref?: boolean | null;
     href?: string | null;
     page?: {
-      relationTo: "pages";
-      value: number | { url?: string | null } | null;
+      relationTo: "pages" | "blog-posts";
+      value: number | { url?: string | null; slug?: string | null } | null;
     } | null;
   }): string => {
     if (link.customHref) {
@@ -37,7 +37,8 @@ const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
         "url" in pageValue
           ? pageValue.url || ""
           : "";
-      return `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}${pageUrl}`;
+
+      return pageUrl;
     }
   };
 
@@ -69,7 +70,7 @@ const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
         `}
       >
         {/* Logo */}
-        <LogoLink className="z-95 w-14" src={logoUrl} alt={logoAlt} />
+        <LogoLink className="z-95 w-16" src={logoUrl} alt={logoAlt} />
 
         {/* Navigation bar (desktop) */}
         <NavBar className="hidden ml-auto de:flex" links={links} />
