@@ -1,7 +1,7 @@
 "use server";
 
 import FooterLink from "./FooterLink";
-import type { LocaleOption } from "@/types";
+import type { LinkType, LocaleOption } from "@/types";
 import { getLinkHref } from "@/utils";
 import { getGlobal } from "@/utils/server";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -22,9 +22,9 @@ const Footer: React.FC<FooterProps> = async () => {
       getGlobal("footer", locale),
       getGlobal("home", locale),
       getGlobal("blog", locale),
-      getGlobal("privacyPolicy", locale),
-      getGlobal("cookiePolicy", locale),
-      getGlobal("termsAndConditions", locale),
+      getGlobal("privacy-policy", locale),
+      getGlobal("cookie-policy", locale),
+      getGlobal("terms-and-conditions", locale),
     ]);
   const globals = {
     home,
@@ -103,17 +103,16 @@ const Footer: React.FC<FooterProps> = async () => {
                     text?: string | null;
                     customHref?: boolean | null;
                     href?: string | null;
-                    linkType?:
-                      | "page"
-                      | "home"
-                      | "blog"
-                      | "blog-post"
-                      | "privacy-policy"
-                      | "cookie-policy"
-                      | "terms-and-conditions"
-                      | null;
+                    linkType?: LinkType | null;
                     page?: {
-                      relationTo: "pages" | "blog-posts";
+                      relationTo: "pages";
+                      value:
+                        | number
+                        | { url?: string | null; slug?: string | null }
+                        | null;
+                    } | null;
+                    blogPost?: {
+                      relationTo: "blog-posts";
                       value:
                         | number
                         | { url?: string | null; slug?: string | null }

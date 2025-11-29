@@ -1,6 +1,5 @@
 import type { FieldHook, GlobalBeforeChangeHook } from "payload";
 
-// Field-level hook for publishedAt field in globals
 export const populatePublishedAtGlobalField: FieldHook = ({
   siblingData,
   value,
@@ -11,7 +10,6 @@ export const populatePublishedAtGlobalField: FieldHook = ({
   return value;
 };
 
-// Global-level hook (kept for backward compatibility if needed)
 export const populatePublishedAtGlobal: GlobalBeforeChangeHook = ({
   data,
   req,

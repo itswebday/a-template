@@ -24,9 +24,9 @@ export const getGlobal = async <GlobalType extends Global>(
         "navigation",
         "footer",
         "blog",
-        "privacyPolicy",
-        "cookiePolicy",
-        "termsAndConditions",
+        "privacy-policy",
+        "cookie-policy",
+        "terms-and-conditions",
       ].includes(slug)
         ? true
         : false,

@@ -5,7 +5,7 @@ export const Footer: GlobalConfig = {
   slug: "footer",
   label: "Footer",
   admin: {
-    group: "Content",
+    group: "General",
   },
   fields: [
     {

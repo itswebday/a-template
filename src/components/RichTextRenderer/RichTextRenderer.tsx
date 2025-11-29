@@ -19,9 +19,9 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
     await Promise.all([
       getGlobal("home", locale),
       getGlobal("blog", locale),
-      getGlobal("privacyPolicy", locale),
-      getGlobal("cookiePolicy", locale),
-      getGlobal("termsAndConditions", locale),
+      getGlobal("privacy-policy", locale),
+      getGlobal("cookie-policy", locale),
+      getGlobal("terms-and-conditions", locale),
     ]);
   const globals = {
     home,
@@ -161,6 +161,9 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
 
       case "link": {
         const pageField = blockNode.fields?.page;
+        const blogPostField = (
+          blockNode.fields as { blogPost?: { value: { url: string } } }
+        )?.blogPost;
         const href = getLinkHref(
           {
             customHref: blockNode.fields?.customHref,
@@ -170,6 +173,12 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
               ? {
                   relationTo: "pages" as const,
                   value: pageField.value,
+                }
+              : null,
+            blogPost: blogPostField
+              ? {
+                  relationTo: "blog-posts" as const,
+                  value: blogPostField.value,
                 }
               : null,
           },
@@ -221,9 +230,10 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         }
 
         if ((format & 16) !== 0) {
-          classes.push(
-            "font-mono text-sm bg-gray-100 text-gray-900 px-1.5 py-0.5 rounded-md border border-gray-200",
-          );
+          classes.push(`
+            font-mono text-sm bg-gray-100 text-gray-900 px-1.5 py-0.5
+            rounded-md border border-gray-200
+          `);
         }
         if ((format & 32) !== 0) {
           classes.push("align-sub text-[70%] pl-0.5 pt-0.5");

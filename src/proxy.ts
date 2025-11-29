@@ -6,5 +6,5 @@ const proxy = createMiddleware(routing);
 export default proxy;
 
 export const config = {
-  matcher: "/((?!api|trpc|_next|_vercel|admin|.*\\..*).*)",
+  matcher: "/((?!api|trpc|_next|_vercel|admin|\\.well-known|.*\\..*).*)",
 };

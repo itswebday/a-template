@@ -46,7 +46,6 @@ export const getCollection = async <CollectionType extends Collection>(
 
   const sortField = options?.sort?.field || "id";
   const sortDirection = options?.sort?.direction || "asc";
-
   const result = await payload.find({
     collection,
     locale,

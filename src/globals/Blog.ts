@@ -13,7 +13,7 @@ import type { GlobalConfig } from "payload";
 
 export const Blog: GlobalConfig = {
   slug: "blog",
-  label: "Blog",
+  label: "Blog overview page",
   access: {
     read: authenticatedOrPublished,
     update: authenticated,

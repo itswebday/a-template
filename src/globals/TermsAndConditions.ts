@@ -16,20 +16,20 @@ import {
 import type { GlobalConfig } from "payload";
 
 export const TermsAndConditions: GlobalConfig = {
-  slug: "termsAndConditions",
+  slug: "terms-and-conditions",
   label: "Terms and conditions",
   access: {
     read: authenticatedOrPublished,
     update: authenticated,
   },
   admin: {
-    group: "Legal",
+    group: "Legal pages",
     livePreview: {
       url: async ({ data }) =>
-        await getPreviewPathGlobal({ global: "termsAndConditions", data }),
+        await getPreviewPathGlobal({ global: "terms-and-conditions", data }),
     },
     preview: async (data) =>
-      await getPreviewPathGlobal({ global: "termsAndConditions", data }),
+      await getPreviewPathGlobal({ global: "terms-and-conditions", data }),
   },
   fields: [
     {

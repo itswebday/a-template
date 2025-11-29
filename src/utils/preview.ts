@@ -1,5 +1,5 @@
 import { PREVIEW_URL } from "@/constants";
-import type { PayloadRequest } from "payload";
+import type { CollectionSlug } from "payload";
 
 export const getPreviewPathGlobal = async ({
   global,
@@ -12,16 +12,13 @@ export const getPreviewPathGlobal = async ({
     return null;
   }
 
-  const urlValue = Array.isArray(data.url) ? data.url[0] : data.url;
-  if (!urlValue || typeof urlValue !== "string") {
+  if (!data.url || typeof data.url !== "string") {
     return null;
   }
 
-  const path = urlValue;
-
   const encodedParams = new URLSearchParams({
     global: global,
-    path: path,
+    path: data.url,
     previewSecret: process.env.PREVIEW_SECRET || "",
   });
 
@@ -29,30 +26,24 @@ export const getPreviewPathGlobal = async ({
 };
 
 export const getPreviewPathCollection = ({
-  req,
   collection,
   url,
 }: {
-  req: PayloadRequest;
-  collection: "pages" | "blog-posts";
-  url: string | string[];
+  collection: CollectionSlug;
+  url: string;
 }) => {
-  if (url === undefined || url === null) {
+  if (!url) {
     return null;
   }
 
-  const urlValue = Array.isArray(url) ? url[0] : url;
-  if (urlValue === null || !urlValue || typeof urlValue !== "string") {
+  if (!url || typeof url !== "string") {
     return null;
   }
-
-  // The URL from the collection already includes the locale prefix and /blog for blog posts
-  const path = urlValue;
 
   const encodedParams = new URLSearchParams({
     collection: collection,
-    url: urlValue,
-    path: path,
+    url: url,
+    path: url,
     previewSecret: process.env.PREVIEW_SECRET || "",
   });
 

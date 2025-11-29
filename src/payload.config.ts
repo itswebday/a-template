@@ -51,10 +51,10 @@ export default buildConfig({
   },
   collections: [Media, Users, Pages, BlogPosts],
   globals: [
-    Home,
-    Blog,
     Navigation,
     Footer,
+    Home,
+    Blog,
     PrivacyPolicy,
     CookiePolicy,
     TermsAndConditions,

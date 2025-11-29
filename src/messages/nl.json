@@ -3,7 +3,10 @@
     "cookieNotification": "Wij gebruiken cookies om uw ervaring te verbeteren en ons verkeer te analyseren. Door onze website te blijven gebruiken, stemt u in met ons gebruik van cookies. Voor meer informatie, lees ons",
     "cookiePolicy": "cookiebeleid",
     "accept": "Accepteren",
-    "decline": "Weigeren"
+    "decline": "Weigeren",
+    "errors": {
+      "localizedUrls": "Vertaalde URL's laden mislukt"
+    }
   },
 
   "home": {
@@ -13,25 +16,32 @@
 
   "blog": {
     "href": "/nl/blog",
-    "title": "Blog"
+    "title": "Blog",
+    "noPosts": "Nog geen blogposts.",
+    "readMore": "Lees meer",
+    "backToOverview": "Terug naar blogoverzicht",
+    "minRead": "min lezen",
+    "publishedOn": "Gepubliceerd op",
+    "blogNotFound": "Blog Post Niet Gevonden",
+    "sideBar": {
+      "heading": "Meer Artikelen",
+      "paragraph": "Ontdek meer interessante artikelen"
+    }
   },
 
   "privacyPolicy": {
     "href": "/nl/privacybeleid",
-    "title": "Privacybeleid",
-    "description": "Privacybeleid voor A Template."
+    "title": "Privacybeleid"
   },
 
   "cookiePolicy": {
     "title": "Cookiebeleid",
-    "href": "/nl/cookiebeleid",
-    "description": "Cookiebeleid voor A Template."
+    "href": "/nl/cookiebeleid"
   },
 
   "termsAndConditions": {
     "href": "/nl/algemene-voorwaarden",
-    "title": "Algemene voorwaarden",
-    "description": "Algemene voorwaarden voor A Template."
+    "title": "Algemene voorwaarden"
   },
 
   "pageNotFound": {

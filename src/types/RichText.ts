@@ -1,3 +1,5 @@
+import type { LinkType } from "./LinkType";
+
 type TextNode = {
   type: "text";
   text: string;
@@ -65,14 +67,7 @@ type LinkNode = {
     text: string;
     customHref: boolean;
     href?: string;
-    linkType?:
-      | "page"
-      | "home"
-      | "blog"
-      | "blog-post"
-      | "privacy-policy"
-      | "cookie-policy"
-      | "terms-and-conditions";
+    linkType?: LinkType;
     page?: {
       value: {
         url: string;

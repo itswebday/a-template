@@ -6,10 +6,8 @@ export const generateBlogPostUrl: FieldHook = ({ data, req }) => {
   const locale = req?.locale || DEFAULT_LOCALE;
 
   if (slug) {
-    const slugValue = Array.isArray(slug) ? slug[0] : slug;
-
-    if (slugValue && typeof slugValue === "string") {
-      const basePath = `/blog/${slugValue}`;
+    if (slug && typeof slug === "string") {
+      const basePath = `/blog/${slug}`;
 
       return locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
     }

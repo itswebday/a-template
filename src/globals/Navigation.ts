@@ -5,7 +5,7 @@ export const Navigation: GlobalConfig = {
   slug: "navigation",
   label: "Navigation",
   admin: {
-    group: "Content",
+    group: "General",
   },
   fields: [
     {

@@ -5,91 +5,50 @@ import configPromise from "@/payload.config";
 import type { Page } from "@/payload-types";
 import type { LocaleOption } from "@/types";
 import { getMetadata } from "@/utils/metadata";
-import { draftMode } from "next/headers";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import React from "react";
 
 export const dynamic = "force-dynamic";
 
-export const generateStaticParams = async () => {
-  try {
-    const payload = await getPayload({ config: configPromise });
-    const params: { locale: string; slug: string[] }[] = [];
-
-    for (const locale of LOCALES) {
-      const pages = await payload.find({
-        collection: "pages",
-        locale: locale,
-        select: {
-          urlWithoutLocale: true,
-        },
-        limit: 1000,
-        pagination: false,
-        draft: false,
-        overrideAccess: false,
-      });
-
-      pages.docs?.forEach((doc) => {
-        const urlWithoutLocale = Array.isArray(doc.urlWithoutLocale)
-          ? doc.urlWithoutLocale[0]
-          : doc.urlWithoutLocale;
-
-        if (
-          urlWithoutLocale === null ||
-          !urlWithoutLocale ||
-          urlWithoutLocale === "/"
-        ) {
-          return;
-        }
-
-        const slug = urlWithoutLocale.startsWith("/")
-          ? urlWithoutLocale.slice(1).split("/")
-          : urlWithoutLocale.split("/");
-        params.push({ locale, slug });
-      });
-    }
-
-    return params;
-  } catch (error) {
-    console.warn(
-      "Failed to generate static params for pages. Database migration needed.",
-      error,
-    );
-
-    return [];
-  }
-};
-
 type PageProps = {
   params: Promise<{
     locale: string;
-    slug: string[];
+    path: string[];
   }>;
 };
 
 const PageComponent = async ({ params }: PageProps) => {
-  const { locale = DEFAULT_LOCALE, slug } = await params;
+  const { locale = DEFAULT_LOCALE, path } = await params;
+
+  if (!LOCALES.includes(locale as LocaleOption)) {
+    return notFound();
+  }
+
   const draft = await draftMode();
-  const urlPath =
-    slug && slug.length > 0
-      ? `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/${slug.join("/")}`
-      : "/";
+  const url =
+    path && path.length > 0
+      ? `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/${path.join("/")}`
+      : locale === DEFAULT_LOCALE
+        ? "/"
+        : `/${locale}`;
   const page = await queryPageByUrl({
-    url: urlPath,
+    url: url,
     locale: locale as LocaleOption,
     draft: draft.isEnabled,
   });
 
-  if (!page) {
+  if (!page || !page.slug) {
     return notFound();
   }
 
-  const { blocks } = page;
+  const { blocks, slug } = page;
 
   return (
-    <PageWrapper pageLabel={urlPath} pageSlug={urlPath}>
+    <PageWrapper pageLabel="home" pageSlug={slug}>
       <main>
         {draft.isEnabled && <PreviewListener />}
         {blocks && Array.isArray(blocks) && blocks.length > 0 && (
@@ -117,15 +76,70 @@ export default PageComponent;
 export const generateMetadata = async ({
   params,
 }: PageProps): Promise<Metadata> => {
-  const { locale = DEFAULT_LOCALE, slug } = await params;
-  const urlPath = slug && slug.length > 0 ? `/${slug.join("/")}` : "/";
+  const { locale = DEFAULT_LOCALE, path } = await params;
+  const pageNotFoundT = await getTranslations("pageNotFound");
+
+  if (!LOCALES.includes(locale as LocaleOption)) {
+    return {
+      title: pageNotFoundT("title"),
+    };
+  }
+
+  const url =
+    path && path.length > 0
+      ? `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/${path.join("/")}`
+      : locale === DEFAULT_LOCALE
+        ? "/"
+        : `/${locale}`;
   const page = await queryPageByUrl({
-    url: urlPath,
+    url: url,
     locale: locale as LocaleOption,
     draft: false,
   });
 
   return getMetadata({ doc: page, locale });
+};
+
+export const generateStaticParams = async () => {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const params: { locale: string; path: string[] }[] = [];
+
+    for (const locale of LOCALES) {
+      const pages = await payload.find({
+        collection: "pages",
+        locale: locale,
+        select: {
+          urlWithoutLocale: true,
+        },
+        limit: 1000,
+        pagination: false,
+        draft: false,
+        overrideAccess: false,
+      });
+
+      pages.docs?.forEach((doc) => {
+        if (
+          doc.urlWithoutLocale === null ||
+          !doc.urlWithoutLocale ||
+          doc.urlWithoutLocale === "/"
+        ) {
+          return;
+        }
+
+        params.push({ locale, path: doc.urlWithoutLocale.slice(1).split("/") });
+      });
+    }
+
+    return params;
+  } catch (error) {
+    console.warn(
+      "Failed to generate static params for pages. Database migration needed.",
+      error,
+    );
+
+    return [];
+  }
 };
 
 const queryPageByUrl = async ({
@@ -140,11 +154,7 @@ const queryPageByUrl = async ({
   const payload = await getPayload({ config: configPromise });
   const result = await payload.find({
     collection: "pages",
-    draft,
-    limit: 1,
-    overrideAccess: draft,
-    pagination: false,
-    locale,
+    locale: locale,
     where: {
       and: [
         {
@@ -155,6 +165,10 @@ const queryPageByUrl = async ({
         ...(draft ? [] : [{ _status: { equals: "published" } }]),
       ],
     },
+    limit: 1,
+    pagination: false,
+    draft: draft,
+    overrideAccess: draft,
   });
 
   return (result.docs?.[0] as Page) || null;

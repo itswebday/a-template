@@ -26,7 +26,7 @@ const HomeLayout = async ({
         </head>
 
         <body className="text-[15px] font-open-sans">
-          <PageProvider initialPage="home">
+          <PageProvider initialPage="">
             <NavMenuProvider>
               <PreviewListener />
               <NavBarNavMenu />

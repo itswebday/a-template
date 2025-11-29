@@ -14,7 +14,7 @@ import type { GlobalConfig } from "payload";
 
 export const Home: GlobalConfig = {
   slug: "home",
-  label: "Home",
+  label: "Home page",
   access: {
     read: authenticatedOrPublished,
     update: authenticated,

@@ -1,11 +1,12 @@
 import { PageWrapper, PreviewListener } from "@/components";
 import { blockComponents } from "@/blocks";
-import { DEFAULT_LOCALE } from "@/constants";
+import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 import type { LocaleOption } from "@/types";
-import { getGlobal } from "@/utils/globals";
-import { getMetadata } from "@/utils/metadata";
-import { draftMode } from "next/headers";
+import { getGlobal, getMetadata } from "@/utils/server";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,11 @@ type HomePageProps = {
 const HomePage = async ({ params }: HomePageProps) => {
   const draft = await draftMode();
   const { locale = DEFAULT_LOCALE } = await params;
+
+  if (!LOCALES.includes(locale as LocaleOption)) {
+    return notFound();
+  }
+
   const homepage = await getGlobal(
     "home",
     locale as LocaleOption,
@@ -56,6 +62,13 @@ export const generateMetadata = async ({
   params,
 }: HomePageProps): Promise<Metadata> => {
   const { locale = DEFAULT_LOCALE } = await params;
+  const pageNotFoundT = await getTranslations("pageNotFound");
+
+  if (!LOCALES.includes(locale as LocaleOption)) {
+    return {
+      title: pageNotFoundT("title"),
+    };
+  }
   const homepage = await getGlobal("home", locale as LocaleOption, false);
 
   return getMetadata({ doc: homepage, locale });

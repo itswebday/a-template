@@ -15,7 +15,7 @@ export const Media: CollectionConfig = {
     update: authenticated,
   },
   admin: {
-    group: "Database",
+    group: "General",
   },
   fields: [
     {

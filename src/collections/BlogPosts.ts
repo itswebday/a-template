@@ -32,18 +32,16 @@ export const BlogPosts: CollectionConfig = {
     defaultColumns: ["title", "url", "updatedAt"],
     group: "Pages",
     livePreview: {
-      url: ({ data, req }) =>
+      url: ({ data }) =>
         getPreviewPathCollection({
           url: data?.url,
           collection: "blog-posts",
-          req,
         }),
     },
-    preview: (data, { req }) =>
+    preview: (data) =>
       getPreviewPathCollection({
         url: data?.url as string,
         collection: "blog-posts",
-        req,
       }),
   },
   fields: [

@@ -26,9 +26,9 @@ const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
     getGlobal("navigation", locale),
     getGlobal("home", locale),
     getGlobal("blog", locale),
-    getGlobal("privacyPolicy", locale),
-    getGlobal("cookiePolicy", locale),
-    getGlobal("termsAndConditions", locale),
+    getGlobal("privacy-policy", locale),
+    getGlobal("cookie-policy", locale),
+    getGlobal("terms-and-conditions", locale),
   ]);
   const { url: logoUrl, alt: logoAlt } = getMediaUrlAndAlt(navigation?.logo);
   const globals = {

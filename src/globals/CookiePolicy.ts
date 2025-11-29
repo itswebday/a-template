@@ -16,20 +16,20 @@ import {
 import type { GlobalConfig } from "payload";
 
 export const CookiePolicy: GlobalConfig = {
-  slug: "cookiePolicy",
+  slug: "cookie-policy",
   label: "Cookie policy",
   access: {
     read: authenticatedOrPublished,
     update: authenticated,
   },
   admin: {
-    group: "Legal",
+    group: "Legal pages",
     livePreview: {
       url: async ({ data }) =>
-        await getPreviewPathGlobal({ global: "cookiePolicy", data }),
+        await getPreviewPathGlobal({ global: "cookie-policy", data }),
     },
     preview: async (data) =>
-      await getPreviewPathGlobal({ global: "cookiePolicy", data }),
+      await getPreviewPathGlobal({ global: "cookie-policy", data }),
   },
   fields: [
     {

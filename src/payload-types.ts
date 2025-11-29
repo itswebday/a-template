@@ -94,22 +94,22 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'nl') | ('en' | 'nl')[];
   globals: {
-    home: Home;
-    blog: Blog;
     navigation: Navigation;
     footer: Footer;
-    privacyPolicy: PrivacyPolicy;
-    cookiePolicy: CookiePolicy;
-    termsAndConditions: TermsAndCondition;
+    home: Home;
+    blog: Blog;
+    'privacy-policy': PrivacyPolicy;
+    'cookie-policy': CookiePolicy;
+    'terms-and-conditions': TermsAndCondition;
   };
   globalsSelect: {
-    home: HomeSelect<false> | HomeSelect<true>;
-    blog: BlogSelect<false> | BlogSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
-    privacyPolicy: PrivacyPolicySelect<false> | PrivacyPolicySelect<true>;
-    cookiePolicy: CookiePolicySelect<false> | CookiePolicySelect<true>;
-    termsAndConditions: TermsAndConditionsSelect<false> | TermsAndConditionsSelect<true>;
+    home: HomeSelect<false> | HomeSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
+    'privacy-policy': PrivacyPolicySelect<false> | PrivacyPolicySelect<true>;
+    'cookie-policy': CookiePolicySelect<false> | CookiePolicySelect<true>;
+    'terms-and-conditions': TermsAndConditionsSelect<false> | TermsAndConditionsSelect<true>;
   };
   locale: 'en' | 'nl';
   user: User & {
@@ -241,6 +241,10 @@ export interface Page {
     image?: (number | null) | Media;
   };
   publishedAt?: string | null;
+  /**
+   * Automatically generated from the title field
+   */
+  slug?: string | null;
   /**
    * URL path for the page (e.g., /about or /nl/diensten/websites)
    */
@@ -611,6 +615,7 @@ export interface PagesSelect<T extends boolean = true> {
         image?: T;
       };
   publishedAt?: T;
+  slug?: T;
   url?: T;
   urlWithoutLocale?: T;
   updatedAt?: T;
@@ -732,6 +737,102 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  logo?: (number | null) | Media;
+  links?:
+    | {
+        text: string;
+        customHref?: boolean | null;
+        href?: string | null;
+        linkType?:
+          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+          | null;
+        page?: {
+          relationTo: 'pages';
+          value: number | Page;
+        } | null;
+        blogPost?: {
+          relationTo: 'blog-posts';
+          value: number | BlogPost;
+        } | null;
+        newTab?: boolean | null;
+        dropdown?: boolean | null;
+        clickable?: boolean | null;
+        sublinks?:
+          | {
+              text: string;
+              customHref?: boolean | null;
+              href?: string | null;
+              linkType?:
+                | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+                | null;
+              page?: {
+                relationTo: 'pages';
+                value: number | Page;
+              } | null;
+              blogPost?: {
+                relationTo: 'blog-posts';
+                value: number | BlogPost;
+              } | null;
+              newTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  slideOutMenu?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  email?: {
+    text?: string | null;
+  };
+  phone?: {
+    text?: string | null;
+  };
+  address?: {
+    text?: string | null;
+    href?: string | null;
+  };
+  links?:
+    | {
+        text: string;
+        customHref?: boolean | null;
+        href?: string | null;
+        linkType?:
+          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+          | null;
+        page?: {
+          relationTo: 'pages';
+          value: number | Page;
+        } | null;
+        blogPost?: {
+          relationTo: 'blog-posts';
+          value: number | BlogPost;
+        } | null;
+        newTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  companyDetails?: {
+    kvk?: string | null;
+    vat?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
  */
 export interface Home {
@@ -781,106 +882,7 @@ export interface Blog {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navigation".
- */
-export interface Navigation {
-  id: number;
-  logo?: (number | null) | Media;
-  links?:
-    | {
-        text: string;
-        customHref?: boolean | null;
-        href?: string | null;
-        linkType?:
-          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
-          | null;
-        page?:
-          | ({
-              relationTo: 'pages';
-              value: number | Page;
-            } | null)
-          | ({
-              relationTo: 'blog-posts';
-              value: number | BlogPost;
-            } | null);
-        newTab?: boolean | null;
-        dropdown?: boolean | null;
-        clickable?: boolean | null;
-        sublinks?:
-          | {
-              text: string;
-              customHref?: boolean | null;
-              href?: string | null;
-              linkType?:
-                | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
-                | null;
-              page?:
-                | ({
-                    relationTo: 'pages';
-                    value: number | Page;
-                  } | null)
-                | ({
-                    relationTo: 'blog-posts';
-                    value: number | BlogPost;
-                  } | null);
-              newTab?: boolean | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  slideOutMenu?: boolean | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer".
- */
-export interface Footer {
-  id: number;
-  email?: {
-    text?: string | null;
-  };
-  phone?: {
-    text?: string | null;
-  };
-  address?: {
-    text?: string | null;
-    href?: string | null;
-  };
-  links?:
-    | {
-        text: string;
-        customHref?: boolean | null;
-        href?: string | null;
-        linkType?:
-          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
-          | null;
-        page?:
-          | ({
-              relationTo: 'pages';
-              value: number | Page;
-            } | null)
-          | ({
-              relationTo: 'blog-posts';
-              value: number | BlogPost;
-            } | null);
-        newTab?: boolean | null;
-        id?: string | null;
-      }[]
-    | null;
-  companyDetails?: {
-    kvk?: string | null;
-    vat?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "privacyPolicy".
+ * via the `definition` "privacy-policy".
  */
 export interface PrivacyPolicy {
   id: number;
@@ -918,7 +920,7 @@ export interface PrivacyPolicy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cookiePolicy".
+ * via the `definition` "cookie-policy".
  */
 export interface CookiePolicy {
   id: number;
@@ -956,7 +958,7 @@ export interface CookiePolicy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "termsAndConditions".
+ * via the `definition` "terms-and-conditions".
  */
 export interface TermsAndCondition {
   id: number;
@@ -991,6 +993,86 @@ export interface TermsAndCondition {
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  logo?: T;
+  links?:
+    | T
+    | {
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        dropdown?: T;
+        clickable?: T;
+        sublinks?:
+          | T
+          | {
+              text?: T;
+              customHref?: T;
+              href?: T;
+              linkType?: T;
+              page?: T;
+              blogPost?: T;
+              newTab?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  slideOutMenu?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  email?:
+    | T
+    | {
+        text?: T;
+      };
+  phone?:
+    | T
+    | {
+        text?: T;
+      };
+  address?:
+    | T
+    | {
+        text?: T;
+        href?: T;
+      };
+  links?:
+    | T
+    | {
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        id?: T;
+      };
+  companyDetails?:
+    | T
+    | {
+        kvk?: T;
+        vat?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1040,84 +1122,7 @@ export interface BlogSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navigation_select".
- */
-export interface NavigationSelect<T extends boolean = true> {
-  logo?: T;
-  links?:
-    | T
-    | {
-        text?: T;
-        customHref?: T;
-        href?: T;
-        linkType?: T;
-        page?: T;
-        newTab?: T;
-        dropdown?: T;
-        clickable?: T;
-        sublinks?:
-          | T
-          | {
-              text?: T;
-              customHref?: T;
-              href?: T;
-              linkType?: T;
-              page?: T;
-              newTab?: T;
-              id?: T;
-            };
-        id?: T;
-      };
-  slideOutMenu?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
- */
-export interface FooterSelect<T extends boolean = true> {
-  email?:
-    | T
-    | {
-        text?: T;
-      };
-  phone?:
-    | T
-    | {
-        text?: T;
-      };
-  address?:
-    | T
-    | {
-        text?: T;
-        href?: T;
-      };
-  links?:
-    | T
-    | {
-        text?: T;
-        customHref?: T;
-        href?: T;
-        linkType?: T;
-        page?: T;
-        newTab?: T;
-        id?: T;
-      };
-  companyDetails?:
-    | T
-    | {
-        kvk?: T;
-        vat?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "privacyPolicy_select".
+ * via the `definition` "privacy-policy_select".
  */
 export interface PrivacyPolicySelect<T extends boolean = true> {
   content?: T;
@@ -1137,7 +1142,7 @@ export interface PrivacyPolicySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cookiePolicy_select".
+ * via the `definition` "cookie-policy_select".
  */
 export interface CookiePolicySelect<T extends boolean = true> {
   content?: T;
@@ -1157,7 +1162,7 @@ export interface CookiePolicySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "termsAndConditions_select".
+ * via the `definition` "terms-and-conditions_select".
  */
 export interface TermsAndConditionsSelect<T extends boolean = true> {
   content?: T;
@@ -1183,7 +1188,7 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    global?: ('home' | 'blog' | 'privacyPolicy' | 'cookiePolicy' | 'termsAndConditions') | null;
+    global?: ('home' | 'blog' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions') | null;
     user?: (number | null) | User;
   };
   output?: unknown;

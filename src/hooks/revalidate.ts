@@ -16,27 +16,24 @@ type BlogPost = TypeWithID & {
   slug?: string | string[] | null;
 };
 
-// Extract base path from URL (remove locale prefix)
 const extractBasePath = (
   url: string | string[] | null | undefined,
 ): string | null => {
-  if (!url) return null;
-  const urlValue = Array.isArray(url) ? url[0] : url;
-  if (!urlValue || typeof urlValue !== "string") return null;
+  if (!url || typeof url !== "string") {
+    return null;
+  }
 
-  // Check if URL starts with a locale prefix
   for (const locale of LOCALES) {
-    if (locale !== DEFAULT_LOCALE && urlValue.startsWith(`/${locale}/`)) {
-      return urlValue.slice(`/${locale}`.length);
-    } else if (locale !== DEFAULT_LOCALE && urlValue === `/${locale}`) {
+    if (locale !== DEFAULT_LOCALE && url.startsWith(`/${locale}/`)) {
+      return url.slice(`/${locale}`.length);
+    } else if (locale !== DEFAULT_LOCALE && url === `/${locale}`) {
       return "/";
     }
   }
 
-  return urlValue;
+  return url;
 };
 
-// Generate all locale versions of a path
 const generateLocalizedPaths = (basePath: string): string[] => {
   return [
     basePath,
@@ -46,16 +43,12 @@ const generateLocalizedPaths = (basePath: string): string[] => {
   ];
 };
 
-// Generic function to create global revalidation hooks
 const createGlobalRevalidateHook = (): GlobalAfterChangeHook => {
   return ({ doc, previousDoc, req: { context } }) => {
     if (!context.disableRevalidate) {
-      // Extract URL from doc
       const docUrl =
         typeof doc === "object" && doc !== null && "url" in doc && doc.url
-          ? Array.isArray(doc.url)
-            ? doc.url[0]
-            : doc.url
+          ? doc.url
           : null;
 
       if (docUrl && typeof docUrl === "string") {
@@ -84,7 +77,6 @@ const createGlobalRevalidateHook = (): GlobalAfterChangeHook => {
   };
 };
 
-// Generic function to create collection revalidation hooks
 const createCollectionRevalidateHook = <
   T extends TypeWithID & {
     url?: string | string[] | null;
@@ -96,22 +88,22 @@ const createCollectionRevalidateHook = <
   return ({ doc, previousDoc, req: { context } }) => {
     if (!context.disableRevalidate) {
       if (doc._status === "published") {
-        const url = Array.isArray(doc.url) ? doc.url[0] : doc.url;
-        if (url && typeof url === "string") {
-          // Extract base path and generate all locale versions
-          const basePath = extractBasePath(url);
+        if (doc.url && typeof doc.url === "string") {
+          const basePath = extractBasePath(doc.url);
+
           if (basePath) {
             const paths = generateLocalizedPaths(basePath);
+
             paths.forEach((path) => {
               revalidatePath(path);
             });
           } else {
-            // Fallback: revalidate the specific URL if base path extraction fails
-            revalidatePath(url);
+            revalidatePath(doc.url);
           }
 
           if (getAdditionalPaths) {
-            const additionalPaths = getAdditionalPaths(url);
+            const additionalPaths = getAdditionalPaths(doc.url);
+
             additionalPaths.forEach((additionalPath) => {
               revalidatePath(additionalPath);
             });
@@ -120,24 +112,20 @@ const createCollectionRevalidateHook = <
       }
 
       if (previousDoc?._status === "published" && doc._status !== "published") {
-        const oldUrl = Array.isArray(previousDoc.url)
-          ? previousDoc.url[0]
-          : previousDoc.url;
-        if (oldUrl && typeof oldUrl === "string") {
-          // Extract base path and generate all locale versions
-          const basePath = extractBasePath(oldUrl);
+        if (previousDoc.url && typeof previousDoc.url === "string") {
+          const basePath = extractBasePath(previousDoc.url);
           if (basePath) {
             const paths = generateLocalizedPaths(basePath);
             paths.forEach((path) => {
               revalidatePath(path);
             });
           } else {
-            // Fallback: revalidate the specific URL if base path extraction fails
-            revalidatePath(oldUrl);
+            revalidatePath(previousDoc.url);
           }
 
           if (getAdditionalPaths) {
-            const additionalPaths = getAdditionalPaths(oldUrl);
+            const additionalPaths = getAdditionalPaths(previousDoc.url);
+
             additionalPaths.forEach((additionalPath) => {
               revalidatePath(additionalPath);
             });
@@ -149,7 +137,6 @@ const createCollectionRevalidateHook = <
   };
 };
 
-// Generic function to create collection delete hooks
 const createCollectionDeleteHook = <
   T extends TypeWithID & { url?: string | string[] | null },
 >(
@@ -157,22 +144,19 @@ const createCollectionDeleteHook = <
 ): CollectionAfterDeleteHook<T> => {
   return ({ doc, req: { context } }) => {
     if (!context.disableRevalidate) {
-      const url = Array.isArray(doc?.url) ? doc?.url[0] : doc?.url;
-      if (url && typeof url === "string") {
-        // Extract base path and generate all locale versions
-        const basePath = extractBasePath(url);
+      if (doc?.url && typeof doc?.url === "string") {
+        const basePath = extractBasePath(doc.url);
         if (basePath) {
           const paths = generateLocalizedPaths(basePath);
           paths.forEach((path) => {
             revalidatePath(path);
           });
         } else {
-          // Fallback: revalidate the specific URL if base path extraction fails
-          revalidatePath(url);
+          revalidatePath(doc.url);
         }
 
         if (getAdditionalPaths) {
-          const additionalPaths = getAdditionalPaths(url);
+          const additionalPaths = getAdditionalPaths(doc.url);
           additionalPaths.forEach((additionalPath) => {
             revalidatePath(additionalPath);
           });
@@ -183,25 +167,26 @@ const createCollectionDeleteHook = <
   };
 };
 
-// Global revalidation hooks
 export const revalidateHomepage = createGlobalRevalidateHook();
 export const revalidateBlog = createGlobalRevalidateHook();
 export const revalidatePrivacyPolicy = createGlobalRevalidateHook();
 export const revalidateCookiePolicy = createGlobalRevalidateHook();
 export const revalidateTermsAndConditions = createGlobalRevalidateHook();
 
-// Helper to extract blog listing path from blog post URL
 const getBlogListingPaths = (url: string | null): string[] => {
-  if (!url) return [];
-  const basePath = extractBasePath(url);
-  if (!basePath || !basePath.startsWith("/blog")) return [];
+  if (!url) {
+    return [];
+  }
 
-  // Extract the base blog path (e.g., "/blog" from "/blog/my-post")
-  const blogBasePath = "/blog";
-  return generateLocalizedPaths(blogBasePath);
+  const basePath = extractBasePath(url);
+
+  if (!basePath || !basePath.startsWith("/blog")) {
+    return [];
+  }
+
+  return generateLocalizedPaths("/blog");
 };
 
-// Collection revalidation hooks
 export const revalidatePage: CollectionAfterChangeHook<Page> =
   createCollectionRevalidateHook<Page>();
 

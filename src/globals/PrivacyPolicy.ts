@@ -16,20 +16,20 @@ import {
 import type { GlobalConfig } from "payload";
 
 export const PrivacyPolicy: GlobalConfig = {
-  slug: "privacyPolicy",
-  label: "Privacy Policy",
+  slug: "privacy-policy",
+  label: "Privacy policy",
   access: {
     read: authenticatedOrPublished,
     update: authenticated,
   },
   admin: {
-    group: "Legal",
+    group: "Legal pages",
     livePreview: {
       url: async ({ data }) =>
-        await getPreviewPathGlobal({ global: "privacyPolicy", data }),
+        await getPreviewPathGlobal({ global: "privacy-policy", data }),
     },
     preview: async (data) =>
-      await getPreviewPathGlobal({ global: "privacyPolicy", data }),
+      await getPreviewPathGlobal({ global: "privacy-policy", data }),
   },
   fields: [
     {

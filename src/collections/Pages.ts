@@ -1,6 +1,6 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
 import { blockConfigs } from "@/blocks/config";
-import { URLField } from "@/fields";
+import { SlugField, URLField } from "@/fields";
 import {
   generateUrlWithoutLocale,
   populatePublishedAtCollection,
@@ -18,6 +18,10 @@ import type { CollectionConfig } from "payload";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
+  labels: {
+    singular: "Subpage",
+    plural: "Subpages",
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -29,18 +33,16 @@ export const Pages: CollectionConfig = {
     defaultColumns: ["title", "url", "updatedAt"],
     group: "Pages",
     livePreview: {
-      url: ({ data, req }) =>
+      url: ({ data }) =>
         getPreviewPathCollection({
           url: data?.url,
           collection: "pages",
-          req,
         }),
     },
-    preview: (data, { req }) =>
+    preview: (data) =>
       getPreviewPathCollection({
         url: data?.url as string,
         collection: "pages",
-        req,
       }),
   },
   fields: [
@@ -103,6 +105,7 @@ export const Pages: CollectionConfig = {
         beforeChange: [populatePublishedAtCollection],
       },
     },
+    SlugField({ readOnly: true }),
     URLField({ label: "Page URL" }),
     {
       name: "urlWithoutLocale",

@@ -31,29 +31,27 @@ export const URLField = ({
       return true;
     }
 
-    const urlValue = Array.isArray(value) ? value[0] : value;
-
-    if (!urlValue || typeof urlValue !== "string") {
+    if (!value || typeof value !== "string") {
       return true;
     }
 
-    if (urlValue === "/") {
+    if (value === "/") {
       return "The root path / is reserved for the Homepage";
     }
 
-    if (!urlValue.startsWith("/")) {
+    if (!value.startsWith("/")) {
       return "URL must start with /";
     }
 
-    if (urlValue.endsWith("/")) {
+    if (value.endsWith("/")) {
       return "URL must not end with /";
     }
 
-    if (urlValue.includes("//") && !urlValue.startsWith("//")) {
+    if (value.includes("//") && !value.startsWith("//")) {
       return "URL must not contain consecutive slashes";
     }
 
-    if (!/^\/[a-zA-Z0-9\/\-_]*$/.test(urlValue)) {
+    if (!/^\/[a-zA-Z0-9\/\-_]*$/.test(value)) {
       return "URL must not contain invalid characters";
     }
 

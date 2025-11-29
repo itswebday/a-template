@@ -1,4 +1,5 @@
 import { LINK_TYPE_OPTIONS } from "@/constants";
+import type { LinkType } from "@/types";
 import type { Field } from "payload";
 
 export const getGlobalUrl = (global: unknown): string | null => {
@@ -8,9 +9,8 @@ export const getGlobalUrl = (global: unknown): string | null => {
     "url" in global &&
     global.url
   ) {
-    const urlValue = Array.isArray(global.url) ? global.url[0] : global.url;
-    if (typeof urlValue === "string") {
-      return urlValue;
+    if (global.url && typeof global.url === "string") {
+      return global.url;
     }
   }
   return null;
@@ -20,17 +20,13 @@ export const getLinkHref = (
   link: {
     customHref?: boolean | null;
     href?: string | null;
-    linkType?:
-      | "page"
-      | "home"
-      | "blog"
-      | "blog-post"
-      | "privacy-policy"
-      | "cookie-policy"
-      | "terms-and-conditions"
-      | null;
+    linkType?: LinkType | null;
     page?: {
-      relationTo: "pages" | "blog-posts";
+      relationTo: "pages";
+      value: number | { url?: string | null; slug?: string | null } | null;
+    } | null;
+    blogPost?: {
+      relationTo: "blog-posts";
       value: number | { url?: string | null; slug?: string | null } | null;
     } | null;
   },
@@ -45,29 +41,27 @@ export const getLinkHref = (
   if (link.customHref) {
     return link.href || "";
   } else {
-    const linkType = link.linkType || "page";
-
-    if (linkType === "home") {
+    if (link.linkType === "home") {
       return getGlobalUrl(globals.home) || "";
     }
 
-    if (linkType === "blog") {
+    if (link.linkType === "blog") {
       return getGlobalUrl(globals.blog) || "";
     }
 
-    if (linkType === "privacy-policy") {
+    if (link.linkType === "privacy-policy") {
       return getGlobalUrl(globals.privacyPolicy) || "";
     }
 
-    if (linkType === "cookie-policy") {
+    if (link.linkType === "cookie-policy") {
       return getGlobalUrl(globals.cookiePolicy) || "";
     }
 
-    if (linkType === "terms-and-conditions") {
+    if (link.linkType === "terms-and-conditions") {
       return getGlobalUrl(globals.termsAndConditions) || "";
     }
 
-    const pageValue = link.page?.value;
+    const pageValue = link.page?.value || link.blogPost?.value;
     const pageUrl =
       typeof pageValue === "object" && pageValue !== null && "url" in pageValue
         ? pageValue.url || ""
@@ -146,56 +140,86 @@ export const getLinkFields = ({
       name: "page",
       label: "Page",
       type: "relationship",
-      relationTo: ["pages", "blog-posts"],
-      validate: (
-        value: unknown,
-        { siblingData }: { siblingData?: Record<string, unknown> },
-      ) => {
-        const linkType = siblingData?.linkType as
-          | "page"
-          | "blog-post"
-          | "home"
-          | "blog"
-          | "privacy-policy"
-          | "cookie-policy"
-          | "terms-and-conditions"
-          | undefined;
-        if (includeDropdown) {
-          if (
-            !siblingData?.customHref &&
-            (!siblingData?.dropdown || siblingData?.clickable) &&
-            (linkType === "page" || linkType === "blog-post") &&
-            !value
-          ) {
-            return "Page is required when Link Type is Page or Blog Post";
-          }
-        } else {
-          if (
-            !siblingData?.customHref &&
-            (linkType === "page" || linkType === "blog-post") &&
-            !value
-          ) {
-            return "Page is required when Link Type is Page or Blog Post";
-          }
-        }
-        return true;
-      },
+      relationTo: ["pages"],
       admin: {
         condition: (_, siblingData) => {
           if (includeDropdown) {
             return (
               !siblingData?.customHref &&
               (!siblingData?.dropdown || siblingData?.clickable) &&
-              (siblingData?.linkType === "page" ||
-                siblingData?.linkType === "blog-post")
+              siblingData?.linkType === "page"
+            );
+          }
+          return !siblingData?.customHref && siblingData?.linkType === "page";
+        },
+      },
+      validate: (
+        value: unknown,
+        { siblingData }: { siblingData?: Record<string, unknown> },
+      ) => {
+        if (includeDropdown) {
+          if (
+            !siblingData?.customHref &&
+            (!siblingData?.dropdown || siblingData?.clickable) &&
+            siblingData?.linkType === "page" &&
+            !value
+          ) {
+            return "Page is required when Link Type is Page";
+          }
+        } else {
+          if (
+            !siblingData?.customHref &&
+            siblingData?.linkType === "page" &&
+            !value
+          ) {
+            return "Page is required when Link Type is Page";
+          }
+        }
+        return true;
+      },
+    },
+    {
+      name: "blogPost",
+      label: "Blog Post",
+      type: "relationship",
+      relationTo: ["blog-posts"],
+      admin: {
+        condition: (_, siblingData) => {
+          if (includeDropdown) {
+            return (
+              !siblingData?.customHref &&
+              (!siblingData?.dropdown || siblingData?.clickable) &&
+              siblingData?.linkType === "blog-post"
             );
           }
           return (
-            !siblingData?.customHref &&
-            (siblingData?.linkType === "page" ||
-              siblingData?.linkType === "blog-post")
+            !siblingData?.customHref && siblingData?.linkType === "blog-post"
           );
         },
+      },
+      validate: (
+        value: unknown,
+        { siblingData }: { siblingData?: Record<string, unknown> },
+      ) => {
+        if (includeDropdown) {
+          if (
+            !siblingData?.customHref &&
+            (!siblingData?.dropdown || siblingData?.clickable) &&
+            siblingData?.linkType === "blog-post" &&
+            !value
+          ) {
+            return "Blog Post is required when Link Type is Blog Post";
+          }
+        } else {
+          if (
+            !siblingData?.customHref &&
+            siblingData?.linkType === "blog-post" &&
+            !value
+          ) {
+            return "Blog Post is required when Link Type is Blog Post";
+          }
+        }
+        return true;
       },
     },
     {
