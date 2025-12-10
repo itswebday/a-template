@@ -1,5 +1,6 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
-import { PublishedAtField, RichTextField, URLField } from "@/fields";
+import { PublishedAtField, URLField } from "@/fields";
+import { RichTextField } from "@/fields/RichTextField";
 import { revalidateCookiePolicy } from "@/hooks";
 import { getMetaFields } from "@/utils";
 import { getPreviewPathGlobal } from "@/utils/preview";

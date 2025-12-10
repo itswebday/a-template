@@ -1,10 +1,6 @@
 import { authenticatedOrPublished, developer } from "@/access";
-import {
-  PublishedAtField,
-  RichTextField,
-  SlugField,
-  TitleField,
-} from "@/fields";
+import { PublishedAtField, SlugField, TitleField } from "@/fields";
+import { RichTextField } from "@/fields/RichTextField";
 import { generateBlogPostUrl } from "@/hooks";
 import { revalidateBlogPost, revalidateBlogPostDelete } from "@/hooks";
 import { getMetaFields, getPreviewPathCollection } from "@/utils";
