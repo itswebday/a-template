@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 export const handleApiError = async (
   errorResponse: unknown,
+  errorMessage?: string,
+  status?: number,
 ): Promise<NextResponse> => {
   console.error("Error response:", errorResponse);
 
@@ -9,16 +11,23 @@ export const handleApiError = async (
 
   // Error response
   if (
-    errorResponse &&
+    errorResponse !== null &&
+    errorResponse !== undefined &&
     typeof errorResponse === "object" &&
     "data" in errorResponse
   ) {
-    response = NextResponse.json(errorResponse);
+    response = NextResponse.json(errorResponse, {
+      status: status || 500,
+    });
   } else {
     // Internal server error
     response = NextResponse.json(
-      { data: { errors: [{ message: "Internal server error" }] } },
-      { status: 500 },
+      {
+        data: {
+          errors: [{ message: errorMessage || "Internal server error" }],
+        },
+      },
+      { status: status || 500 },
     );
   }
 

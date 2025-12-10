@@ -4,6 +4,7 @@
     "cookiePolicy": "cookie policy",
     "accept": "Accept",
     "decline": "Decline",
+    "videoTagNotSupported": "Your browser does not support the video tag.",
     "errors": {
       "localizedUrls": "Failed to load translated URLs"
     }
@@ -19,6 +20,7 @@
     "title": "Blog",
     "noPosts": "No blog posts yet. Check back soon!",
     "readMore": "Read more",
+    "backToHome": "Back to home",
     "backToOverview": "Back to blog overview",
     "minRead": "min read",
     "publishedOn": "Published on",
@@ -59,10 +61,52 @@
       "heading": "LOCATION",
       "address": "ADDRESS"
     },
+    "quickLinks": {
+      "heading": "Quick links"
+    },
+    "services": {
+      "heading": "Services"
+    },
+    "socialMedia": {
+      "heading": "Follow us"
+    },
     "legalLinks": {
       "heading": "NAVIGATION",
       "kvk": "KvK",
       "vat": "VAT"
+    }
+  },
+
+  "form": {
+    "labels": {
+      "noOptions": "No options available",
+      "selectedFiles": "Selected files ({count}):",
+      "total": "Total:",
+      "submit": "Submit",
+      "submitting": "Submitting..."
+    },
+    "placeholders": {
+      "email": "example@email.com",
+      "tel": "+31 6 12345678",
+      "number": "123",
+      "url": "https://www.example.com",
+      "date": "01-01-2025",
+      "time": "12:00",
+      "datetimeLocal": "01-01-2025T12:00",
+      "password": "••••••••",
+      "search": "Search...",
+      "textarea": "Type your message here...",
+      "text": "Enter..."
+    },
+    "success": {
+      "message": "Thank you! Your form has been successfully submitted."
+    },
+    "errors": {
+      "maxFiles": "You can upload a maximum of {maxNumFiles} file{maxNumFiles, plural, one {} other {s}}. You have selected {fileCount} file{fileCount, plural, one {} other {s}}.",
+      "totalSizeTooLarge": "The total size of the files is too large. Maximum total size is {maxMBs}MB.",
+      "fileTooLarge": "File \"{fileName}\" is too large. Maximum size per file is {maxMBs}MB.",
+      "submitError": "An error occurred while submitting the form.",
+      "noFields": "This form has no fields."
     }
   }
 }

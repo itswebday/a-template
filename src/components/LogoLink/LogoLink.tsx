@@ -1,13 +1,14 @@
 "use client";
 
-import { DEFAULT_LOCALE } from "@/constants";
-import { useNavMenu } from "@/contexts";
-import { LocaleOption } from "@/types";
-import { scrollToTop } from "@/utils";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { twMerge } from "tailwind-merge";
+import { DEFAULT_LOCALE } from "@/constants";
+import { useNavMenu } from "@/contexts";
+import type { LocaleOption } from "@/types";
+import { scrollToTop } from "@/utils";
 
 type LogoLinkProps = {
   className?: string;
@@ -22,10 +23,7 @@ const LogoLink: React.FC<LogoLinkProps> = ({ className, src, alt }) => {
 
   return (
     <Link
-      className={`
-        relative
-        ${className}
-      `}
+      className={twMerge("relative", className)}
       href={`${locale === DEFAULT_LOCALE ? "/" : `/${locale}`}`}
       prefetch={true}
       onClick={(e) => {
@@ -37,7 +35,6 @@ const LogoLink: React.FC<LogoLinkProps> = ({ className, src, alt }) => {
         }
       }}
     >
-      {/* Logo */}
       <Image
         className="object-contain"
         src={src}

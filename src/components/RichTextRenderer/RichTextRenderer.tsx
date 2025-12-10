@@ -1,35 +1,28 @@
-import type { BlockNode, LocaleOption, RichText } from "@/types";
-import { getLinkHref } from "@/utils";
-import { getGlobal } from "@/utils/server";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import React from "react";
+import { twMerge } from "tailwind-merge";
+import type { BlockNode, LocaleOption, RichText } from "@/types";
+import { getLinkHref } from "@/utils";
+import { getCachedGlobals, getGlobals } from "@/utils/server";
 
 type RichTextRendererProps = {
   className?: string;
   richText: RichText;
+  globals?: Awaited<ReturnType<typeof getGlobals>>;
 };
 
 const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
   className,
   richText,
+  globals: incomingGlobals,
 }) => {
   const locale = (await getLocale()) as LocaleOption;
-  const [home, blog, privacyPolicy, cookiePolicy, termsAndConditions] =
-    await Promise.all([
-      getGlobal("home", locale),
-      getGlobal("blog", locale),
-      getGlobal("privacy-policy", locale),
-      getGlobal("cookie-policy", locale),
-      getGlobal("terms-and-conditions", locale),
-    ]);
-  const globals = {
-    home,
-    blog,
-    privacyPolicy,
-    cookiePolicy,
-    termsAndConditions,
-  };
+  const globals =
+    incomingGlobals ??
+    ((await getCachedGlobals(locale)()) as Awaited<
+      ReturnType<typeof getGlobals>
+    >);
 
   const renderBlockNode = (
     blockNode: BlockNode,
@@ -64,9 +57,9 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         return React.createElement(
           tagName,
           {
-            key: index,
             className: classes.join(" "),
             style: Object.keys(style).length > 0 ? style : undefined,
+            key: index,
           },
           blockNode.children.map((child, i) => renderBlockNode(child, i)),
         );
@@ -94,9 +87,9 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
 
         return (
           <p
-            key={index}
             className={classes.join(" ")}
             style={Object.keys(style).length > 0 ? style : undefined}
+            key={index}
           >
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </p>
@@ -108,11 +101,11 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         const isOrdered = listType === "number" || listType === "ordered";
 
         return isOrdered ? (
-          <ol key={index} start={blockNode.start} className="list-decimal pl-6">
+          <ol className="list-decimal pl-6" key={index} start={blockNode.start}>
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </ol>
         ) : (
-          <ul key={index} className="list-disc pl-6">
+          <ul className="list-disc pl-6" key={index}>
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </ul>
         );
@@ -140,9 +133,9 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
 
         return (
           <li
-            key={index}
             className={classes.join(" ")}
             style={Object.keys(style).length > 0 ? style : undefined}
+            key={index}
           >
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </li>
@@ -152,8 +145,10 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
       case "quote":
         return (
           <blockquote
+            className={twMerge(
+              "pl-4 my-4 italic border-l-4 border-primary-purple/30",
+            )}
             key={index}
-            className="border-l-4 border-gray-300 pl-4 italic my-4"
           >
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </blockquote>
@@ -187,12 +182,15 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
 
         return (
           <Link
-            className="text-blue-600 hover:text-blue-800"
             key={index}
+            className={twMerge(
+              "text-primary-purple",
+              "hover:text-primary-lightpurple",
+            )}
             href={href}
-            target={blockNode.fields?.newTab ? "_blank" : "_self"}
+            prefetch={false}
             rel={blockNode.fields?.newTab ? "noopener noreferrer" : undefined}
-            prefetch={true}
+            target={blockNode.fields?.newTab ? "_blank" : "_self"}
           >
             {blockNode.children.map((child, i) => renderBlockNode(child, i))}
           </Link>
@@ -203,7 +201,7 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         return <br key={index} />;
 
       case "horizontalrule":
-        return <hr key={index} className="my-2 border-black/20" />;
+        return <hr className="my-2 border-black/20" key={index} />;
 
       case "text": {
         const format = blockNode.format || 0;
@@ -230,10 +228,14 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
         }
 
         if ((format & 16) !== 0) {
-          classes.push(`
-            font-mono text-sm bg-gray-100 text-gray-900 px-1.5 py-0.5
-            rounded-md border border-gray-200
-          `);
+          classes.push(
+            "font-mono text-[14px]",
+            "px-1.5 py-0.5",
+            "bg-primary-lightpurple/5",
+            "text-dark",
+            "rounded-md",
+            "border border-primary-purple/20",
+          );
         }
         if ((format & 32) !== 0) {
           classes.push("align-sub text-[70%] pl-0.5 pt-0.5");
@@ -245,9 +247,9 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
 
         return (
           <span
-            key={index}
             className={classes.join(" ")}
             style={Object.keys(style).length > 0 ? style : undefined}
+            key={index}
           >
             {blockNode.text}
           </span>
@@ -260,12 +262,7 @@ const RichTextRenderer: React.FC<RichTextRendererProps> = async ({
   };
 
   return (
-    <div
-      className={`
-        flex flex-col gap-2
-        ${className}
-      `}
-    >
+    <div className={twMerge("flex flex-col gap-2", className)}>
       {richText.root.children.map((child, index) =>
         renderBlockNode(child, index),
       )}

@@ -1,16 +1,14 @@
-import { PageWrapper, PreviewListener } from "@/components";
+import type { Metadata } from "next";
+import { draftMode } from "next/headers";
+import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+import React from "react";
 import { blockComponents } from "@/blocks";
+import { PageWrapper, PreviewListener } from "@/components";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
-import configPromise from "@/payload.config";
 import type { Page } from "@/payload-types";
 import type { LocaleOption } from "@/types";
-import { getMetadata } from "@/utils/metadata";
-import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import { draftMode } from "next/headers";
-import { notFound } from "next/navigation";
-import { getPayload } from "payload";
-import React from "react";
+import { getCachedPayload, getMetadata } from "@/utils/server";
 
 export const dynamic = "force-dynamic";
 
@@ -102,7 +100,7 @@ export const generateMetadata = async ({
 
 export const generateStaticParams = async () => {
   try {
-    const payload = await getPayload({ config: configPromise });
+    const payload = await getCachedPayload();
     const params: { locale: string; path: string[] }[] = [];
 
     for (const locale of LOCALES) {
@@ -151,7 +149,7 @@ const queryPageByUrl = async ({
   locale: LocaleOption;
   draft: boolean;
 }): Promise<Page | null> => {
-  const payload = await getPayload({ config: configPromise });
+  const payload = await getCachedPayload();
   const result = await payload.find({
     collection: "pages",
     locale: locale,

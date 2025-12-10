@@ -1,7 +1,8 @@
 "use client";
 
-import NavBarLink from "../../NavLink";
-import NavBarDropdownLink from "./NavBarDropdownLink/NavBarDropdownLink";
+import { twMerge } from "tailwind-merge";
+import { NavLink } from "@/components";
+import NavBarDropdownLink from "./NavBarDropdownLink";
 
 type NavBarProps = {
   className: string;
@@ -17,23 +18,17 @@ type NavBarProps = {
 
 const NavBar: React.FC<NavBarProps> = ({ className, links }) => {
   return (
-    <div
-      className={`
-        flex items-center gap-8 h-full
-        ${className}
-      `}
-    >
-      {/* Links */}
+    <div className={twMerge("flex items-center gap-8 h-full", className)}>
       {links.map((link, index) => {
         if ((link.subLinks || []).length === 0) {
           return (
-            <NavBarLink
+            <NavLink
               key={index}
               href={link.href}
               target={link.newTab ? "_blank" : "_self"}
             >
-              <span className="text-[15px]">{link.text}</span>
-            </NavBarLink>
+              <span className="text-[15px] text-white">{link.text}</span>
+            </NavLink>
           );
         }
 

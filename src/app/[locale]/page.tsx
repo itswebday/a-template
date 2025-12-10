@@ -1,14 +1,14 @@
-import { PageWrapper, PreviewListener } from "@/components";
+import type { Metadata } from "next";
+import { draftMode } from "next/headers";
+import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { blockComponents } from "@/blocks";
+import { PageWrapper, PreviewListener } from "@/components";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 import type { LocaleOption } from "@/types";
-import { getGlobal, getMetadata } from "@/utils/server";
-import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import { draftMode } from "next/headers";
-import { notFound } from "next/navigation";
+import { getCachedGlobal, getGlobal, getMetadata } from "@/utils/server";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // 1 hour in seconds
 
 type HomePageProps = {
   params: Promise<{
@@ -24,11 +24,9 @@ const HomePage = async ({ params }: HomePageProps) => {
     return notFound();
   }
 
-  const homepage = await getGlobal(
-    "home",
-    locale as LocaleOption,
-    draft.isEnabled,
-  );
+  const homepage = draft.isEnabled
+    ? await getGlobal("home", locale as LocaleOption, true)
+    : await getCachedGlobal("home", locale as LocaleOption)();
 
   const blocks = homepage?.blocks;
 
@@ -69,7 +67,8 @@ export const generateMetadata = async ({
       title: pageNotFoundT("title"),
     };
   }
-  const homepage = await getGlobal("home", locale as LocaleOption, false);
+  // Use cached global for metadata generation
+  const homepage = await getCachedGlobal("home", locale as LocaleOption)();
 
   return getMetadata({ doc: homepage, locale });
 };

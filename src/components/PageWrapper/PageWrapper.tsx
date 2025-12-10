@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { usePage } from "@/contexts";
-import { ReactNode, useEffect } from "react";
 
 type PageWrapperProps = {
   children: ReactNode;
@@ -13,7 +14,7 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
   children,
   pageLabel,
   pageSlug = "",
-}: PageWrapperProps) => {
+}) => {
   const page = usePage();
 
   useEffect(() => {

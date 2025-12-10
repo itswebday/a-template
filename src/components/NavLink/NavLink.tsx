@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 export type NavLinkProps = {
-  className?: string;
   children: React.ReactNode;
+  className?: string;
   href?: string;
   target?: string;
   onClick?: () => void;
 };
 
 const NavLink: React.FC<NavLinkProps> = ({
-  className,
   children,
+  className,
   href,
   target = "_self",
   onClick,
@@ -45,28 +46,33 @@ const NavLink: React.FC<NavLinkProps> = ({
     }
   };
 
-  const attributes = {
-    className: `
-      flex items-center py-2
-      transition-opacity duration-200 hover:opacity-80
-      ${isClicked && "pointer-events-none"}
-      ${className}
-    `,
-  };
-
   return href ? (
     <Link
-      {...attributes}
+      className={twMerge(
+        "flex items-center py-2",
+        "transition-opacity duration-200 hover:opacity-80",
+        isClicked && "pointer-events-none",
+        className,
+      )}
       href={href}
-      target={target}
-      rel={target === "_blank" ? "noopener noreferrer" : undefined}
       prefetch={true}
+      rel={target === "_blank" ? "noopener noreferrer" : undefined}
+      target={target}
       onClick={handleClick}
     >
       {children}
     </Link>
   ) : (
-    <div {...attributes}>{children}</div>
+    <div
+      className={twMerge(
+        "flex items-center py-2",
+        "transition-opacity duration-200 hover:opacity-80",
+        isClicked && "pointer-events-none",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@
 
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 import type { Page } from "@/payload-types";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
@@ -87,6 +87,15 @@ const createCollectionRevalidateHook = <
 ): CollectionAfterChangeHook<T> => {
   return ({ doc, previousDoc, req: { context } }) => {
     if (!context.disableRevalidate) {
+      // Check if URL changed
+      const urlChanged =
+        previousDoc?.url &&
+        doc.url &&
+        typeof previousDoc.url === "string" &&
+        typeof doc.url === "string" &&
+        previousDoc.url !== doc.url;
+
+      // Revalidate new URL if page is published
       if (doc._status === "published") {
         if (doc.url && typeof doc.url === "string") {
           const basePath = extractBasePath(doc.url);
@@ -108,9 +117,39 @@ const createCollectionRevalidateHook = <
               revalidatePath(additionalPath);
             });
           }
+
+          // Revalidate sitemap when content changes
+          revalidateTag("sitemap", "max");
         }
       }
 
+      // Revalidate old URL if it changed and was published
+      if (urlChanged && previousDoc?._status === "published") {
+        if (previousDoc.url && typeof previousDoc.url === "string") {
+          const basePath = extractBasePath(previousDoc.url);
+          if (basePath) {
+            const paths = generateLocalizedPaths(basePath);
+            paths.forEach((path) => {
+              revalidatePath(path);
+            });
+          } else {
+            revalidatePath(previousDoc.url);
+          }
+
+          if (getAdditionalPaths) {
+            const additionalPaths = getAdditionalPaths(previousDoc.url);
+
+            additionalPaths.forEach((additionalPath) => {
+              revalidatePath(additionalPath);
+            });
+          }
+
+          // Revalidate sitemap when content changes
+          revalidateTag("sitemap", "max");
+        }
+      }
+
+      // Revalidate when page status changes from published to draft
       if (previousDoc?._status === "published" && doc._status !== "published") {
         if (previousDoc.url && typeof previousDoc.url === "string") {
           const basePath = extractBasePath(previousDoc.url);
@@ -130,7 +169,18 @@ const createCollectionRevalidateHook = <
               revalidatePath(additionalPath);
             });
           }
+
+          // Revalidate sitemap when content changes
+          revalidateTag("sitemap", "max");
         }
+      }
+
+      // Revalidate homepage when any page URL changes
+      if (urlChanged && doc._status === "published") {
+        const homepagePaths = generateLocalizedPaths("/");
+        homepagePaths.forEach((path) => {
+          revalidatePath(path);
+        });
       }
     }
     return doc;
@@ -161,6 +211,9 @@ const createCollectionDeleteHook = <
             revalidatePath(additionalPath);
           });
         }
+
+        // Revalidate sitemap when content is deleted
+        revalidateTag("sitemap", "max");
       }
     }
     return doc;
@@ -187,14 +240,50 @@ const getBlogListingPaths = (url: string | null): string[] => {
   return generateLocalizedPaths("/blog");
 };
 
+// Helper to revalidate sitemap
+const revalidateSitemap = () => {
+  revalidateTag("sitemap", "max");
+};
+
 export const revalidatePage: CollectionAfterChangeHook<Page> =
   createCollectionRevalidateHook<Page>();
 
 export const revalidateDelete: CollectionAfterDeleteHook<Page> =
   createCollectionDeleteHook<Page>();
 
-export const revalidateBlogPost: CollectionAfterChangeHook<BlogPost> =
-  createCollectionRevalidateHook<BlogPost>(getBlogListingPaths);
+// Custom hook for blog posts that also revalidates sitemap
+export const revalidateBlogPost: CollectionAfterChangeHook<BlogPost> = async (
+  args,
+) => {
+  const { doc, previousDoc, req } = args;
+  if (!req.context.disableRevalidate) {
+    const baseHook =
+      createCollectionRevalidateHook<BlogPost>(getBlogListingPaths);
+    const result = baseHook(args);
 
-export const revalidateBlogPostDelete: CollectionAfterDeleteHook<BlogPost> =
-  createCollectionDeleteHook<BlogPost>(getBlogListingPaths);
+    // Revalidate sitemap when content changes
+    if (doc._status === "published" || previousDoc?._status === "published") {
+      revalidateSitemap();
+    }
+
+    return result;
+  }
+  return doc;
+};
+
+// Custom hook for blog post deletion that also revalidates sitemap
+export const revalidateBlogPostDelete: CollectionAfterDeleteHook<
+  BlogPost
+> = async (args) => {
+  const { doc, req } = args;
+  if (!req.context.disableRevalidate) {
+    const baseHook = createCollectionDeleteHook<BlogPost>(getBlogListingPaths);
+    const result = baseHook(args);
+
+    // Revalidate sitemap when content is deleted
+    revalidateSitemap();
+
+    return result;
+  }
+  return doc;
+};

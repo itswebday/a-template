@@ -7,6 +7,7 @@ export {
 } from "./generateGlobalUrl";
 export { generateBlogPostUrl } from "./generateBlogPostUrl";
 export { generateUrlWithoutLocale } from "./generateUrlWithoutLocale";
+export { protectRoles } from "./protectRoles";
 export { populatePublishedAtCollection } from "./populatePublishedAtCollection";
 export {
   populatePublishedAtGlobal,

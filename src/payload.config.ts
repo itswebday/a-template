@@ -1,4 +1,11 @@
-import { BlogPosts, Media, Pages, Users } from "@/collections";
+import {
+  BlogPosts,
+  FormSubmissions,
+  Forms,
+  Media,
+  Pages,
+  Users,
+} from "@/collections";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 import {
   Blog,
@@ -49,7 +56,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Media, Users, Pages, BlogPosts],
+  collections: [Media, Users, Pages, BlogPosts, Forms, FormSubmissions],
   globals: [
     Navigation,
     Footer,

@@ -1,0 +1,949 @@
+---
+alwaysApply: true
+---
+
+# Code Style and Formatting Rules
+
+## Scope
+
+These rules apply to all files in the codebase **except** files matching patterns in:
+- `.gitignore`
+- `.prettierignore`
+
+Files in these ignore files are excluded from all code style and formatting rules.
+
+---
+
+## Configuration
+
+### TypeScript
+
+- **Strict Mode**: Always enabled (`strict: true`)
+- **Target**: ES2022
+- **Module Resolution**: `bundler` (for Next.js)
+- **JSX Mode**: `react-jsx` (automatic JSX runtime)
+
+### ESLint
+
+- **Extends**: `next/core-web-vitals`, `next/typescript`
+- **All warnings must be resolved**: Fix or properly address all TypeScript/ESLint warnings
+- **Unused Variables**: 
+  - Warn on unused variables
+  - Prefix with `_` to ignore (pattern: `^_`)
+  - Applies to: vars, args, destructured arrays, caught errors
+- **TypeScript Rules** (all set to warn):
+  - `@typescript-eslint/ban-ts-comment`
+  - `@typescript-eslint/no-empty-object-type`
+  - `@typescript-eslint/no-explicit-any`
+  - `@typescript-eslint/no-unused-vars` (with ignore patterns)
+
+### Prettier
+
+- Use Prettier for all code formatting
+- Run `pnpm run format` to format code
+- Default settings (no custom config file)
+
+---
+
+## Naming Conventions
+
+- **Components**: PascalCase (`LogoLink`, `NavMenuProvider`)
+- **Files**: Match component/export name (`LogoLink.tsx`, `helpers.ts`)
+- **Variables & Functions**: camelCase (`isOpen`, `scrollToTop`)
+- **Constants**: UPPER_SNAKE_CASE (`DEFAULT_LOCALE`, `NAV_MENU_OPENING_DURATION`)
+- **Types/Interfaces**: PascalCase (`LogoLinkProps`, `NavMenuContextType`)
+- **Hooks**: camelCase starting with `use` (`useNavMenu`, `useLocale`)
+
+---
+
+## Imports and Exports
+
+### Import Rules
+
+1. **Placement**: All imports at the top of the file, before any other code
+2. **Type Imports**: Use `import type` for type-only imports
+   ```typescript
+   import type { TextAndImageBlock } from "@/payload-types";
+   import type { RichText } from "@/types";
+   ```
+3. **Path Aliases**: 
+   - Use `@/*` for imports from `./src/*`
+   - Use `@payload-config` for `./src/payload.config.ts`
+   - Always prefer path aliases over relative imports
+
+### Import Sorting
+
+Group imports by type, then sort alphabetically within each group. No blank lines between groups.
+
+**Order:**
+1. External packages (from `node_modules`)
+2. Internal absolute imports (using `@/` path aliases)
+3. Relative imports (starting with `./` or `../`)
+
+**Within each group**: Sort alphabetically by the import path (string after `from`)
+
+**Type imports**: Sort together with regular imports in their respective groups
+
+**Example:**
+```typescript
+// ✅ Correct
+import Image from "next/image";
+import Link from "next/link";
+import { useLocale } from "next-intl";
+import { usePathname } from "next/navigation";
+import { twMerge } from "tailwind-merge";
+import { LogoLink } from "@/components";
+import { DEFAULT_LOCALE } from "@/constants";
+import { useNavMenu } from "@/contexts";
+import type { LocaleOption } from "@/types";
+import { scrollToTop } from "@/utils";
+import HamburgerButton from "./HamburgerButton";
+import NavBar from "./NavBar";
+import NavMenu from "./NavMenu";
+
+// ❌ Incorrect
+import { useNavMenu } from "@/contexts";
+import { twMerge } from "tailwind-merge";
+import NavBar from "./NavBar";
+```
+
+### Export Rules
+
+- **Default Exports**: Use for React components
+  ```typescript
+  export default LogoLink;
+  ```
+- **Named Exports**: Use for utilities, constants, types, and hooks
+  ```typescript
+  export const scrollToTop = () => { ... };
+  export { DEFAULT_LOCALE } from "./locales";
+  export type { LinkType } from "./LinkType";
+  ```
+- **Barrel Exports**: Use `index.ts` files to re-export from directories
+
+---
+
+## React Components
+
+### Component Structure
+
+- **Client Components**: Use `"use client"` directive at the top
+- **Component Types**: Use `React.FC<PropsType>` for functional components
+- **Props**: Use `type` definitions (not `interface`) for component props
+  ```typescript
+  type LogoLinkProps = {
+    className?: string;
+    src: string;
+    alt: string;
+  };
+  ```
+- **Function Style**: Use arrow functions for components
+- **Props Destructuring**: In function parameters
+- **Export**: Default export at the bottom
+
+### Prop Ordering
+
+When passing props to components or HTML elements, follow this order:
+
+1. **`children`** (if passed as a prop) - must come first
+2. **`id`** (if present) - must come second
+3. **`className`** (if present) - must come third
+4. **`style`** (if present) - must come fourth
+5. **`key`** (if present) - must come fifth
+6. **`src`** (if present) - must come sixth
+7. **`alt`** (if present) - must come seventh
+8. **`href`** (if present) - must come eighth
+9. **`fill`** (if present) - must come ninth
+10. **`sizes`** (if present) - must come tenth
+11. **`width`** (if present) - must come eleventh
+12. **`height`** (if present) - must come twelfth
+13. **All other props** - in alphabetical order
+14. **Event handlers** - must come last: `onClick`, `onMouseEnter`, `onMouseLeave` (in that order if multiple are present)
+
+**Note**: In JSX, `children` is typically the content between opening and closing tags, not a prop. However, if `children` is explicitly passed as a prop (e.g., `children={content}`), it should come first.
+
+**Examples:**
+```typescript
+// ✅ Correct - className before other props
+<Button className="primary" disabled={false} onClick={handleClick}>
+  Click me
+</Button>
+
+// ✅ Correct - id, className, key, then other props
+{items.map((item) => (
+  <Card
+    id={`card-${item.id}`}
+    className="card"
+    key={item.id}
+    title={item.title}
+  >
+    {item.content}
+  </Card>
+))}
+
+// ✅ Correct - children prop first (when passed explicitly), then id, className
+<Wrapper children={content} id="main" className="wrapper">
+  {fallbackContent}
+</Wrapper>
+
+// ✅ Correct - id, className, then other props
+<div id="main" className="container" onClick={handleClick}>
+  {children}
+</div>
+
+// ✅ Correct - className, style, then other props
+<div className="container" style={{ margin: 10 }} onClick={handleClick}>
+  {children}
+</div>
+
+// ✅ Correct - Image props in correct order
+<Image
+  className="object-contain"
+  src="/logo.png"
+  alt="Logo"
+  fill={true}
+  sizes="100vw"
+/>
+
+// ✅ Correct - Image with width and height
+<Image
+  className="object-contain"
+  src="/logo.png"
+  alt="Logo"
+  width={512}
+  height={512}
+  priority={true}
+/>
+
+// ✅ Correct - href after alt, event handlers at the end
+<Link
+  className="link"
+  href="/page"
+  target="_blank"
+  onClick={handleClick}
+>
+  Click me
+</Link>
+
+// ✅ Correct - event handlers at the end
+<Button
+  className="primary"
+  disabled={false}
+  onClick={handleClick}
+  onMouseEnter={handleMouseEnter}
+  onMouseLeave={handleMouseLeave}
+>
+  Click me
+</Button>
+
+// ❌ Incorrect - other props before className
+<Button onClick={handleClick} className="primary" disabled={false}>
+  Click me
+</Button>
+
+// ❌ Incorrect - key before className
+{items.map((item) => (
+  <Card key={item.id} title={item.title} className="card">
+    {item.content}
+  </Card>
+))}
+
+// ❌ Incorrect - className before id
+<div className="container" id="main" onClick={handleClick}>
+  {children}
+</div>
+
+// ❌ Incorrect - style before className
+<div style={{ margin: 10 }} className="container" onClick={handleClick}>
+  {children}
+</div>
+
+// ❌ Incorrect - Image props out of order
+<Image
+  src="/logo.png"
+  className="object-contain"
+  alt="Logo"
+  fill={true}
+/>
+
+// ❌ Incorrect - alt before src
+<Image
+  className="object-contain"
+  alt="Logo"
+  src="/logo.png"
+  fill={true}
+/>
+
+// ❌ Incorrect - href before alt
+<Link
+  className="link"
+  href="/page"
+  alt="Link"
+  onClick={handleClick}
+>
+  Click me
+</Link>
+
+// ❌ Incorrect - event handlers not at the end
+<Button
+  className="primary"
+  onClick={handleClick}
+  disabled={false}
+>
+  Click me
+</Button>
+```
+
+### Next.js Specific
+
+- **Image Component**: Always use `next/image` for images
+- **Link Component**: Use `next/link` for internal navigation
+- **Server/Client Separation**: Clearly separate server and client components
+
+---
+
+## Code Style
+
+- **Const over Let**: Prefer `const` over `let`; avoid `var`
+- **Async/Await**: Prefer async/await over promises
+- **Optional Chaining**: Use `?.` and `??` operators
+- **Template Literals**: Use for string concatenation
+- **Spacing**: Follow Prettier defaults (2 spaces for indentation)
+
+---
+
+## Comments
+
+### General Rules
+
+- **Purpose**: Explain "why", not "what" - code should be sufficiently commented to explain structure and purpose
+- **Syntax**: Use JSX comment syntax: `{/* Comment text */}`
+- **Format**: Sentence case - capitalize first word and proper nouns. Use consistent writing style throughout the codebase
+- **Length**: Maximum 80 characters (including spaces before comment, full line)
+- **No periods**: Do not end comments with periods
+- **Placement**: On their own line, immediately before the element they describe
+- **Empty line above**: Always add an empty line above each comment, except when the comment is the first line within a code block or HTML element
+- **Never use inline comments**: Comments must always be on their own line, never on the same line as code
+- **No consecutive comments**: Never put 2 or more consecutive comments (applies to both JSX comments `{/* */}` and single-line comments `//`) - there must be code between comments
+- **Sufficient commenting**: All major sections, elements, and logical groups should have comments explaining their purpose
+
+### Comment Examples
+
+```typescript
+// ✅ Correct - with empty line above
+return (
+  <div>
+    {/* Container */}
+    <div>...</div>
+
+    {/* Logo */}
+    <LogoLink />
+
+    {/* Navigation links */}
+    <nav>...</nav>
+  </div>
+);
+
+// ✅ Correct - first line in block (no empty line above)
+return (
+  <div>
+    {/* Container */}
+    <div>...</div>
+  </div>
+);
+
+// ✅ Correct - first line in element (no empty line above)
+<div>
+  {/* Content */}
+  <span>...</span>
+</div>
+
+// ❌ Incorrect
+{/* container */}  // lowercase
+{/* Container. */}  // has period
+{/* This is a very long comment that exceeds 80 characters */}  // too long
+const x = 5; {/* Inline comment */}  // inline comment not allowed
+<div>{/* Inline comment */}</div>  // inline comment not allowed
+{/* First comment */}
+{/* Second comment */}
+<div>...</div>  // consecutive JSX comments not allowed
+// First comment
+// Second comment
+const x = 5;  // consecutive single-line comments not allowed
+<div>
+  {/* Missing empty line above */}
+  <span>...</span>
+</div>
+```
+
+### Block Component Comments
+
+**Note**: These rules apply specifically to **block components** in `src/blocks`. Components in `src/components` have fewer comment requirements.
+
+**Common Patterns:**
+- Container: `{/* Container */}`
+- Elements: `{/* Logo */}`, `{/* Text */}`, `{/* Image */}`, `{/* Heading */}`
+- Groups: `{/* Links */}`, `{/* Buttons */}`, `{/* Navigation links */}`
+- Sections: `{/* Contact information */}`, `{/* Legal links */}`, `{/* Copyright */}`
+- Context: `{/* Navigation bar (desktop) */}`, `{/* Background image for mobile screens */}`
+- Composite: `{/* Text and dropdown arrow */}`, `{/* Logo and contact container */}`
+- Nested: `{/* Sublinks */}`, `{/* Dropdown list */}`
+- Custom: `{/* USPs container */}` (capitalize proper nouns/acronyms)
+
+**Guidelines:**
+- Mark major sections and elements in the component tree
+- Be descriptive but concise
+- Include device/context in parentheses when relevant: `(desktop)`, `(mobile)`
+- Comment every major section/element
+- Use consistent naming patterns
+
+---
+
+## Styling
+
+### Colors
+
+- **Custom colors must be defined in `src/app/styles.css`**: Custom colors are defined as CSS custom properties in the `@theme` section
+- **Naming Convention**: Custom colors are defined with `--color-*` prefix (e.g., `--color-primary-purple`, `--color-dark`)
+- **Usage in Tailwind**: Use the color name without the `--color-` prefix in Tailwind classes
+  - CSS: `--color-primary-purple: #8c52fe;`
+  - Tailwind: `bg-primary-purple`, `text-primary-purple`, `border-primary-purple`
+- **Basic colors exception**: The colors `black`, `white`, and `gray` (with variants like `gray-100`, `gray-500`, etc.) are allowed and do not need to be defined in `styles.css`
+- **Never use other Tailwind default colors**: Do not use Tailwind's default color palette for other colors (e.g., `bg-blue-500`, `text-red-600`, `border-slate-300`, `bg-indigo-100`, etc.)
+- **Never use hardcoded color values**: Do not use hex codes, rgb(), or other color values directly in className (except for basic black, white, and gray)
+- **Opacity**: Use Tailwind opacity modifiers (e.g., `bg-primary-purple/20`, `text-dark/80`)
+
+**Examples:**
+```typescript
+// ❌ Don't use Tailwind default colors
+className="bg-blue-500"
+className="text-red-600"
+className="border-gray-300"
+className="bg-slate-100"
+className="text-indigo-700"
+
+// ❌ Don't use hardcoded colors
+className="bg-[#8c52fe]"
+className="text-[#222222]"
+className="border-[rgb(140,82,254)]"
+
+// ✅ Use colors from styles.css
+className="bg-primary-purple"
+className="text-dark"
+className="border-primary-purple/20"
+className="text-dark/80"
+```
+
+**Defining New Colors:**
+1. Add the color to `src/app/styles.css` in the `@theme` section: `--color-{name}: {value};`
+2. Use the color in Tailwind classes: `bg-{name}`, `text-{name}`, `border-{name}`, etc.
+
+### Typography
+
+- **Always use hardcoded pixel values**: `text-[15px]`, `text-[14px]`, `text-[12px]`
+- **Never use Tailwind default text size classes**: Do not use `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, etc.
+
+**Examples:**
+```typescript
+// ❌ Don't use
+className="text-sm"
+className="text-lg"
+className="text-base"
+
+// ✅ Use
+className="text-[15px]"
+className="text-[14px]"
+className="text-[12px]"
+```
+
+### Gradients
+
+- **Always use `bg-linear-to-*` instead of `bg-gradient-to-*`**: Use `bg-linear-to-br`, `bg-linear-to-r`, `bg-linear-to-t`, etc.
+- **Never use `bg-gradient-to-*`**: Do not use Tailwind's default `bg-gradient-to-*` classes
+
+**Examples:**
+```typescript
+// ❌ Don't use
+className="bg-gradient-to-br from-gray-200 to-gray-300"
+className="bg-gradient-to-r from-primary-purple to-primary-lightpurple"
+
+// ✅ Use
+className="bg-linear-to-br from-gray-200 to-gray-300"
+className="bg-linear-to-r from-primary-purple to-primary-lightpurple"
+```
+
+### Aspect Ratios
+
+- **Use simplified syntax when available**: Use `aspect-4/3` instead of `aspect-[4/3]` when Tailwind supports the fractional value directly
+- **Use arbitrary values for uncommon ratios**: Use `aspect-[21/9]` for ratios that aren't commonly supported
+
+**Examples:**
+```typescript
+// ❌ Don't use (when simpler syntax is available)
+className="aspect-[4/3]"
+
+// ✅ Use (simpler syntax)
+className="aspect-4/3"
+
+// ✅ Use (uncommon ratio requires arbitrary value)
+className="aspect-[21/9]"
+```
+
+### Flexbox Utilities
+
+- **Use simplified syntax**: Use `shrink-0` instead of `flex-shrink-0`
+- **Use `grow-*` and `shrink-*`**: Prefer the simplified flexbox utility classes
+
+**Examples:**
+```typescript
+// ❌ Don't use
+className="flex-shrink-0"
+className="flex-grow-1"
+
+// ✅ Use
+className="shrink-0"
+className="grow-1"
+```
+
+### className Formatting
+
+#### twMerge Usage
+
+**Use `twMerge` (from `tailwind-merge`) when:**
+- The line of code would exceed 80 characters, OR
+- There is a variable in the list of classes (like a `className` prop)
+
+**Use simple string className when:**
+- It fits within 80 characters AND
+- Has no variables
+
+**Never use template literal notation** with backticks for className
+
+**Import:** `import { twMerge } from "tailwind-merge"`
+
+**Examples:**
+```typescript
+// ❌ Don't use template literals
+className={`
+  flex items-center gap-4
+  ${isActive ? "bg-blue" : "bg-gray"}
+  ${className}
+`}
+
+// ✅ Simple string (fits in 80 chars, no variables)
+className="flex items-center gap-4 bg-blue"
+
+// ✅ twMerge (has variable)
+className={twMerge("flex items-center gap-4", className)}
+
+// ✅ twMerge (exceeds 80 chars)
+className={twMerge(
+  "flex items-center gap-4",
+  isActive ? "bg-blue" : "bg-gray",
+  className
+)}
+```
+
+#### className Ordering
+
+When using multiple lines, order classes in this sequence:
+
+1. **Z-Index**: `z-*` (must come before positioning classes)
+2. **Layout/Positioning**: `relative`, `absolute`, `fixed`
+3. **Display/Visibility**: `flex`, `grid`, `block`, `hidden`
+4. **Positioning**: `inset-*`, `top-*`, `bottom-*`, `left-*`, `right-*`, `translate-*` (z-index must come before these)
+5. **Flexbox/Grid Properties**: `flex-col`, `flex-row`, `items-*`, `justify-*`, `gap-*`
+6. **Sizing**: `w-*`, `min-w-*`, `max-w-*`, `h-*`, `min-h-*`, `max-h-*`
+7. **Spacing**: `p-*`, `px-*`, `py-*`, `pt-*`, `pb-*`, `pl-*`, `pr-*`, `m-*`, `ml-*`, `mr-*`, `mt-*`, `mb-*`
+8. **Typography**: `text-*`, `font-*`
+   - Text sizes must use hardcoded pixel values (e.g., `text-[15px]`)
+   - Never use Tailwind default text size classes
+9. **Colors**: `bg-*`, `text-*`
+10. **Borders**: `border-*`, `rounded-*`
+11. **Effects**: `shadow-*`, `opacity-*`, `transition-*`, `duration-*`
+12. **Responsive Breakpoints**: Prioritize `xs:*`, `de:*`, `me:*`
+    - Other breakpoints (`sm:*`, `md:*`, `lg:*`, `xl:*`) available when needed
+    - Prefer `xs:`, `de:`, and `me:` as primary breakpoints
+13. **Custom Classes**: Project-specific classes (e.g., `container-medium`, `text-mediumsmall`)
+
+#### Multi-line className
+
+**Single line**: Use when classes fit comfortably on one line (typically 3-5 classes)
+```typescript
+className="flex items-center gap-4"
+```
+
+**Multi-line**: Use when:
+- Responsive breakpoints on separate lines
+- Conditional classes that need clarity
+- Line would exceed 80 characters
+
+**Formatting with twMerge:**
+- **Group related classes together**: Don't split every single class onto its own line. Group classes from the same category (e.g., all spacing classes, all sizing classes) on the same line if they fit within 80 characters.
+- **Each breakpoint on its own line**: Every responsive breakpoint (`xs:`, `de:`, `me:`, `md:`, `lg:`, etc.) must be on a separate line, even if it's just one class.
+- **Base classes first**: Put all base (non-responsive) classes on the first line(s), then breakpoints.
+- **Conditional classes clearly separated**: Put conditional classes on separate lines for clarity.
+
+**Example:**
+```typescript
+// ✅ Good: Groups related classes together, breakpoints on separate lines
+className={twMerge(
+  "relative flex flex-col gap-8 w-5/6 max-w-120 mx-auto",
+  "de:flex-row de:max-w-300",
+  imageLeft && "de:flex-row-reverse",
+  className
+)}
+
+// ✅ Good: Multiple base classes grouped, each breakpoint on its own line
+className={twMerge(
+  "flex items-center gap-4 p-6 rounded-xl bg-white",
+  "xs:gap-6",
+  "de:p-8 de:rounded-2xl",
+  "me:gap-8",
+  className
+)}
+
+// ❌ Bad: Too many lines, classes split unnecessarily
+className={twMerge(
+  "flex",
+  "items-center",
+  "gap-4",
+  "p-6",
+  "rounded-xl",
+  "bg-white",
+  "xs:gap-6",
+  "de:p-8",
+  "de:rounded-2xl",
+)}
+
+// ❌ Bad: Breakpoints not on separate lines
+className={twMerge(
+  "flex items-center gap-4 p-6 rounded-xl bg-white xs:gap-6 de:p-8",
+)}
+```
+
+#### Responsive Breakpoints
+
+- **Mobile-first approach**: Base classes first, then breakpoints
+- **Breakpoint order**: `xs:*`, `sm:*`, `md:*`, `de:*`, `lg:*`, `me:*`, `xl:*`
+- **Each breakpoint on its own line**: Every breakpoint must be on a separate line, even if it contains only one class
+- **Group breakpoint classes**: When multiple classes share the same breakpoint, group them on the same line
+
+**Example:**
+```typescript
+className={twMerge(
+  "flex flex-col gap-18",
+  "xs:flex-row xs:gap-20",
+  "sm:gap-22",
+  "md:flex-row",
+  "de:flex-row de:justify-between",
+  "lg:gap-24",
+  "me:gap-16",
+  "xl:gap-28",
+  className
+)}
+```
+
+---
+
+## Block Components (src/blocks)
+
+**Note**: These rules apply specifically to **block components** in `src/blocks`. Components in `src/components` have fewer structural requirements.
+
+### HTML Structure
+
+- **Semantic HTML**: Start with semantic HTML elements (`nav`, `footer`, `section`, `header`, `article`, `main`, etc.) when appropriate
+- **Container Pattern**: Use a "Container" div as the first child element for layout/wrapper purposes
+- **Hierarchy**: Maintain clear visual hierarchy with nested elements
+- **Structure**: Organize elements in logical groups with clear parent-child relationships
+
+**Example:**
+```typescript
+return (
+  <section className="...">
+    {/* Container */}
+    <div className="...">
+      {/* Logo */}
+      <LogoLink />
+      
+      {/* Content */}
+      <div className="...">
+        {/* Text */}
+        <div>...</div>
+      </div>
+    </div>
+  </section>
+);
+```
+
+### Comments
+
+Block components must follow all comment rules listed in the [Comments](#comments) section above.
+
+**Example:**
+```typescript
+<footer className="...">
+  {/* Container */}
+  <div className="...">
+    {/* Logo and contact container */}
+    <div className="...">
+      {/* Logo */}
+      <LogoLink />
+      
+      {/* Contact information */}
+      <div className="...">
+        {/* Icon */}
+        <Icon />
+        
+        {/* Text */}
+        <span>...</span>
+      </div>
+    </div>
+    
+    {/* Legal links */}
+    <div className="...">
+      ...
+    </div>
+  </div>
+</footer>
+```
+
+---
+
+## File Organization
+
+- **Component Folders**: Each component in its own folder with `index.ts` for exports
+  ```
+  LogoLink/
+    LogoLink.tsx
+    index.ts
+  ```
+- **UI Components**: Use `_ui` folders for page-specific UI components
+- **Barrel Exports**: Use `index.ts` files to export from directories
+- **Group Related Files**: Keep related files together (e.g., hooks, utils, types)
+
+---
+
+## Messages Files (src/messages)
+
+Messages files contain translations for internationalization using `next-intl`.
+
+### File Structure
+
+- **Location**: All message files in `src/messages/` directory
+- **File Naming**: Use locale codes as filenames (e.g., `en.json`, `nl.json`)
+- **Format**: JSON files with UTF-8 encoding
+
+### JSON Structure Rules
+
+1. **Key Naming**: Use camelCase for all keys
+   ```json
+   {
+     "home": { ... },
+     "privacyPolicy": { ... },
+     "termsAndConditions": { ... }
+   }
+   ```
+
+2. **Nested Structure**: Use nested objects to organize related translations
+   ```json
+   {
+     "blog": {
+       "title": "Blog",
+       "sideBar": {
+         "heading": "More Articles",
+         "paragraph": "Discover more interesting articles"
+       }
+     }
+   }
+   ```
+
+3. **Consistency**: All locale files (en.json, nl.json, etc.) must have identical structure
+   - Same top-level keys
+   - Same nested structure
+   - Same key paths
+   - Only the values should differ between locales
+
+4. **Key Organization**: Group related translations under logical top-level keys
+   - Routes: `home`, `blog`, `privacyPolicy`, etc.
+   - Sections: `general`, `footer`, `hero`, etc.
+   - Features: Group feature-specific translations together
+
+5. **URLs and Paths**: Store URLs in `href` keys when needed
+   ```json
+   {
+     "home": {
+       "href": "/",
+       "title": "Home"
+     }
+   }
+   ```
+
+6. **Formatting**: 
+   - Use 2 spaces for indentation (standard JSON formatting)
+   - No trailing commas
+   - Use double quotes for all strings and keys
+   - Keep related keys together
+
+### Example Structure
+
+```json
+{
+  "general": {
+    "cookieNotification": "...",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "home": {
+    "href": "/",
+    "title": "Home"
+  },
+  "blog": {
+    "href": "/blog",
+    "title": "Blog",
+    "sideBar": {
+      "heading": "More Articles",
+      "paragraph": "Discover more"
+    }
+  }
+}
+```
+
+### Usage in Code
+
+- Use `getTranslations` (server) or `useTranslations` (client) from `next-intl`
+- Access nested keys using dot notation: `getTranslations("blog.sideBar.heading")`
+- Always use the same key path across all locale files
+
+---
+
+## TypeScript Best Practices
+
+- **Never use `any` type**: The `any` type is strictly forbidden. Always use proper types, `unknown`, or generics instead
+  - Use `unknown` when the type is truly unknown and needs runtime type checking
+  - Use proper types when the structure is known
+  - Use generics for reusable code with type parameters
+  - ESLint rule `@typescript-eslint/no-explicit-any` is set to warn to catch this
+- **Type Definitions**: Prefer `type` over `interface` for component props
+- **Type Exports**: Export types using `export type` syntax
+- **Generic Types**: Use generics when appropriate for reusable code
+- **Type Guards**: Use type guards for runtime type checking when using `unknown`
+
+---
+
+## Formatting
+
+### Line Length
+
+- **Maximum 80 characters per line**, except for imports with long import strings
+
+### Prettier
+
+- Run `pnpm run format` before committing
+- Auto-formatting: Let Prettier handle all formatting decisions; don't manually format code
+
+### Whitespace Rules
+
+Use blank lines to separate logical sections of code:
+
+1. **After "use client" directive**: Always add a blank line
+   ```typescript
+   "use client";
+   
+   import { ... }
+   ```
+
+2. **After imports**: Blank line before type definitions or component declarations
+   ```typescript
+   import { ... }
+   
+   type ComponentProps = { ... }
+   ```
+
+3. **After type definitions**: Blank line before const/component declarations
+   ```typescript
+   type ComponentProps = { ... }
+   
+   const Component: React.FC<ComponentProps> = () => { ... }
+   ```
+
+4. **After const declarations inside functions**: 
+   - If multiple consts are related, keep them together
+   - Add a blank line after the last const before the next logical section (return, useEffect, other functions, etc.)
+   ```typescript
+   const Component: React.FC = () => {
+     const value1 = ...;
+     const value2 = ...;
+     const value3 = ...;
+     
+     useEffect(() => { ... }, []);
+     
+     return (...);
+   };
+   ```
+
+5. **Between hooks and return**: Blank line between React hooks (useState, useEffect, etc.) and return statement
+   ```typescript
+   const [state, setState] = useState(...);
+   useEffect(() => { ... }, []);
+   
+   return (...);
+   ```
+
+6. **Between function definitions**: Blank line between different function definitions within a component
+   ```typescript
+   const handleClick = () => { ... };
+   
+   const handleSubmit = () => { ... };
+   
+   return (...);
+   ```
+
+7. **Above return statements**: Always add a blank line above return statements, except when:
+   - It is the first line within a code block (function body, if statement, etc.)
+   - A comment is directly above it
+   ```typescript
+   // ✅ Correct - blank line above return
+   const value = calculate();
+   
+   return value;
+   
+   // ✅ Correct - first line in function (no blank line needed)
+   const Component: React.FC = () => {
+     return <div>...</div>;
+   };
+   
+   // ✅ Correct - comment above (no blank line needed)
+   const value = calculate();
+   // Return the calculated value
+   return value;
+   
+   // ✅ Correct - first line in if block (no blank line needed)
+   if (condition) {
+     return <div>...</div>;
+   }
+   
+   // ❌ Incorrect - missing blank line above return
+   const value = calculate();
+   return value;
+   ```
+
+8. **Between logical sections in JSX**: Blank lines between major JSX sections (separated by comments)
+   ```typescript
+   return (
+     <div>
+       {/* Section 1 */}
+       <div>...</div>
+       
+       {/* Section 2 */}
+       <div>...</div>
+     </div>
+   );
+   ```
+
+9. **Before export default**: Always add a blank line before export statement
+   ```typescript
+   };
+   
+   export default Component;
+   ```

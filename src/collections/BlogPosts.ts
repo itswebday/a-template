@@ -1,4 +1,4 @@
-import { authenticated, authenticatedOrPublished } from "@/access";
+import { authenticatedOrPublished, developer } from "@/access";
 import { RichTextField, SlugField } from "@/fields";
 import { generateBlogPostUrl, populatePublishedAtCollection } from "@/hooks";
 import {
@@ -22,10 +22,10 @@ export const BlogPosts: CollectionConfig = {
     plural: "Blog posts",
   },
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: developer,
+    delete: developer,
     read: authenticatedOrPublished,
-    update: authenticated,
+    update: developer,
   },
   admin: {
     useAsTitle: "title",
@@ -132,7 +132,7 @@ export const BlogPosts: CollectionConfig = {
   },
   versions: {
     drafts: {
-      autosave: true,
+      autosave: false,
     },
     maxPerDoc: 50,
   },

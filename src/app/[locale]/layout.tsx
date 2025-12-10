@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
 import {
   CookieNotification,
   Footer,
@@ -5,7 +7,10 @@ import {
   PreviewListener,
 } from "@/components";
 import { NavMenuProvider, PageProvider } from "@/contexts";
-import { NextIntlClientProvider } from "next-intl";
+
+const getServerSideURL = () => {
+  return process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+};
 
 const HomeLayout = async ({
   children,
@@ -39,6 +44,10 @@ const HomeLayout = async ({
       </html>
     </NextIntlClientProvider>
   );
+};
+
+export const metadata: Metadata = {
+  metadataBase: new URL(getServerSideURL()),
 };
 
 export default HomeLayout;

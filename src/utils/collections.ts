@@ -1,8 +1,7 @@
-import configPromise from "@/payload.config";
 import type { Config } from "@/payload-types";
 import type { LocaleOption } from "@/types";
 import { unstable_cache } from "next/cache";
-import { getPayload } from "payload";
+import { getCachedPayload } from "./payload";
 
 type Collection = keyof Config["collections"];
 type FilterCondition = {
@@ -31,7 +30,7 @@ export const getCollection = async <CollectionType extends Collection>(
   locale: LocaleOption,
   options?: Options,
 ): Promise<Config["collections"][CollectionType][]> => {
-  const payload = await getPayload({ config: configPromise });
+  const payload = await getCachedPayload();
   const whereClause: Record<string, Record<string, unknown>> = {};
 
   if (options?.exclude?.length) {
@@ -65,7 +64,7 @@ export const getDocument = async <CollectionType extends Collection>(
   locale: LocaleOption,
   depth?: number,
 ): Promise<Config["collections"][CollectionType] | null> => {
-  const payload = await getPayload({ config: configPromise });
+  const payload = await getCachedPayload();
   const result = await payload.find({
     collection,
     where: {

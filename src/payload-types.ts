@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | "Pacific/Midway"
+  | "Pacific/Niue"
+  | "Pacific/Honolulu"
+  | "Pacific/Rarotonga"
+  | "America/Anchorage"
+  | "Pacific/Gambier"
+  | "America/Los_Angeles"
+  | "America/Tijuana"
+  | "America/Denver"
+  | "America/Phoenix"
+  | "America/Chicago"
+  | "America/Guatemala"
+  | "America/New_York"
+  | "America/Bogota"
+  | "America/Caracas"
+  | "America/Santiago"
+  | "America/Buenos_Aires"
+  | "America/Sao_Paulo"
+  | "Atlantic/South_Georgia"
+  | "Atlantic/Azores"
+  | "Atlantic/Cape_Verde"
+  | "Europe/London"
+  | "Europe/Berlin"
+  | "Africa/Lagos"
+  | "Europe/Athens"
+  | "Africa/Cairo"
+  | "Europe/Moscow"
+  | "Asia/Riyadh"
+  | "Asia/Dubai"
+  | "Asia/Baku"
+  | "Asia/Karachi"
+  | "Asia/Tashkent"
+  | "Asia/Calcutta"
+  | "Asia/Dhaka"
+  | "Asia/Almaty"
+  | "Asia/Jakarta"
+  | "Asia/Bangkok"
+  | "Asia/Shanghai"
+  | "Asia/Singapore"
+  | "Asia/Tokyo"
+  | "Asia/Seoul"
+  | "Australia/Brisbane"
+  | "Australia/Sydney"
+  | "Pacific/Guam"
+  | "Pacific/Noumea"
+  | "Pacific/Auckland"
+  | "Pacific/Fiji";
 
 export interface Config {
   auth: {
@@ -70,50 +70,69 @@ export interface Config {
     media: Media;
     users: User;
     pages: Page;
-    'blog-posts': BlogPost;
-    'payload-kv': PayloadKv;
-    'payload-jobs': PayloadJob;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "blog-posts": BlogPost;
+    forms: Form;
+    "form-submissions": FormSubmission;
+    "payload-kv": PayloadKv;
+    "payload-jobs": PayloadJob;
+    "payload-locked-documents": PayloadLockedDocument;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
-    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    "blog-posts": BlogPostsSelect<false> | BlogPostsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    "form-submissions":
+      | FormSubmissionsSelect<false>
+      | FormSubmissionsSelect<true>;
+    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
+    "payload-jobs": PayloadJobsSelect<false> | PayloadJobsSelect<true>;
+    "payload-locked-documents":
+      | PayloadLockedDocumentsSelect<false>
+      | PayloadLockedDocumentsSelect<true>;
+    "payload-preferences":
+      | PayloadPreferencesSelect<false>
+      | PayloadPreferencesSelect<true>;
+    "payload-migrations":
+      | PayloadMigrationsSelect<false>
+      | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'nl') | ('en' | 'nl')[];
+  fallbackLocale:
+    | ("false" | "none" | "null")
+    | false
+    | null
+    | ("en" | "nl")
+    | ("en" | "nl")[];
   globals: {
     navigation: Navigation;
     footer: Footer;
     home: Home;
     blog: Blog;
-    'privacy-policy': PrivacyPolicy;
-    'cookie-policy': CookiePolicy;
-    'terms-and-conditions': TermsAndCondition;
+    "privacy-policy": PrivacyPolicy;
+    "cookie-policy": CookiePolicy;
+    "terms-and-conditions": TermsAndCondition;
   };
   globalsSelect: {
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
     blog: BlogSelect<false> | BlogSelect<true>;
-    'privacy-policy': PrivacyPolicySelect<false> | PrivacyPolicySelect<true>;
-    'cookie-policy': CookiePolicySelect<false> | CookiePolicySelect<true>;
-    'terms-and-conditions': TermsAndConditionsSelect<false> | TermsAndConditionsSelect<true>;
+    "privacy-policy": PrivacyPolicySelect<false> | PrivacyPolicySelect<true>;
+    "cookie-policy": CookiePolicySelect<false> | CookiePolicySelect<true>;
+    "terms-and-conditions":
+      | TermsAndConditionsSelect<false>
+      | TermsAndConditionsSelect<true>;
   };
-  locale: 'en' | 'nl';
+  locale: "en" | "nl";
   user: User & {
-    collection: 'users';
+    collection: "users";
   };
   jobs: {
     tasks: {
@@ -206,6 +225,7 @@ export interface Media {
  */
 export interface User {
   id: number;
+  role?: ("developer" | "admin") | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -231,7 +251,16 @@ export interface User {
 export interface Page {
   id: number;
   title: string;
-  blocks?: (TextAndImageBlock | WhiteSpaceBlock)[] | null;
+  blocks?:
+    | (
+        | TextAndImageBlock
+        | FormBlock
+        | TextBlock
+        | CardsBlock
+        | VisualBlock
+        | ProcessBlock
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -255,13 +284,19 @@ export interface Page {
   urlWithoutLocale?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TextAndImageBlock".
  */
 export interface TextAndImageBlock {
+  showHeading?: boolean | null;
+  heading?: {
+    icon?: (number | null) | Media;
+    text?: string | null;
+    centered?: boolean | null;
+  };
   text?: {
     root: {
       type: string;
@@ -270,27 +305,54 @@ export interface TextAndImageBlock {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
     [k: string]: unknown;
   } | null;
+  showButton?: boolean | null;
+  button?: {
+    variant:
+      | "purpleButton"
+      | "whiteButton"
+      | "darkButton"
+      | "transparentButton";
+    text: string;
+    customHref?: boolean | null;
+    href?: string | null;
+    linkType?:
+      | (
+          | "home"
+          | "blog"
+          | "page"
+          | "blog-post"
+          | "privacy-policy"
+          | "cookie-policy"
+          | "terms-and-conditions"
+        )
+      | null;
+    page?: {
+      relationTo: "pages";
+      value: number | Page;
+    } | null;
+    blogPost?: {
+      relationTo: "blog-posts";
+      value: number | BlogPost;
+    } | null;
+    newTab?: boolean | null;
+    centered?: boolean | null;
+  };
   image?: (number | null) | Media;
-  imageLeft?: boolean | null;
+  imageSide?: ("left" | "right") | null;
+  width?: ("small" | "medium" | "large") | null;
+  dark?: boolean | null;
+  paddingTop?: ("none" | "small" | "medium" | "large") | null;
+  paddingBottom?: ("none" | "small" | "medium" | "large") | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'textAndImage';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WhiteSpaceBlock".
- */
-export interface WhiteSpaceBlock {
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'whiteSpace';
+  blockType: "text-and-image-block";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -309,8 +371,8 @@ export interface BlogPost {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -335,7 +397,393 @@ export interface BlogPost {
   url?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock".
+ */
+export interface FormBlock {
+  /**
+   * Select the form that should be shown
+   */
+  form: number | Form;
+  fullScreen?: boolean | null;
+  showHeading?: boolean | null;
+  heading?: {
+    icon?: (number | null) | Media;
+    text?: string | null;
+    centered?: boolean | null;
+  };
+  text?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  showButton?: boolean | null;
+  button?: {
+    variant:
+      | "purpleButton"
+      | "whiteButton"
+      | "darkButton"
+      | "transparentButton";
+    text: string;
+    customHref?: boolean | null;
+    href?: string | null;
+    linkType?:
+      | (
+          | "home"
+          | "blog"
+          | "page"
+          | "blog-post"
+          | "privacy-policy"
+          | "cookie-policy"
+          | "terms-and-conditions"
+        )
+      | null;
+    page?: {
+      relationTo: "pages";
+      value: number | Page;
+    } | null;
+    blogPost?: {
+      relationTo: "blog-posts";
+      value: number | BlogPost;
+    } | null;
+    newTab?: boolean | null;
+    centered?: boolean | null;
+  };
+  formSide?: ("left" | "right") | null;
+  dark?: boolean | null;
+  paddingTop?: ("none" | "small" | "medium" | "large") | null;
+  paddingBottom?: ("none" | "small" | "medium" | "large") | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "form-block";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  title: string;
+  description?: string | null;
+  fields?:
+    | {
+        name?: string | null;
+        type?:
+          | (
+              | ""
+              | "text"
+              | "textarea"
+              | "email"
+              | "tel"
+              | "number"
+              | "select"
+              | "checkbox"
+              | "radio"
+              | "date"
+              | "time"
+              | "datetime-local"
+              | "file"
+              | "url"
+              | "password"
+              | "hidden"
+              | "range"
+              | "color"
+              | "search"
+            )
+          | null;
+        options?:
+          | {
+              value?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        multiSelect?: boolean | null;
+        maxNumFiles?: number | null;
+        maxMBs?: number | null;
+        includeCheckboxLink?: boolean | null;
+        checkboxLink?: {
+          textWithLink?: string | null;
+          customHref?: boolean | null;
+          href?: string | null;
+          linkType?:
+            | (
+                | "home"
+                | "blog"
+                | "page"
+                | "blog-post"
+                | "privacy-policy"
+                | "cookie-policy"
+                | "terms-and-conditions"
+              )
+            | null;
+          page?: {
+            relationTo: "pages";
+            value: number | Page;
+          } | null;
+          blogPost?: {
+            relationTo: "blog-posts";
+            value: number | BlogPost;
+          } | null;
+          newTab?: boolean | null;
+        };
+        required?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextBlock".
+ */
+export interface TextBlock {
+  showHeading?: boolean | null;
+  heading?: {
+    icon?: (number | null) | Media;
+    text?: string | null;
+    centered?: boolean | null;
+  };
+  text?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  showButton?: boolean | null;
+  button?: {
+    variant:
+      | "purpleButton"
+      | "whiteButton"
+      | "darkButton"
+      | "transparentButton";
+    text: string;
+    customHref?: boolean | null;
+    href?: string | null;
+    linkType?:
+      | (
+          | "home"
+          | "blog"
+          | "page"
+          | "blog-post"
+          | "privacy-policy"
+          | "cookie-policy"
+          | "terms-and-conditions"
+        )
+      | null;
+    page?: {
+      relationTo: "pages";
+      value: number | Page;
+    } | null;
+    blogPost?: {
+      relationTo: "blog-posts";
+      value: number | BlogPost;
+    } | null;
+    newTab?: boolean | null;
+    centered?: boolean | null;
+  };
+  width?: ("small" | "medium" | "large") | null;
+  dark?: boolean | null;
+  paddingTop?: ("none" | "small" | "medium" | "large") | null;
+  paddingBottom?: ("none" | "small" | "medium" | "large") | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "text-block";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardsBlock".
+ */
+export interface CardsBlock {
+  cards?:
+    | {
+        icon?: (number | null) | Media;
+        text?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ("ltr" | "rtl") | null;
+            format:
+              | "left"
+              | "start"
+              | "center"
+              | "right"
+              | "end"
+              | "justify"
+              | "";
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        showButton?: boolean | null;
+        button?: {
+          variant:
+            | "purpleButton"
+            | "whiteButton"
+            | "darkButton"
+            | "transparentButton";
+          text: string;
+          customHref?: boolean | null;
+          href?: string | null;
+          linkType?:
+            | (
+                | "home"
+                | "blog"
+                | "page"
+                | "blog-post"
+                | "privacy-policy"
+                | "cookie-policy"
+                | "terms-and-conditions"
+              )
+            | null;
+          page?: {
+            relationTo: "pages";
+            value: number | Page;
+          } | null;
+          blogPost?: {
+            relationTo: "blog-posts";
+            value: number | BlogPost;
+          } | null;
+          newTab?: boolean | null;
+          centered?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  dark?: boolean | null;
+  paddingTop?: ("none" | "small" | "medium" | "large") | null;
+  paddingBottom?: ("none" | "small" | "medium" | "large") | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "cards-block";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VisualBlock".
+ */
+export interface VisualBlock {
+  visual?: (number | null) | Media;
+  showSocialMediaLinks?: boolean | null;
+  socialMediaLinks?:
+    | {
+        icon?: (number | null) | Media;
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  showButton?: boolean | null;
+  button?: {
+    variant:
+      | "purpleButton"
+      | "whiteButton"
+      | "darkButton"
+      | "transparentButton";
+    text: string;
+    customHref?: boolean | null;
+    href?: string | null;
+    linkType?:
+      | (
+          | "home"
+          | "blog"
+          | "page"
+          | "blog-post"
+          | "privacy-policy"
+          | "cookie-policy"
+          | "terms-and-conditions"
+        )
+      | null;
+    page?: {
+      relationTo: "pages";
+      value: number | Page;
+    } | null;
+    blogPost?: {
+      relationTo: "blog-posts";
+      value: number | BlogPost;
+    } | null;
+    newTab?: boolean | null;
+    centered?: boolean | null;
+  };
+  dark?: boolean | null;
+  paddingTop?: ("none" | "small" | "medium" | "large") | null;
+  paddingBottom?: ("none" | "small" | "medium" | "large") | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "visual-block";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock".
+ */
+export interface ProcessBlock {
+  steps?:
+    | {
+        number?: string | null;
+        title?: string | null;
+        description?: string | null;
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  dark?: boolean | null;
+  paddingTop?: ("none" | "small" | "medium" | "large") | null;
+  paddingBottom?: ("none" | "small" | "medium" | "large") | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: "process-block";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: number;
+  form: number | Form;
+  submissionData:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  uploads?:
+    | {
+        field: string;
+        files: (number | Media)[];
+        id?: string | null;
+      }[]
+    | null;
+  submittedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -406,7 +854,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: "inline" | "schedulePublish";
         taskID: string;
         input?:
           | {
@@ -426,7 +874,7 @@ export interface PayloadJob {
           | number
           | boolean
           | null;
-        state: 'failed' | 'succeeded';
+        state: "failed" | "succeeded";
         error?:
           | {
               [k: string]: unknown;
@@ -439,7 +887,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ("inline" | "schedulePublish") | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -454,24 +902,32 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'media';
+        relationTo: "media";
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'users';
+        relationTo: "users";
         value: number | User;
       } | null)
     | ({
-        relationTo: 'pages';
+        relationTo: "pages";
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'blog-posts';
+        relationTo: "blog-posts";
         value: number | BlogPost;
+      } | null)
+    | ({
+        relationTo: "forms";
+        value: number | Form;
+      } | null)
+    | ({
+        relationTo: "form-submissions";
+        value: number | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   updatedAt: string;
@@ -484,7 +940,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   key?: string | null;
@@ -578,6 +1034,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -604,8 +1061,12 @@ export interface PagesSelect<T extends boolean = true> {
   blocks?:
     | T
     | {
-        textAndImage?: T | TextAndImageBlockSelect<T>;
-        whiteSpace?: T | WhiteSpaceBlockSelect<T>;
+        "text-and-image-block"?: T | TextAndImageBlockSelect<T>;
+        "form-block"?: T | FormBlockSelect<T>;
+        "text-block"?: T | TextBlockSelect<T>;
+        "cards-block"?: T | CardsBlockSelect<T>;
+        "visual-block"?: T | VisualBlockSelect<T>;
+        "process-block"?: T | ProcessBlockSelect<T>;
       };
   meta?:
     | T
@@ -627,17 +1088,193 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "TextAndImageBlock_select".
  */
 export interface TextAndImageBlockSelect<T extends boolean = true> {
+  showHeading?: T;
+  heading?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        centered?: T;
+      };
   text?: T;
+  showButton?: T;
+  button?:
+    | T
+    | {
+        variant?: T;
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        centered?: T;
+      };
   image?: T;
-  imageLeft?: T;
+  imageSide?: T;
+  width?: T;
+  dark?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WhiteSpaceBlock_select".
+ * via the `definition` "FormBlock_select".
  */
-export interface WhiteSpaceBlockSelect<T extends boolean = true> {
+export interface FormBlockSelect<T extends boolean = true> {
+  form?: T;
+  fullScreen?: T;
+  showHeading?: T;
+  heading?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        centered?: T;
+      };
+  text?: T;
+  showButton?: T;
+  button?:
+    | T
+    | {
+        variant?: T;
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        centered?: T;
+      };
+  formSide?: T;
+  dark?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextBlock_select".
+ */
+export interface TextBlockSelect<T extends boolean = true> {
+  showHeading?: T;
+  heading?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        centered?: T;
+      };
+  text?: T;
+  showButton?: T;
+  button?:
+    | T
+    | {
+        variant?: T;
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        centered?: T;
+      };
+  width?: T;
+  dark?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardsBlock_select".
+ */
+export interface CardsBlockSelect<T extends boolean = true> {
+  cards?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        showButton?: T;
+        button?:
+          | T
+          | {
+              variant?: T;
+              text?: T;
+              customHref?: T;
+              href?: T;
+              linkType?: T;
+              page?: T;
+              blogPost?: T;
+              newTab?: T;
+              centered?: T;
+            };
+        id?: T;
+      };
+  dark?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VisualBlock_select".
+ */
+export interface VisualBlockSelect<T extends boolean = true> {
+  visual?: T;
+  showSocialMediaLinks?: T;
+  socialMediaLinks?:
+    | T
+    | {
+        icon?: T;
+        href?: T;
+        id?: T;
+      };
+  showButton?: T;
+  button?:
+    | T
+    | {
+        variant?: T;
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        centered?: T;
+      };
+  dark?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock_select".
+ */
+export interface ProcessBlockSelect<T extends boolean = true> {
+  steps?:
+    | T
+    | {
+        number?: T;
+        title?: T;
+        description?: T;
+        image?: T;
+        id?: T;
+      };
+  dark?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
   id?: T;
   blockName?: T;
 }
@@ -663,6 +1300,63 @@ export interface BlogPostsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  fields?:
+    | T
+    | {
+        name?: T;
+        type?: T;
+        options?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+        multiSelect?: T;
+        maxNumFiles?: T;
+        maxMBs?: T;
+        includeCheckboxLink?: T;
+        checkboxLink?:
+          | T
+          | {
+              textWithLink?: T;
+              customHref?: T;
+              href?: T;
+              linkType?: T;
+              page?: T;
+              blogPost?: T;
+              newTab?: T;
+            };
+        required?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  form?: T;
+  submissionData?: T;
+  uploads?:
+    | T
+    | {
+        field?: T;
+        files?: T;
+        id?: T;
+      };
+  submittedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -748,14 +1442,22 @@ export interface Navigation {
         customHref?: boolean | null;
         href?: string | null;
         linkType?:
-          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+          | (
+              | "home"
+              | "blog"
+              | "page"
+              | "blog-post"
+              | "privacy-policy"
+              | "cookie-policy"
+              | "terms-and-conditions"
+            )
           | null;
         page?: {
-          relationTo: 'pages';
+          relationTo: "pages";
           value: number | Page;
         } | null;
         blogPost?: {
-          relationTo: 'blog-posts';
+          relationTo: "blog-posts";
           value: number | BlogPost;
         } | null;
         newTab?: boolean | null;
@@ -767,14 +1469,22 @@ export interface Navigation {
               customHref?: boolean | null;
               href?: string | null;
               linkType?:
-                | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+                | (
+                    | "home"
+                    | "blog"
+                    | "page"
+                    | "blog-post"
+                    | "privacy-policy"
+                    | "cookie-policy"
+                    | "terms-and-conditions"
+                  )
                 | null;
               page?: {
-                relationTo: 'pages';
+                relationTo: "pages";
                 value: number | Page;
               } | null;
               blogPost?: {
-                relationTo: 'blog-posts';
+                relationTo: "blog-posts";
                 value: number | BlogPost;
               } | null;
               newTab?: boolean | null;
@@ -784,6 +1494,38 @@ export interface Navigation {
         id?: string | null;
       }[]
     | null;
+  showButton?: boolean | null;
+  button?: {
+    variant:
+      | "purpleButton"
+      | "whiteButton"
+      | "darkButton"
+      | "transparentButton";
+    text: string;
+    customHref?: boolean | null;
+    href?: string | null;
+    linkType?:
+      | (
+          | "home"
+          | "blog"
+          | "page"
+          | "blog-post"
+          | "privacy-policy"
+          | "cookie-policy"
+          | "terms-and-conditions"
+        )
+      | null;
+    page?: {
+      relationTo: "pages";
+      value: number | Page;
+    } | null;
+    blogPost?: {
+      relationTo: "blog-posts";
+      value: number | BlogPost;
+    } | null;
+    newTab?: boolean | null;
+    centered?: boolean | null;
+  };
   slideOutMenu?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -794,6 +1536,8 @@ export interface Navigation {
  */
 export interface Footer {
   id: number;
+  logo?: (number | null) | Media;
+  Paragraph?: string | null;
   email?: {
     text?: string | null;
   };
@@ -804,20 +1548,91 @@ export interface Footer {
     text?: string | null;
     href?: string | null;
   };
-  links?:
+  quickLinks?:
     | {
         text: string;
         customHref?: boolean | null;
         href?: string | null;
         linkType?:
-          | ('page' | 'home' | 'blog' | 'blog-post' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions')
+          | (
+              | "home"
+              | "blog"
+              | "page"
+              | "blog-post"
+              | "privacy-policy"
+              | "cookie-policy"
+              | "terms-and-conditions"
+            )
           | null;
         page?: {
-          relationTo: 'pages';
+          relationTo: "pages";
           value: number | Page;
         } | null;
         blogPost?: {
-          relationTo: 'blog-posts';
+          relationTo: "blog-posts";
+          value: number | BlogPost;
+        } | null;
+        newTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  services?:
+    | {
+        text: string;
+        customHref?: boolean | null;
+        href?: string | null;
+        linkType?:
+          | (
+              | "home"
+              | "blog"
+              | "page"
+              | "blog-post"
+              | "privacy-policy"
+              | "cookie-policy"
+              | "terms-and-conditions"
+            )
+          | null;
+        page?: {
+          relationTo: "pages";
+          value: number | Page;
+        } | null;
+        blogPost?: {
+          relationTo: "blog-posts";
+          value: number | BlogPost;
+        } | null;
+        newTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialMediaLinks?:
+    | {
+        icon?: (number | null) | Media;
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  legalLinks?:
+    | {
+        text: string;
+        customHref?: boolean | null;
+        href?: string | null;
+        linkType?:
+          | (
+              | "home"
+              | "blog"
+              | "page"
+              | "blog-post"
+              | "privacy-policy"
+              | "cookie-policy"
+              | "terms-and-conditions"
+            )
+          | null;
+        page?: {
+          relationTo: "pages";
+          value: number | Page;
+        } | null;
+        blogPost?: {
+          relationTo: "blog-posts";
           value: number | BlogPost;
         } | null;
         newTab?: boolean | null;
@@ -837,7 +1652,16 @@ export interface Footer {
  */
 export interface Home {
   id: number;
-  blocks?: (TextAndImageBlock | WhiteSpaceBlock)[] | null;
+  blocks?:
+    | (
+        | TextAndImageBlock
+        | FormBlock
+        | TextBlock
+        | CardsBlock
+        | VisualBlock
+        | ProcessBlock
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -851,7 +1675,7 @@ export interface Home {
    * Automatically set
    */
   url?: string | null;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -876,7 +1700,7 @@ export interface Blog {
    * Automatically set
    */
   url?: string | null;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -894,8 +1718,8 @@ export interface PrivacyPolicy {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -914,7 +1738,7 @@ export interface PrivacyPolicy {
    * Automatically set
    */
   url?: string | null;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -932,8 +1756,8 @@ export interface CookiePolicy {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -952,7 +1776,7 @@ export interface CookiePolicy {
    * Automatically set
    */
   url?: string | null;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -970,8 +1794,8 @@ export interface TermsAndCondition {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -990,7 +1814,7 @@ export interface TermsAndCondition {
    * Automatically set
    */
   url?: string | null;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1026,6 +1850,20 @@ export interface NavigationSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  showButton?: T;
+  button?:
+    | T
+    | {
+        variant?: T;
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        centered?: T;
+      };
   slideOutMenu?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1036,6 +1874,8 @@ export interface NavigationSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  logo?: T;
+  Paragraph?: T;
   email?:
     | T
     | {
@@ -1052,7 +1892,38 @@ export interface FooterSelect<T extends boolean = true> {
         text?: T;
         href?: T;
       };
-  links?:
+  quickLinks?:
+    | T
+    | {
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        id?: T;
+      };
+  services?:
+    | T
+    | {
+        text?: T;
+        customHref?: T;
+        href?: T;
+        linkType?: T;
+        page?: T;
+        blogPost?: T;
+        newTab?: T;
+        id?: T;
+      };
+  socialMediaLinks?:
+    | T
+    | {
+        icon?: T;
+        href?: T;
+        id?: T;
+      };
+  legalLinks?:
     | T
     | {
         text?: T;
@@ -1082,8 +1953,12 @@ export interface HomeSelect<T extends boolean = true> {
   blocks?:
     | T
     | {
-        textAndImage?: T | TextAndImageBlockSelect<T>;
-        whiteSpace?: T | WhiteSpaceBlockSelect<T>;
+        "text-and-image-block"?: T | TextAndImageBlockSelect<T>;
+        "form-block"?: T | FormBlockSelect<T>;
+        "text-block"?: T | TextBlockSelect<T>;
+        "cards-block"?: T | CardsBlockSelect<T>;
+        "visual-block"?: T | VisualBlockSelect<T>;
+        "process-block"?: T | ProcessBlockSelect<T>;
       };
   meta?:
     | T
@@ -1186,9 +2061,17 @@ export interface TermsAndConditionsSelect<T extends boolean = true> {
  */
 export interface TaskSchedulePublish {
   input: {
-    type?: ('publish' | 'unpublish') | null;
+    type?: ("publish" | "unpublish") | null;
     locale?: string | null;
-    global?: ('home' | 'blog' | 'privacy-policy' | 'cookie-policy' | 'terms-and-conditions') | null;
+    global?:
+      | (
+          | "home"
+          | "blog"
+          | "privacy-policy"
+          | "cookie-policy"
+          | "terms-and-conditions"
+        )
+      | null;
     user?: (number | null) | User;
   };
   output?: unknown;
@@ -1201,7 +2084,6 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

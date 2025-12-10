@@ -104,9 +104,7 @@ export const Blog: GlobalConfig = {
   },
   versions: {
     drafts: {
-      autosave: {
-        interval: 100,
-      },
+      autosave: false,
       schedulePublish: true,
     },
     max: 50,

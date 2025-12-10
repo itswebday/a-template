@@ -1,58 +1,100 @@
-import configPromise from "@/payload.config";
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
-import { getPayload, type PayloadRequest } from "payload";
+import type { PayloadRequest } from "payload";
 import { NextRequest } from "next/server";
+import { getCachedPayload, handleApiError } from "@/utils/server";
+
+const isRedirectError = (error: unknown): boolean => {
+  return (
+    error !== null &&
+    typeof error === "object" &&
+    "digest" in error &&
+    typeof error.digest === "string" &&
+    error.digest.startsWith("NEXT_REDIRECT")
+  );
+};
 
 export const GET = async (
   request: NextRequest,
   _context: { params: Promise<Record<string, never>> },
 ): Promise<Response> => {
-  const payload = await getPayload({ config: configPromise });
-  const { searchParams } = new URL(request.url);
-  const path = searchParams.get("path");
-  const previewSecret = searchParams.get("previewSecret");
+  try {
+    // Get Payload instance and search parameters
+    const payload = await getCachedPayload();
+    const { searchParams } = new URL(request.url);
+    const path = searchParams.get("path");
+    const previewSecret = searchParams.get("previewSecret");
 
-  if (previewSecret !== process.env.PREVIEW_SECRET) {
-    return new Response("You are not allowed to preview this page", {
-      status: 403,
-    });
-  }
+    // Validate preview secret
+    if (previewSecret !== process.env.PREVIEW_SECRET) {
+      return handleApiError(
+        null,
+        "You are not allowed to preview this page",
+        403,
+      );
+    }
 
-  if (!path) {
-    return new Response("Insufficient search params", { status: 404 });
-  }
+    // Validate path parameter
+    if (!path) {
+      return handleApiError(null, "Insufficient search params", 400);
+    }
 
-  if (!path.startsWith("/")) {
-    return new Response(
-      "This endpoint can only be used for relative previews",
-      { status: 500 },
+    if (!path.startsWith("/")) {
+      return handleApiError(
+        null,
+        "This endpoint can only be used for relative previews",
+        400,
+      );
+    }
+
+    // Authenticate user
+    let user;
+
+    // Authenticate user
+    try {
+      user = await payload.auth({
+        req: request as unknown as PayloadRequest,
+        headers: request.headers,
+      });
+    } catch {
+      return handleApiError(
+        null,
+        "You are not allowed to preview this page",
+        403,
+      );
+    }
+
+    // Enable draft mode and redirect
+    const draft = await draftMode();
+
+    // Disable draft mode if user is not authenticated
+    if (!user) {
+      draft.disable();
+
+      // Error response
+      return handleApiError(
+        null,
+        "You are not allowed to preview this page",
+        403,
+      );
+    }
+
+    // Enable draft mode and redirect
+    draft.enable();
+
+    // Redirect to path
+    redirect(path);
+  } catch (errorResponse) {
+    // Re-throw redirect errors to allow Next.js to handle them
+    if (isRedirectError(errorResponse)) {
+      throw errorResponse;
+    }
+
+    // Error response
+    return handleApiError(
+      errorResponse,
+      "Failed to process preview request",
+      500,
     );
   }
-
-  let user;
-
-  try {
-    user = await payload.auth({
-      req: request as unknown as PayloadRequest,
-      headers: request.headers,
-    });
-  } catch {
-    return new Response("You are not allowed to preview this page", {
-      status: 403,
-    });
-  }
-
-  const draft = await draftMode();
-
-  if (!user) {
-    draft.disable();
-
-    return new Response("You are not allowed to preview this page", {
-      status: 403,
-    });
-  }
-
-  draft.enable();
-  redirect(path);
 };

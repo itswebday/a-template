@@ -1,3 +1,8 @@
+export { default as BackButton } from "./BackButton";
+export { default as BackgroundImage } from "./BackgroundImage";
+export { default as BackgroundVideo } from "./BackgroundVideo";
+export { default as ButtonLink, type ButtonLinkProps } from "./ButtonLink";
+export { default as Card } from "./Card";
 export { default as CookieNotification } from "./CookieNotification";
 export { default as Footer } from "./Footer";
 export { default as LogoLink } from "./LogoLink";

@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 export type FooterLinkProps = {
-  className?: string;
   children: React.ReactNode;
+  className?: string;
   href?: string;
   target?: "_blank" | "_self";
   onClick?: () => void;
 };
 
 const FooterLink: React.FC<FooterLinkProps> = ({
-  className,
   children,
+  className,
   href,
   target = "_self",
   onClick,
@@ -45,28 +46,33 @@ const FooterLink: React.FC<FooterLinkProps> = ({
     }
   };
 
-  const attributes = {
-    className: `
-      flex items-center py-0.5
-      transition-opacity duration-200 hover:opacity-80
-      ${isClicked && "pointer-events-none"}
-      ${className}
-    `,
-  };
-
   return href ? (
     <Link
-      {...attributes}
+      className={twMerge(
+        "flex items-center py-0.5",
+        "transition-opacity duration-200 hover:opacity-80",
+        isClicked && "pointer-events-none",
+        className,
+      )}
       href={href}
-      target={target}
+      prefetch={false}
       rel={target === "_blank" ? "noopener noreferrer" : undefined}
-      prefetch={true}
+      target={target}
       onClick={handleClick}
     >
       {children}
     </Link>
   ) : (
-    <div {...attributes}>{children}</div>
+    <div
+      className={twMerge(
+        "flex items-center py-0.5",
+        "transition-opacity duration-200 hover:opacity-80",
+        isClicked && "pointer-events-none",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 };
 

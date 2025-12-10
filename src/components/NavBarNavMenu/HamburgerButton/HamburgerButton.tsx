@@ -1,7 +1,8 @@
 "use client";
 
-import HamburgerDash from "./HamburgerDash";
+import { twMerge } from "tailwind-merge";
 import { useNavMenu } from "@/contexts";
+import HamburgerDash from "./HamburgerDash";
 
 type HamburgerButtonProps = {
   className?: string;
@@ -12,13 +13,12 @@ const HamburgerButton: React.FC<HamburgerButtonProps> = ({ className }) => {
 
   return (
     <button
-      className={`
-        flex-col justify-between w-16 h-nav-bar px-5 py-8
-        ${className}
-      `}
+      className={twMerge(
+        "flex-col justify-between w-16 h-nav-bar px-5 py-8",
+        className,
+      )}
       onClick={navMenu.toggle}
     >
-      {/* Hamburger dashes */}
       <HamburgerDash dashIndex={0} />
       <HamburgerDash dashIndex={1} />
       <HamburgerDash dashIndex={2} />

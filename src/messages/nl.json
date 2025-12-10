@@ -4,6 +4,7 @@
     "cookiePolicy": "cookiebeleid",
     "accept": "Accepteren",
     "decline": "Weigeren",
+    "videoTagNotSupported": "Uw browser ondersteunt de video-tag niet.",
     "errors": {
       "localizedUrls": "Vertaalde URL's laden mislukt"
     }
@@ -19,6 +20,7 @@
     "title": "Blog",
     "noPosts": "Nog geen blogposts.",
     "readMore": "Lees meer",
+    "backToHome": "Terug naar home",
     "backToOverview": "Terug naar blogoverzicht",
     "minRead": "min lezen",
     "publishedOn": "Gepubliceerd op",
@@ -59,10 +61,52 @@
       "heading": "LOCATIE",
       "address": "ADRES"
     },
+    "quickLinks": {
+      "heading": "Snelle links"
+    },
+    "services": {
+      "heading": "Diensten"
+    },
+    "socialMedia": {
+      "heading": "Volg ons"
+    },
     "legalLinks": {
       "heading": "NAVIGATIE",
       "kvk": "KvK",
       "vat": "BTW"
+    }
+  },
+
+  "form": {
+    "labels": {
+      "noOptions": "Geen opties beschikbaar",
+      "selectedFiles": "Geselecteerde bestanden ({count}):",
+      "total": "Totaal:",
+      "submit": "Verzenden",
+      "submitting": "Verzenden..."
+    },
+    "placeholders": {
+      "email": "voorbeeld@email.nl",
+      "tel": "+31 6 12345678",
+      "number": "123",
+      "url": "https://www.voorbeeld.nl",
+      "date": "01-01-2025",
+      "time": "12:00",
+      "datetimeLocal": "01-01-2025T12:00",
+      "password": "••••••••",
+      "search": "Zoeken...",
+      "textarea": "Typ hier uw bericht...",
+      "text": "Voer in..."
+    },
+    "success": {
+      "message": "Bedankt! Uw formulier is succesvol verzonden."
+    },
+    "errors": {
+      "maxFiles": "U kunt maximaal {maxNumFiles} bestand{maxNumFiles, plural, one {} other {en}} uploaden. U heeft {fileCount} bestand{fileCount, plural, one {} other {en}} geselecteerd.",
+      "totalSizeTooLarge": "De totale grootte van de bestanden is te groot. Maximum totale grootte is {maxMBs}MB.",
+      "fileTooLarge": "Bestand \"{fileName}\" is te groot. Maximum grootte per bestand is {maxMBs}MB.",
+      "submitError": "Er is een fout opgetreden bij het verzenden van het formulier.",
+      "noFields": "Dit formulier heeft geen velden."
     }
   }
 }

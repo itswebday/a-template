@@ -1,6 +1,7 @@
 "use server";
 
 import { getTranslations } from "next-intl/server";
+import { twMerge } from "tailwind-merge";
 
 const PageNotFoundPage = async () => {
   const pageNotFoundT = await getTranslations("pageNotFound");
@@ -9,10 +10,10 @@ const PageNotFoundPage = async () => {
     <main className="flex justify-center items-center min-h-screen">
       {/* Container */}
       <div
-        className={`
-          flex flex-col items-center text-center gap-6
-          w-11/12 max-w-200
-        `}
+        className={twMerge(
+          "flex flex-col items-center text-center gap-6",
+          "w-11/12 max-w-200",
+        )}
       >
         {/* 404 */}
         <span className="text-6xl font-bold">404</span>

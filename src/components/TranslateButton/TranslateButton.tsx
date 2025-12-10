@@ -1,20 +1,21 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 import { NavLink } from "@/components";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 import { usePage } from "@/contexts";
+import type { LocaleOption } from "@/types";
 import { request } from "@/utils";
-import { LocaleOption } from "@/types";
-import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-
-type TranslateButtonProps = {
-  className?: string;
-};
 
 type LocalizedRoutesResponse = {
   localizedUrls: Record<LocaleOption, string>;
   status: number;
+};
+
+type TranslateButtonProps = {
+  className?: string;
 };
 
 const TranslateButton: React.FC<TranslateButtonProps> = ({ className }) => {
@@ -25,6 +26,7 @@ const TranslateButton: React.FC<TranslateButtonProps> = ({ className }) => {
     LocaleOption,
     string
   > | null>(null);
+
   useEffect(() => {
     if (!currentPage) {
       return;
@@ -58,21 +60,15 @@ const TranslateButton: React.FC<TranslateButtonProps> = ({ className }) => {
   }, [currentPage, currentSlug, currentLocale]);
 
   return (
-    <div
-      className={`
-        flex items-center gap-2
-        ${className}
-      `}
-    >
-      {/* Locales */}
+    <div className={twMerge("flex items-center gap-2", className)}>
       {LOCALES.map((locale, index) => {
         return (
-          <div key={locale} className="flex items-center gap-2">
+          <div className="flex items-center gap-2" key={locale}>
             <NavLink
-              className={`
-                px-2 text-[12px] transition-opacity duration-200
-                ${locale === currentLocale && "opacity-70"}
-              `}
+              className={twMerge(
+                "px-2 text-[12px] text-white transition-opacity duration-200",
+                locale === currentLocale && "opacity-70",
+              )}
               href={
                 locale === currentLocale
                   ? undefined

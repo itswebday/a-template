@@ -1,17 +1,20 @@
-import { PageWrapper } from "@/components";
-import type { LocaleOption, RichText } from "@/types";
-import { getGlobal } from "@/utils/server";
-import { getMetadata } from "@/utils/metadata";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
+import { PageWrapper, PreviewListener } from "@/components";
+import type { LocaleOption, RichText } from "@/types";
+import { getCachedGlobal, getGlobal, getMetadata } from "@/utils/server";
 import { TermsAndConditions } from "./_ui";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 86400; // 24 hours in seconds
 
 const TermsAndConditionsPage = async () => {
   const locale = (await getLocale()) as LocaleOption;
-  const termsAndConditions = await getGlobal("terms-and-conditions", locale);
+  const draft = await draftMode();
+  const termsAndConditions = draft.isEnabled
+    ? await getGlobal("terms-and-conditions", locale, true)
+    : await getCachedGlobal("terms-and-conditions", locale)();
 
   if (!termsAndConditions) {
     notFound();
@@ -20,6 +23,7 @@ const TermsAndConditionsPage = async () => {
   return (
     <PageWrapper pageLabel="terms-and-conditions">
       <main>
+        {draft.isEnabled && <PreviewListener />}
         {termsAndConditions &&
           typeof termsAndConditions === "object" &&
           "content" in termsAndConditions &&
@@ -35,9 +39,17 @@ const TermsAndConditionsPage = async () => {
 
 export default TermsAndConditionsPage;
 
+export const generateStaticParams = async () => {
+  const { LOCALES } = await import("@/constants");
+  return LOCALES.map((locale) => ({ locale }));
+};
+
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = (await getLocale()) as LocaleOption;
-  const termsAndConditions = await getGlobal("terms-and-conditions", locale);
+  const termsAndConditions = await getCachedGlobal(
+    "terms-and-conditions",
+    locale,
+  )();
 
   return getMetadata({ doc: termsAndConditions, locale });
 };

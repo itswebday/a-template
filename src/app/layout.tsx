@@ -1,4 +1,6 @@
 import "./styles.css";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const RootLayout = ({
   children,

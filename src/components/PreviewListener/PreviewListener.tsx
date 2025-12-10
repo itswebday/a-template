@@ -2,7 +2,7 @@
 
 import { RefreshRouteOnSave } from "@payloadcms/live-preview-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const PreviewListener: React.FC = () => {
   const router = useRouter();

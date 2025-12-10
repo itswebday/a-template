@@ -9,6 +9,19 @@ export const Footer: GlobalConfig = {
   },
   fields: [
     {
+      name: "logo",
+      label: "Logo",
+      type: "upload",
+      relationTo: "media",
+    },
+    {
+      name: "Paragraph",
+      label: "Paragraph",
+      type: "text",
+      defaultValue: "",
+      localized: true,
+    },
+    {
       name: "email",
       label: "Email",
       type: "group",
@@ -54,13 +67,69 @@ export const Footer: GlobalConfig = {
       ],
     },
     {
-      name: "links",
+      name: "quickLinks",
       labels: {
-        singular: "Link",
-        plural: "Links",
+        singular: "Quick link",
+        plural: "Quick links",
       },
       type: "array",
       defaultValue: [],
+      admin: {
+        initCollapsed: true,
+      },
+      fields: getLinkFields(),
+    },
+    {
+      name: "services",
+      labels: {
+        singular: "Service",
+        plural: "Services",
+      },
+      type: "array",
+      defaultValue: [],
+      admin: {
+        initCollapsed: true,
+      },
+      fields: getLinkFields(),
+    },
+    {
+      name: "socialMediaLinks",
+      label: "Social media links",
+      type: "array",
+      maxRows: 5,
+      labels: {
+        singular: "Social media link",
+        plural: "Social media links",
+      },
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: "icon",
+          label: "Icon (SVG file)",
+          type: "upload",
+          relationTo: "media",
+        },
+        {
+          name: "href",
+          label: "Link (URL)",
+          type: "text",
+          defaultValue: "",
+        },
+      ],
+    },
+    {
+      name: "legalLinks",
+      labels: {
+        singular: "Legal link",
+        plural: "Legal links",
+      },
+      type: "array",
+      defaultValue: [],
+      admin: {
+        initCollapsed: true,
+      },
       fields: getLinkFields(),
     },
     {

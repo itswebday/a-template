@@ -1,6 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap")
-layer(base);
-
 @import "tailwindcss";
 
 @source "../**/*.{css,js,ts,jsx,tsx,mdx}";
@@ -10,6 +7,10 @@ layer(base);
   --breakpoint-de: 900px;
   --breakpoint-me: 1100px;
   --breakpoint-mx: 2000px;
+
+  --color-primary-purple: #8c52fe;
+  --color-primary-lightpurple: #9f7aea;
+  --color-dark: #222222;
 
   --height-nav-bar: 80px;
 
@@ -27,7 +28,11 @@ layer(base);
 
 @layer components {
   body {
-    @apply relative min-w-[375px];
+    @apply relative min-w-[375px] bg-white;
+  }
+
+  main {
+    @apply relative w-full;
   }
 
   button {
@@ -38,18 +43,18 @@ layer(base);
     @apply select-none pointer-events-none;
   }
 
-  .font-open-sans {
-    font-family: "Open Sans", sans-serif;
+  .font-lato {
+    font-family: "Lato", sans-serif;
   }
 
   h1 {
     /* Page heading */
-    @apply text-[36px] leading-tight;
+    @apply text-[40px] md:text-[64px] leading-tight;
   }
 
   h2 {
     /* Section heading */
-    @apply text-[30px] font-medium leading-tight;
+    @apply text-[30px] leading-tight;
   }
 
   h3 {
@@ -57,7 +62,7 @@ layer(base);
   }
 
   h4 {
-    @apply text-[20px] font-semibold leading-tight;
+    @apply text-[20px] leading-tight;
   }
 
   h5 {

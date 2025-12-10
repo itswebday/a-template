@@ -1,13 +1,19 @@
 "use server";
 
+import { getLocale } from "next-intl/server";
+import { twMerge } from "tailwind-merge";
+import {
+  ButtonLink,
+  type ButtonLinkProps,
+  LogoLink,
+  TranslateButton,
+} from "@/components";
+import type { LocaleOption } from "@/types";
+import { getButtonHref, getLinkHref, getMediaUrlAndAlt } from "@/utils";
+import { getCachedGlobal, getCachedGlobals } from "@/utils/server";
 import HamburgerButton from "./HamburgerButton";
 import NavBar from "./NavBar";
 import NavMenu from "./NavMenu";
-import { LogoLink, TranslateButton } from "@/components";
-import type { LocaleOption } from "@/types";
-import { getLinkHref, getMediaUrlAndAlt } from "@/utils";
-import { getGlobal } from "@/utils/server";
-import { getLocale } from "next-intl/server";
 
 type NavBarNavMenuProps = {
   className?: string;
@@ -15,29 +21,11 @@ type NavBarNavMenuProps = {
 
 const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
   const locale = (await getLocale()) as LocaleOption;
-  const [
-    navigation,
-    home,
-    blog,
-    privacyPolicy,
-    cookiePolicy,
-    termsAndConditions,
-  ] = await Promise.all([
-    getGlobal("navigation", locale),
-    getGlobal("home", locale),
-    getGlobal("blog", locale),
-    getGlobal("privacy-policy", locale),
-    getGlobal("cookie-policy", locale),
-    getGlobal("terms-and-conditions", locale),
+  const [navigation, globals] = await Promise.all([
+    getCachedGlobal("navigation", locale)(),
+    getCachedGlobals(locale)(),
   ]);
   const { url: logoUrl, alt: logoAlt } = getMediaUrlAndAlt(navigation?.logo);
-  const globals = {
-    home,
-    blog,
-    privacyPolicy,
-    cookiePolicy,
-    termsAndConditions,
-  };
   const links = (navigation?.links || []).map((link) => ({
     text: link.text || "",
     href: getLinkHref(link, globals),
@@ -51,36 +39,67 @@ const NavBarNavMenu: React.FC<NavBarNavMenuProps> = async ({ className }) => {
     })),
   }));
 
+  // Get button data from navigation
+  const button = navigation?.button;
+  const showButton = navigation?.showButton;
+  const buttonHref = showButton ? getButtonHref(button, globals) : null;
+
   return (
     <nav
-      className={`
-        z-95 w-full h-nav-bar px-4 text-white bg-black
-        de:px-12
-        ${className}
-      `}
+      className={twMerge(
+        "z-95 w-full h-nav-bar px-4 bg-dark",
+        "de:pl-6 de:pr-12",
+        className,
+      )}
     >
       {/* Container */}
       <div
-        className={`
-          flex justify-between items-center gap-2 w-full h-full
-        `}
+        className={twMerge(
+          "flex justify-between items-center gap-4 w-full h-full",
+        )}
       >
         {/* Logo */}
-        <LogoLink className="z-95 w-16" src={logoUrl} alt={logoAlt} />
+        <LogoLink className="z-99 w-12 shrink-0" src={logoUrl} alt={logoAlt} />
 
-        {/* Navigation bar (desktop) */}
-        <NavBar className="hidden ml-auto de:flex" links={links} />
+        {/* Right side: NavBar, Button, Translate, Hamburger */}
+        <div className="flex items-center gap-8 ml-auto">
+          {/* Navigation bar (desktop) */}
+          <NavBar className="hidden de:flex" links={links} />
 
-        {/* Translate button */}
-        <TranslateButton className="z-95 ml-auto de:ml-8" />
+          {/* Button (desktop only) */}
+          {showButton && buttonHref && button?.text && (
+            <div className="hidden de:block">
+              <ButtonLink
+                href={buttonHref}
+                variant={button.variant as ButtonLinkProps["variant"]}
+                target={button.newTab ? "_blank" : "_self"}
+              >
+                {button.text}
+              </ButtonLink>
+            </div>
+          )}
 
-        {/* Hamburger button (mobile) */}
-        <HamburgerButton className="z-95 flex de:hidden" />
+          {/* Translate button */}
+          <TranslateButton className="z-95 shrink-0" />
+
+          {/* Hamburger button (mobile) */}
+          <HamburgerButton className="z-95 flex de:hidden shrink-0" />
+        </div>
 
         {/* Navigation menu (mobile) */}
         <NavMenu
           className="flex de:hidden"
           links={links}
+          button={
+            showButton && buttonHref && button?.text
+              ? {
+                  text: button.text,
+                  href: buttonHref,
+                  variant: button.variant as ButtonLinkProps["variant"],
+                  target: button.newTab ? "_blank" : "_self",
+                }
+              : undefined
+          }
           slideOutMenu={navigation?.slideOutMenu || false}
         />
       </div>

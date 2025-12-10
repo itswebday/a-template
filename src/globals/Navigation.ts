@@ -1,4 +1,4 @@
-import { getLinkFields } from "@/utils";
+import { getButtonLinkFields, getLinkFields } from "@/utils";
 import type { GlobalConfig } from "payload";
 
 export const Navigation: GlobalConfig = {
@@ -45,6 +45,7 @@ export const Navigation: GlobalConfig = {
         },
       ],
     },
+    ...getButtonLinkFields({ optional: true }),
     {
       name: "slideOutMenu",
       label: "Slide out menu",
