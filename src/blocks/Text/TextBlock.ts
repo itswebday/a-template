@@ -1,7 +1,7 @@
 import { RichTextField } from "@/fields";
 import {
+  getBlockStyleFields,
   getButtonLinkFields,
-  getDarkField,
   getHeadingFields,
   getPaddingFields,
 } from "@/utils";
@@ -38,7 +38,7 @@ export const TextBlock: Block = {
       ],
       defaultValue: "medium",
     },
-    getDarkField(),
+    ...getBlockStyleFields(),
     ...getPaddingFields(),
   ],
 };

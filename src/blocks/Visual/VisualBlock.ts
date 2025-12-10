@@ -1,4 +1,8 @@
-import { getButtonLinkFields, getDarkField, getPaddingFields } from "@/utils";
+import {
+  getBlockStyleFields,
+  getButtonLinkFields,
+  getPaddingFields,
+} from "@/utils";
 import type { Block } from "payload";
 
 export const VisualBlock: Block = {
@@ -52,7 +56,7 @@ export const VisualBlock: Block = {
       ],
     },
     ...getButtonLinkFields({ optional: true }),
-    getDarkField(),
+    ...getBlockStyleFields(),
     ...getPaddingFields(),
   ],
 };

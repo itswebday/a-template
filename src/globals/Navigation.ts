@@ -45,7 +45,7 @@ export const Navigation: GlobalConfig = {
         },
       ],
     },
-    ...getButtonLinkFields({ optional: true }),
+    ...getButtonLinkFields({ optional: true, hiddenFields: ["centered"] }),
     {
       name: "slideOutMenu",
       label: "Slide out menu",

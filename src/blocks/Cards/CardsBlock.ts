@@ -1,5 +1,9 @@
 import { RichTextField } from "@/fields";
-import { getButtonLinkFields, getDarkField, getPaddingFields } from "@/utils";
+import {
+  getBlockStyleFields,
+  getButtonLinkFields,
+  getPaddingFields,
+} from "@/utils";
 import type { Block } from "payload";
 
 export const CardsBlock: Block = {
@@ -28,7 +32,7 @@ export const CardsBlock: Block = {
         ...getButtonLinkFields({ optional: true }),
       ],
     },
-    getDarkField(),
+    ...getBlockStyleFields(),
     ...getPaddingFields(),
   ],
 };

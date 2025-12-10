@@ -3,22 +3,20 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-type AnimatedFigureProps = {
+type AnimatedFieldProps = {
   children: ReactNode;
   className?: string;
   delay?: number;
-  imageLeft?: boolean;
 };
 
-export const AnimatedFigure: React.FC<AnimatedFigureProps> = ({
+export const AnimatedField: React.FC<AnimatedFieldProps> = ({
   children,
   className,
-  delay = 0.2,
-  imageLeft = false,
+  delay = 0,
 }) => {
   const [hasAnimated, setHasAnimated] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (hasAnimated || !ref.current) {
@@ -47,26 +45,14 @@ export const AnimatedFigure: React.FC<AnimatedFigureProps> = ({
   }, [hasAnimated]);
 
   return (
-    <motion.figure
-      className={className}
+    <motion.div
       ref={ref}
-      initial={{
-        opacity: 0,
-        x: imageLeft ? -20 : 20,
-        scale: 0.95,
-      }}
-      animate={
-        isInView
-          ? { opacity: 1, x: 0, scale: 1 }
-          : { opacity: 0, x: imageLeft ? -20 : 20, scale: 0.95 }
-      }
-      transition={{
-        delay,
-        duration: 0.6,
-        ease: [0.16, 1, 0.3, 1],
-      }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+      transition={{ duration: 0.3, delay }}
+      className={className}
     >
       {children}
-    </motion.figure>
+    </motion.div>
   );
 };

@@ -1,19 +1,14 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
-import { blockConfigs } from "@/blocks/config";
-import { SlugField, URLField } from "@/fields";
 import {
-  generateUrlWithoutLocale,
-  populatePublishedAtCollection,
-} from "@/hooks";
-import { revalidatePage, revalidateDelete } from "@/hooks/revalidate";
-import { getPreviewPathCollection } from "@/utils";
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from "@payloadcms/plugin-seo/fields";
+  BlocksField,
+  PublishedAtField,
+  SlugField,
+  TitleField,
+  URLField,
+  URLWithoutLocaleField,
+} from "@/fields";
+import { revalidatePage, revalidateDelete } from "@/hooks";
+import { getMetaFields, getPreviewPathCollection } from "@/utils";
 import type { CollectionConfig } from "payload";
 
 export const Pages: CollectionConfig = {
@@ -46,82 +41,25 @@ export const Pages: CollectionConfig = {
       }),
   },
   fields: [
-    {
-      name: "title",
-      label: "Title",
-      type: "text",
-      required: true,
-      localized: true,
-    },
+    TitleField(),
     {
       type: "tabs",
       tabs: [
         {
           label: "Content",
-          fields: [
-            {
-              name: "blocks",
-              label: "Blocks",
-              type: "blocks",
-              blocks: blockConfigs,
-              defaultValue: [],
-            },
-          ],
+          fields: [BlocksField()],
         },
         {
           name: "meta",
           label: "SEO",
-          fields: [
-            OverviewField({
-              titlePath: "meta.title",
-              descriptionPath: "meta.description",
-              imagePath: "meta.image",
-            }),
-            MetaTitleField({}),
-            MetaDescriptionField({}),
-            MetaImageField({
-              relationTo: "media",
-            }),
-            PreviewField({
-              titlePath: "meta.title",
-              descriptionPath: "meta.description",
-            }),
-          ],
+          fields: getMetaFields(),
         },
       ],
     },
-    {
-      name: "publishedAt",
-      label: "Published at",
-      type: "date",
-      admin: {
-        date: {
-          pickerAppearance: "dayAndTime",
-          displayFormat: "dd-MM-yyyy HH:mm",
-        },
-        position: "sidebar",
-      },
-      hooks: {
-        beforeChange: [populatePublishedAtCollection],
-      },
-    },
+    PublishedAtField({ isGlobal: false }),
     SlugField({ readOnly: true }),
     URLField({ label: "Page URL" }),
-    {
-      name: "urlWithoutLocale",
-      label: "URL without locale",
-      type: "text",
-      localized: true,
-      admin: {
-        readOnly: true,
-        position: "sidebar",
-        description:
-          "Automatically generated from URL field without locale prefix",
-      },
-      hooks: {
-        beforeChange: [generateUrlWithoutLocale],
-      },
-    },
+    URLWithoutLocaleField(),
   ],
   hooks: {
     afterChange: [revalidatePage],

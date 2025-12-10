@@ -1,6 +1,6 @@
 import {
+  getBlockStyleFields,
   getButtonLinkFields,
-  getDarkField,
   getHeadingFields,
   getPaddingFields,
 } from "@/utils";
@@ -53,7 +53,7 @@ export const FormBlock: Block = {
           );
         },
       },
-      fields: getHeadingFields(),
+      fields: getHeadingFields({ optional: false, hiddenFields: ["centered"] }),
     },
     {
       name: "text",
@@ -88,7 +88,10 @@ export const FormBlock: Block = {
           );
         },
       },
-      fields: getButtonLinkFields({ optional: false }),
+      fields: getButtonLinkFields({
+        optional: false,
+        hiddenFields: ["centered"],
+      }),
     },
     {
       name: "formSide",
@@ -111,7 +114,7 @@ export const FormBlock: Block = {
         },
       },
     },
-    getDarkField(),
+    ...getBlockStyleFields(),
     ...getPaddingFields(),
   ],
 };

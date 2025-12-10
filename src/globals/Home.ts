@@ -1,15 +1,8 @@
 import { authenticated, authenticatedOrPublished } from "@/access";
-import { blockConfigs } from "@/blocks/config";
-import { generateHomeUrl, populatePublishedAtGlobalField } from "@/hooks";
-import { revalidateHomepage } from "@/hooks/revalidate";
+import { BlocksField, PublishedAtField, URLField } from "@/fields";
+import { revalidateHomepage } from "@/hooks";
+import { getMetaFields } from "@/utils";
 import { getPreviewPathGlobal } from "@/utils/preview";
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from "@payloadcms/plugin-seo/fields";
 import type { GlobalConfig } from "payload";
 
 export const Home: GlobalConfig = {
@@ -34,66 +27,17 @@ export const Home: GlobalConfig = {
       tabs: [
         {
           label: "Content",
-          fields: [
-            {
-              name: "blocks",
-              label: "Blocks",
-              type: "blocks",
-              blocks: blockConfigs,
-              defaultValue: [],
-            },
-          ],
+          fields: [BlocksField()],
         },
         {
           name: "meta",
           label: "SEO",
-          fields: [
-            OverviewField({
-              titlePath: "meta.title",
-              descriptionPath: "meta.description",
-              imagePath: "meta.image",
-            }),
-            MetaTitleField({}),
-            MetaDescriptionField({}),
-            MetaImageField({
-              relationTo: "media",
-            }),
-            PreviewField({
-              titlePath: "meta.title",
-              descriptionPath: "meta.description",
-            }),
-          ],
+          fields: getMetaFields(),
         },
       ],
     },
-    {
-      name: "publishedAt",
-      type: "date",
-      admin: {
-        date: {
-          pickerAppearance: "dayAndTime",
-          displayFormat: "dd-MM-yyyy HH:mm",
-        },
-        position: "sidebar",
-      },
-      hooks: {
-        beforeChange: [populatePublishedAtGlobalField],
-      },
-    },
-    {
-      name: "url",
-      label: "Page URL",
-      type: "text",
-      localized: true,
-      admin: {
-        readOnly: true,
-        position: "sidebar",
-        description: "Automatically set",
-      },
-      hooks: {
-        beforeChange: [generateHomeUrl],
-      },
-    },
+    PublishedAtField({ isGlobal: true }),
+    URLField({ label: "Page URL", hook: "home" }),
   ],
   hooks: {
     afterChange: [revalidateHomepage],

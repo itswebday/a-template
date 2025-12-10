@@ -40,49 +40,67 @@ const CookieNotification: React.FC<CookieNotificationProps> = ({
     <div
       className={twMerge(
         "z-98 fixed left-0 right-0 bottom-0",
-        "border-t border-primary-purple/20 bg-white shadow-md",
+        "bg-white/95 backdrop-blur-sm",
+        "border-t-2 border-primary-purple/30",
+        "shadow-lg shadow-primary-purple/10",
         className,
       )}
     >
       {/* Container */}
       <div
         className={twMerge(
-          "flex flex-col justify-between items-start gap-4",
-          "w-11/12 max-w-300 py-4 mx-auto text-[14px]",
-          "md:flex-row md:items-center",
+          "flex flex-col gap-4",
+          "w-11/12 max-w-7xl py-6 mx-auto",
+          "de:flex-row de:items-center de:justify-between de:gap-6",
         )}
       >
         {/* Text */}
-        <span className="flex-1">
+        <p
+          className={twMerge(
+            "flex-1 text-[14px] leading-relaxed text-dark/90",
+            "de:text-[15px]",
+          )}
+        >
           {generalT("cookieNotification")}{" "}
           <Link
-            className="text-primary-purple hover:underline"
+            className={twMerge(
+              "font-medium text-primary-purple",
+              "hover:text-primary-lightpurple",
+              "transition-colors duration-200",
+              "underline underline-offset-2",
+            )}
             href={cookiePolicyT("href")}
             prefetch={true}
           >
             {generalT("cookiePolicy")}
           </Link>
           .
-        </span>
+        </p>
 
         {/* Buttons */}
-        <div className="flex gap-3">
+        <div className={twMerge("flex gap-3 shrink-0", "de:gap-4")}>
+          {/* Decline button */}
           <button
             className={twMerge(
-              "rounded-md border border-primary-purple/20 px-4 py-2",
-              "transition-colors duration-200",
-              "hover:bg-primary-lightpurple/5",
+              "px-6 py-2.5 rounded-full",
+              "text-[14px] font-medium text-dark",
+              "border-2 border-primary-purple/30",
+              "bg-white hover:bg-primary-purple/5",
+              "hover:border-primary-purple/50",
+              "transition-all duration-200",
             )}
             onClick={handleDecline}
           >
             {generalT("decline")}
           </button>
 
+          {/* Accept button */}
           <button
             className={twMerge(
-              "rounded-md px-4 py-2 bg-dark text-white",
-              "transition-opacity duration-200",
-              "hover:opacity-80",
+              "px-6 py-2.5 rounded-full",
+              "text-[14px] font-medium text-white",
+              "bg-primary-purple hover:bg-primary-lightpurple",
+              "transition-colors duration-200",
             )}
             onClick={handleAccept}
           >

@@ -1,4 +1,4 @@
-import { getDarkField, getPaddingFields } from "@/utils";
+import { getBlockStyleFields, getPaddingFields } from "@/utils";
 import type { Block } from "payload";
 
 export const ProcessBlock: Block = {
@@ -46,7 +46,7 @@ export const ProcessBlock: Block = {
         },
       ],
     },
-    getDarkField(),
+    ...getBlockStyleFields(),
     ...getPaddingFields(),
   ],
 };

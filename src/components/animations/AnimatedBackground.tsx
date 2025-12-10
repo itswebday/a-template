@@ -3,7 +3,13 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-const FormAnimatedBackground: React.FC = () => {
+type AnimatedBackgroundProps = {
+  dark?: boolean;
+};
+
+export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
+  dark = false,
+}) => {
   const prefersReducedMotion = useReducedMotion();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -20,7 +26,7 @@ const FormAnimatedBackground: React.FC = () => {
         left: "2%",
         top: "4%",
         color: "rgb(140, 82, 254)",
-        opacity: 0.08,
+        opacity: dark ? 0.15 : 0.08,
         dx: -15,
         dy: 10,
         dur: 30,
@@ -30,7 +36,7 @@ const FormAnimatedBackground: React.FC = () => {
         left: "78%",
         top: "10%",
         color: "rgb(159, 122, 234)",
-        opacity: 0.06,
+        opacity: dark ? 0.12 : 0.06,
         dx: 10,
         dy: -12,
         dur: 35,
@@ -42,7 +48,7 @@ const FormAnimatedBackground: React.FC = () => {
         {circles.map((c, i) => (
           <motion.div
             key={`mc-${i}`}
-            className="absolute rounded-full blur-xl"
+            className="absolute rounded-full blur-sm"
             style={{
               width: c.size,
               height: c.size,
@@ -90,6 +96,7 @@ const FormAnimatedBackground: React.FC = () => {
       left: positions[i].left,
       top: positions[i].top,
       color: i % 2 === 0 ? "rgb(140, 82, 254)" : "rgb(159, 122, 234)",
+      opacity: dark ? 0.4 : 0.25,
       delay: (i % 5) * 0.5,
       dur: 5 + (i % 3) * 1,
       dx: (i % 2 === 0 ? 1 : -1) * (6 + (i % 3) * 2),
@@ -108,7 +115,7 @@ const FormAnimatedBackground: React.FC = () => {
               left: d.left,
               top: d.top,
               background: d.color,
-              opacity: 0.25,
+              opacity: d.opacity,
             }}
             animate={
               prefersReducedMotion
@@ -116,7 +123,9 @@ const FormAnimatedBackground: React.FC = () => {
                 : {
                     x: [0, d.dx, 0],
                     y: [0, d.dy, 0],
-                    opacity: [0.15, 0.6, 0.15],
+                    opacity: dark
+                      ? [d.opacity * 0.6, d.opacity * 1.5, d.opacity * 0.6]
+                      : [0.15, 0.6, 0.15],
                     scale: [1, 1.2, 1],
                   }
             }
@@ -143,5 +152,3 @@ const FormAnimatedBackground: React.FC = () => {
     </>
   );
 };
-
-export default FormAnimatedBackground;

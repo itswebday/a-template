@@ -1,7 +1,7 @@
 import { RichTextField } from "@/fields";
 import {
+  getBlockStyleFields,
   getButtonLinkFields,
-  getDarkField,
   getHeadingFields,
   getPaddingFields,
 } from "@/utils";
@@ -15,9 +15,9 @@ export const TextAndImageBlock: Block = {
   },
   interfaceName: "TextAndImageBlock",
   fields: [
-    ...getHeadingFields({ optional: true }),
+    ...getHeadingFields({ optional: true, hiddenFields: ["centered"] }),
     RichTextField({ name: "text", label: "Text" }),
-    ...getButtonLinkFields({ optional: true }),
+    ...getButtonLinkFields({ optional: true, hiddenFields: ["centered"] }),
     {
       name: "image",
       label: "Image",
@@ -60,7 +60,7 @@ export const TextAndImageBlock: Block = {
       ],
       defaultValue: "medium",
     },
-    getDarkField(),
+    ...getBlockStyleFields(),
     ...getPaddingFields(),
   ],
 };

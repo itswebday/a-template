@@ -1,5 +1,12 @@
 import { DEFAULT_LOCALE } from "@/constants";
-import type { Field } from "payload";
+import {
+  generateBlogUrl,
+  generateCookiePolicyUrl,
+  generateHomeUrl,
+  generatePrivacyPolicyUrl,
+  generateTermsAndConditionsUrl,
+} from "@/hooks";
+import type { Field, FieldHook } from "payload";
 
 type URLFieldProps = {
   name?: string;
@@ -7,6 +14,13 @@ type URLFieldProps = {
   description?: string;
   sidebar?: boolean;
   generatedFrom?: string;
+  hook?:
+    | "home"
+    | "blog"
+    | "privacyPolicy"
+    | "cookiePolicy"
+    | "termsAndConditions"
+    | null;
 };
 
 export const URLField = ({
@@ -15,49 +29,23 @@ export const URLField = ({
   description = "URL path for the page (e.g., /about or /nl/diensten/websites)",
   sidebar = true,
   generatedFrom = "title",
-}: URLFieldProps): Field => ({
-  name: name,
-  label: label,
-  type: "text",
-  defaultValue: "",
-  localized: true,
-  unique: true,
-  admin: {
-    description: description,
-    position: sidebar ? "sidebar" : undefined,
-  },
-  validate: (value: string | string[] | null | undefined) => {
-    if (!value || (typeof value === "string" && value.trim() === "")) {
-      return true;
-    }
+  hook = null,
+}: URLFieldProps): Field => {
+  const hookMap = {
+    home: generateHomeUrl,
+    blog: generateBlogUrl,
+    privacyPolicy: generatePrivacyPolicyUrl,
+    cookiePolicy: generateCookiePolicyUrl,
+    termsAndConditions: generateTermsAndConditionsUrl,
+  } as const satisfies Record<
+    "home" | "blog" | "privacyPolicy" | "cookiePolicy" | "termsAndConditions",
+    FieldHook
+  >;
 
-    if (!value || typeof value !== "string") {
-      return true;
-    }
-
-    if (value === "/") {
-      return "The root path / is reserved for the Homepage";
-    }
-
-    if (!value.startsWith("/")) {
-      return "URL must start with /";
-    }
-
-    if (value.endsWith("/")) {
-      return "URL must not end with /";
-    }
-
-    if (value.includes("//") && !value.startsWith("//")) {
-      return "URL must not contain consecutive slashes";
-    }
-
-    if (!/^\/[a-zA-Z0-9\/\-_]*$/.test(value)) {
-      return "URL must not contain invalid characters";
-    }
-
-    return true;
-  },
-  hooks: {
+  const hooks: {
+    beforeValidate: FieldHook[];
+    beforeChange?: FieldHook[];
+  } = {
     beforeValidate: [
       ({ value, data, req }) => {
         if (value && typeof value === "string" && value.trim() !== "") {
@@ -103,5 +91,55 @@ export const URLField = ({
         return locale === DEFAULT_LOCALE ? basePath : `/${locale}${basePath}`;
       },
     ],
-  },
-});
+  };
+
+  if (hook) {
+    hooks.beforeChange = [hookMap[hook]];
+  }
+
+  return {
+    name: name,
+    label: label,
+    type: "text",
+    defaultValue: "",
+    localized: true,
+    unique: true,
+    admin: {
+      description: description,
+      position: sidebar ? "sidebar" : undefined,
+      readOnly: hook !== null,
+    },
+    validate: (value: string | string[] | null | undefined) => {
+      if (!value || (typeof value === "string" && value.trim() === "")) {
+        return true;
+      }
+
+      if (!value || typeof value !== "string") {
+        return true;
+      }
+
+      if (value === "/") {
+        return "The root path / is reserved for the Homepage";
+      }
+
+      if (!value.startsWith("/")) {
+        return "URL must start with /";
+      }
+
+      if (value.endsWith("/")) {
+        return "URL must not end with /";
+      }
+
+      if (value.includes("//") && !value.startsWith("//")) {
+        return "URL must not contain consecutive slashes";
+      }
+
+      if (!/^\/[a-zA-Z0-9\/\-_]*$/.test(value)) {
+        return "URL must not contain invalid characters";
+      }
+
+      return true;
+    },
+    hooks,
+  };
+};

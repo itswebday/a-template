@@ -131,7 +131,7 @@ const ProcessClient: React.FC<ProcessClientProps> = ({ steps, dark }) => {
                     {step.imageUrl && (
                       <div
                         className={twMerge(
-                          "relative w-full max-w-full h-72",
+                          "relative w-full max-w-full aspect-square",
                           "overflow-hidden mb-6 rounded-xl",
                         )}
                       >
@@ -235,7 +235,7 @@ const ProcessClient: React.FC<ProcessClientProps> = ({ steps, dark }) => {
                     {step.imageUrl && (
                       <div
                         className={twMerge(
-                          "relative w-full max-w-full h-72 shrink-0",
+                          "relative w-full max-w-full aspect-square shrink-0",
                           "overflow-hidden rounded-xl",
                         )}
                       >

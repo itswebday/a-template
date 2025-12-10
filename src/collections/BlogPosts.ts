@@ -1,18 +1,13 @@
 import { authenticatedOrPublished, developer } from "@/access";
-import { RichTextField, SlugField } from "@/fields";
-import { generateBlogPostUrl, populatePublishedAtCollection } from "@/hooks";
 import {
-  revalidateBlogPost,
-  revalidateBlogPostDelete,
-} from "@/hooks/revalidate";
-import { getPreviewPathCollection } from "@/utils";
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from "@payloadcms/plugin-seo/fields";
+  PublishedAtField,
+  RichTextField,
+  SlugField,
+  TitleField,
+} from "@/fields";
+import { generateBlogPostUrl } from "@/hooks";
+import { revalidateBlogPost, revalidateBlogPostDelete } from "@/hooks";
+import { getMetaFields, getPreviewPathCollection } from "@/utils";
 import type { CollectionConfig } from "payload";
 
 export const BlogPosts: CollectionConfig = {
@@ -45,13 +40,7 @@ export const BlogPosts: CollectionConfig = {
       }),
   },
   fields: [
-    {
-      name: "title",
-      label: "Title",
-      type: "text",
-      required: true,
-      localized: true,
-    },
+    TitleField(),
     {
       name: "minRead",
       label: "Reading time (minutes)",
@@ -76,40 +65,11 @@ export const BlogPosts: CollectionConfig = {
         {
           name: "meta",
           label: "SEO",
-          fields: [
-            OverviewField({
-              titlePath: "meta.title",
-              descriptionPath: "meta.description",
-              imagePath: "meta.image",
-            }),
-            MetaTitleField({}),
-            MetaDescriptionField({}),
-            MetaImageField({
-              relationTo: "media",
-            }),
-            PreviewField({
-              titlePath: "meta.title",
-              descriptionPath: "meta.description",
-            }),
-          ],
+          fields: getMetaFields(),
         },
       ],
     },
-    {
-      name: "publishedAt",
-      label: "Published at",
-      type: "date",
-      admin: {
-        date: {
-          pickerAppearance: "dayAndTime",
-          displayFormat: "dd-MM-yyyy HH:mm",
-        },
-        position: "sidebar",
-      },
-      hooks: {
-        beforeChange: [populatePublishedAtCollection],
-      },
-    },
+    PublishedAtField({ isGlobal: false }),
     SlugField({ readOnly: true }),
     {
       name: "url",

@@ -7,7 +7,7 @@ import { twMerge } from "tailwind-merge";
 import { LogoLink } from "@/components";
 import type { Config, Media } from "@/payload-types";
 import type { LocaleOption } from "@/types";
-import { getLinkHref } from "@/utils";
+import { getLinkHref, getMediaUrlAndAlt } from "@/utils";
 import { getCachedGlobal } from "@/utils/server";
 import FooterLink from "./FooterLink";
 
@@ -15,7 +15,6 @@ type FooterProps = {
   className?: string;
 };
 
-// Icon components
 const EmailIcon = () => (
   <svg
     className="w-6 h-6"
@@ -70,7 +69,7 @@ const LocationIcon = () => (
   </svg>
 );
 
-const Footer: React.FC<FooterProps> = async () => {
+const Footer: React.FC<FooterProps> = async ({ className }) => {
   const locale = (await getLocale()) as LocaleOption;
   const [footerT, homeT] = await Promise.all([
     getTranslations("footer"),
@@ -92,6 +91,7 @@ const Footer: React.FC<FooterProps> = async () => {
       Promise<Config["globals"]["cookie-policy"]>,
       Promise<Config["globals"]["terms-and-conditions"]>,
     ]);
+
   const globals = {
     home,
     blog,
@@ -101,23 +101,23 @@ const Footer: React.FC<FooterProps> = async () => {
   };
 
   const footerLogo =
-    typeof footer?.logo === "object" &&
-    footer.logo !== null &&
-    "url" in footer.logo
+    typeof footer?.logo === "object" && footer.logo !== null
       ? (footer.logo as Media)
       : null;
+  const { url: logoUrl, alt: logoAlt } = getMediaUrlAndAlt(footerLogo);
 
   return (
     <footer
       className={twMerge(
         "w-full pt-12 pb-8 bg-dark border-t-2 border-white/10",
         "lg:pt-16 lg:pb-12",
+        className,
       )}
     >
-      {/* Main content */}
+      {/* Container */}
       <div className="w-5/6 max-w-7xl mx-auto">
         <div className="flex flex-col gap-8 lg:gap-12">
-          {/* Top section: Logo, Paragraph, Contact Info, Quick Links, and Services */}
+          {/* Top section */}
           <div
             className={twMerge(
               "grid grid-cols-1 gap-8",
@@ -125,7 +125,7 @@ const Footer: React.FC<FooterProps> = async () => {
               "lg:grid-cols-12 lg:gap-4",
             )}
           >
-            {/* Column 1: Logo, Paragraph, and Social Media */}
+            {/* Logo, paragraph and social media */}
             <div
               className={twMerge(
                 "flex flex-col gap-4",
@@ -133,14 +133,12 @@ const Footer: React.FC<FooterProps> = async () => {
               )}
             >
               {/* Logo */}
-              {footerLogo && footerLogo.url && (
+              {logoUrl && (
                 <div className="relative w-36">
                   <LogoLink
-                    src={`${process.env.NEXT_PUBLIC_SERVER_URL}${
-                      footerLogo.url
-                    }`}
-                    alt={footerLogo.alt}
                     className="h-full w-full"
+                    src={logoUrl}
+                    alt={logoAlt}
                   />
                 </div>
               )}
@@ -157,10 +155,11 @@ const Footer: React.FC<FooterProps> = async () => {
                 </p>
               )}
 
-              {/* Social Media Links */}
+              {/* Social media links */}
               {footer?.socialMediaLinks &&
                 footer.socialMediaLinks.length > 0 && (
                   <div className="flex flex-col gap-3 lg:gap-4">
+                    {/* Heading */}
                     <h6
                       className={twMerge(
                         "text-[14px] font-semibold text-white mb-2",
@@ -168,6 +167,8 @@ const Footer: React.FC<FooterProps> = async () => {
                     >
                       {footerT("socialMedia.heading")}
                     </h6>
+
+                    {/* Links */}
                     <div className="flex gap-3 lg:gap-4">
                       {footer.socialMediaLinks
                         .filter((item) => item.href)
@@ -176,12 +177,12 @@ const Footer: React.FC<FooterProps> = async () => {
                             typeof item.icon === "object" && item.icon !== null
                               ? (item.icon as Media)
                               : null;
+                          const { url: iconUrl, alt: iconAlt } =
+                            getMediaUrlAndAlt(media);
 
                           return (
                             <Link
                               key={item.id || index}
-                              href={item.href || ""}
-                              target="_blank"
                               className={twMerge(
                                 "group flex items-center justify-center",
                                 "w-10 h-10 rounded-full",
@@ -190,9 +191,11 @@ const Footer: React.FC<FooterProps> = async () => {
                                 "transition-all duration-300",
                                 "lg:w-12 lg:h-12",
                               )}
+                              href={item.href || ""}
+                              target="_blank"
                               aria-label={`Social media link ${index + 1}`}
                             >
-                              {media && "url" in media && media.url ? (
+                              {iconUrl ? (
                                 <span
                                   className={twMerge(
                                     "relative block h-5 w-5",
@@ -200,16 +203,14 @@ const Footer: React.FC<FooterProps> = async () => {
                                   )}
                                 >
                                   <Image
-                                    src={`${process.env.NEXT_PUBLIC_SERVER_URL}${
-                                      media.url
-                                    }`}
-                                    alt={("alt" in media && media.alt) || ""}
-                                    fill={true}
                                     className={twMerge(
                                       "object-contain",
                                       "transition-transform duration-300",
                                       "group-hover:scale-110",
                                     )}
+                                    src={iconUrl}
+                                    alt={iconAlt}
+                                    fill={true}
                                     sizes="(max-width: 768px) 20px, 24px"
                                     loading="lazy"
                                   />
@@ -232,22 +233,25 @@ const Footer: React.FC<FooterProps> = async () => {
                 )}
             </div>
 
-            {/* Column 2: Contact Info */}
+            {/* Contact information */}
             <div
               className={twMerge(
                 "flex flex-col gap-4",
                 "lg:gap-6 lg:col-span-4",
               )}
             >
+              {/* Heading */}
               <h6
                 className={twMerge("text-[14px] font-semibold text-white mb-2")}
               >
                 {footerT("contact.heading")}
               </h6>
+
               <div className="flex flex-col gap-4 lg:gap-6">
                 {/* Email */}
                 {footer?.email?.text && (
                   <div className="flex items-center gap-3 lg:gap-4">
+                    {/* Icon */}
                     <div
                       className={twMerge(
                         "flex items-center justify-center",
@@ -259,6 +263,8 @@ const Footer: React.FC<FooterProps> = async () => {
                     >
                       <EmailIcon />
                     </div>
+
+                    {/* Text */}
                     <div className="flex flex-col gap-1">
                       <span
                         className={twMerge(
@@ -289,6 +295,7 @@ const Footer: React.FC<FooterProps> = async () => {
                 {/* Phone */}
                 {footer?.phone?.text && (
                   <div className="flex items-center gap-3 lg:gap-4">
+                    {/* Icon */}
                     <div
                       className={twMerge(
                         "flex items-center justify-center",
@@ -300,6 +307,8 @@ const Footer: React.FC<FooterProps> = async () => {
                     >
                       <PhoneIcon />
                     </div>
+
+                    {/* Text */}
                     <div className="flex flex-col gap-1">
                       <span
                         className={twMerge(
@@ -330,6 +339,7 @@ const Footer: React.FC<FooterProps> = async () => {
                 {/* Address */}
                 {footer?.address?.text && (
                   <div className="flex items-center gap-3 lg:gap-4">
+                    {/* Icon */}
                     <div
                       className={twMerge(
                         "flex items-center justify-center",
@@ -341,6 +351,8 @@ const Footer: React.FC<FooterProps> = async () => {
                     >
                       <LocationIcon />
                     </div>
+
+                    {/* Text */}
                     <div className="flex flex-col gap-1">
                       <span
                         className={twMerge(
@@ -377,7 +389,7 @@ const Footer: React.FC<FooterProps> = async () => {
               </div>
             </div>
 
-            {/* Column 3: Quick Links */}
+            {/* Quick links */}
             {footer?.quickLinks && footer.quickLinks.length > 0 && (
               <div
                 className={twMerge(
@@ -385,6 +397,7 @@ const Footer: React.FC<FooterProps> = async () => {
                   "lg:gap-4 lg:col-span-2",
                 )}
               >
+                {/* Heading */}
                 <h6
                   className={twMerge(
                     "text-[14px] font-semibold text-white mb-2",
@@ -392,10 +405,16 @@ const Footer: React.FC<FooterProps> = async () => {
                 >
                   {footerT("quickLinks.heading")}
                 </h6>
+
+                {/* Links */}
                 <div className="flex flex-col gap-2 lg:gap-3">
                   {footer.quickLinks.map((link, index) => {
                     const linkHref = getLinkHref(link, globals);
-                    if (!linkHref || !link.text) return null;
+
+                    if (!linkHref || !link.text) {
+                      return null;
+                    }
+
                     return (
                       <FooterLink
                         key={index}
@@ -418,7 +437,7 @@ const Footer: React.FC<FooterProps> = async () => {
               </div>
             )}
 
-            {/* Column 4: Services */}
+            {/* Services */}
             {footer?.services && footer.services.length > 0 && (
               <div
                 className={twMerge(
@@ -426,6 +445,7 @@ const Footer: React.FC<FooterProps> = async () => {
                   "lg:gap-4 lg:col-span-2",
                 )}
               >
+                {/* Heading */}
                 <h6
                   className={twMerge(
                     "text-[14px] font-semibold text-white mb-2",
@@ -433,10 +453,16 @@ const Footer: React.FC<FooterProps> = async () => {
                 >
                   {footerT("services.heading")}
                 </h6>
+
+                {/* Links */}
                 <div className="flex flex-col gap-2 lg:gap-3">
                   {footer.services.map((link, index) => {
                     const linkHref = getLinkHref(link, globals);
-                    if (!linkHref || !link.text) return null;
+
+                    if (!linkHref || !link.text) {
+                      return null;
+                    }
+
                     return (
                       <FooterLink
                         key={index}
@@ -462,7 +488,7 @@ const Footer: React.FC<FooterProps> = async () => {
         </div>
       </div>
 
-      {/* Bottom section: Legal Links, Copyright and Company Details */}
+      {/* Bottom section */}
       <div
         className={twMerge(
           "w-11/12 max-w-6xl mx-auto mt-8 pt-6",
@@ -470,7 +496,7 @@ const Footer: React.FC<FooterProps> = async () => {
           "lg:mt-12 lg:pt-8",
         )}
       >
-        {/* Legal Links */}
+        {/* Legal links */}
         {footer?.legalLinks && footer.legalLinks.length > 0 && (
           <div
             className={twMerge(
@@ -480,7 +506,11 @@ const Footer: React.FC<FooterProps> = async () => {
           >
             {footer.legalLinks.map((link, index) => {
               const linkHref = getLinkHref(link, globals);
-              if (!linkHref || !link.text) return null;
+
+              if (!linkHref || !link.text) {
+                return null;
+              }
+
               return (
                 <FooterLink
                   key={index}
@@ -502,7 +532,7 @@ const Footer: React.FC<FooterProps> = async () => {
           </div>
         )}
 
-        {/* Copyright and Company Details */}
+        {/* Copyright and company details */}
         <div
           className={twMerge(
             "flex flex-col gap-3 text-center text-[12px] text-white/60",
@@ -528,7 +558,7 @@ const Footer: React.FC<FooterProps> = async () => {
             </span>
           </div>
 
-          {/* Company Details */}
+          {/* Company details */}
           <div className="flex flex-col gap-2 lg:flex-row lg:gap-6">
             {footer?.companyDetails?.kvk && (
               <span>

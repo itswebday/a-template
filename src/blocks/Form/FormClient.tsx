@@ -5,8 +5,9 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { getLinkHref } from "@/utils";
-import { request } from "@/utils/requests";
+import { AnimatedButton, AnimatedField } from "@/components/animations";
+import type { LocaleOption } from "@/types";
+import { getLinkHref, request } from "@/utils";
 import type { Form as FormType } from "@/payload-types";
 
 type FormClientProps = {
@@ -31,7 +32,7 @@ export const FormClient: React.FC<FormClientProps> = ({
   globals,
 }) => {
   const locale = useLocale();
-  const t = useTranslations("form");
+  const formT = useTranslations("form");
   const [formData, setFormData] = useState<Record<string, string | string[]>>(
     {},
   );
@@ -102,7 +103,7 @@ export const FormClient: React.FC<FormClientProps> = ({
       // Validate maximum number of files
       if (fileArray.length > maxNumFiles) {
         setError(
-          t("errors.maxFiles", {
+          formT("errors.maxFiles", {
             maxNumFiles,
             fileCount: fileArray.length,
           }),
@@ -116,7 +117,7 @@ export const FormClient: React.FC<FormClientProps> = ({
       const totalSize = fileArray.reduce((sum, file) => sum + file.size, 0);
 
       if (totalSize > maxTotalSize) {
-        setError(t("errors.totalSizeTooLarge", { maxMBs }));
+        setError(formT("errors.totalSizeTooLarge", { maxMBs }));
         e.target.value = ""; // Clear the input
         return;
       }
@@ -126,7 +127,10 @@ export const FormClient: React.FC<FormClientProps> = ({
       const oversizedFile = fileArray.find((file) => file.size > maxFileSize);
       if (oversizedFile) {
         setError(
-          t("errors.fileTooLarge", { fileName: oversizedFile.name, maxMBs }),
+          formT("errors.fileTooLarge", {
+            fileName: oversizedFile.name,
+            maxMBs,
+          }),
         );
         e.target.value = ""; // Clear the input
         return;
@@ -152,7 +156,6 @@ export const FormClient: React.FC<FormClientProps> = ({
         Object.entries(formData).forEach(([field, value]) => {
           if (!fileData[field]) {
             // Only add non-file fields
-            // Handle multi-select arrays
             const stringValue = Array.isArray(value)
               ? value.join(",")
               : String(value);
@@ -167,17 +170,22 @@ export const FormClient: React.FC<FormClientProps> = ({
           });
         });
 
-        await request("POST", "/api/forms/submissions", locale as "nl" | "en", {
-          body: formDataToSend,
-          bodyType: "formData",
-          defaultErrorMessage: t("errors.submitError"),
-          setIsLoading,
-          callback: () => {
-            setIsSubmitted(true);
-            setFormData({});
-            setFileData({});
+        await request(
+          "POST",
+          "/api/forms/submissions",
+          locale as LocaleOption,
+          {
+            body: formDataToSend,
+            bodyType: "formData",
+            defaultErrorMessage: formT("errors.submitError"),
+            setIsLoading,
+            callback: () => {
+              setIsSubmitted(true);
+              setFormData({});
+              setFileData({});
+            },
           },
-        });
+        );
       } else {
         // Use JSON when no files
         const submissionData = Object.entries(formData).map(
@@ -187,22 +195,27 @@ export const FormClient: React.FC<FormClientProps> = ({
           }),
         );
 
-        await request("POST", "/api/forms/submissions", locale as "nl" | "en", {
-          body: {
-            form: formId,
-            submissionData,
+        await request(
+          "POST",
+          "/api/forms/submissions",
+          locale as LocaleOption,
+          {
+            body: {
+              form: formId,
+              submissionData,
+            },
+            bodyType: "json",
+            defaultErrorMessage: formT("errors.submitError"),
+            setIsLoading,
+            callback: () => {
+              setIsSubmitted(true);
+              setFormData({});
+            },
           },
-          bodyType: "json",
-          defaultErrorMessage: t("errors.submitError"),
-          setIsLoading,
-          callback: () => {
-            setIsSubmitted(true);
-            setFormData({});
-          },
-        });
+        );
       }
     } catch (err) {
-      setError(t("errors.submitError"));
+      setError(formT("errors.submitError"));
       setIsLoading(false);
     }
   };
@@ -215,7 +228,7 @@ export const FormClient: React.FC<FormClientProps> = ({
           "p-8 md:p-12",
           "rounded-[50px]",
           "border border-primary-purple/20",
-          "bg-white",
+          dark ? "bg-dark" : "bg-white",
           "shadow-sm",
         )}
       >
@@ -241,8 +254,13 @@ export const FormClient: React.FC<FormClientProps> = ({
             />
           </svg>
         </div>
-        <p className="text-[18px] md:text-[20px] font-semibold text-dark">
-          {t("success.message")}
+        <p
+          className={twMerge(
+            "text-[18px] md:text-[20px] font-semibold",
+            dark ? "text-white/90" : "text-dark",
+          )}
+        >
+          {formT("success.message")}
         </p>
       </div>
     );
@@ -255,11 +273,13 @@ export const FormClient: React.FC<FormClientProps> = ({
           "p-8 md:p-12",
           "rounded-[50px]",
           "border border-primary-purple/20",
-          "bg-white",
+          dark ? "bg-dark" : "bg-white",
           "shadow-sm",
         )}
       >
-        <p className="text-dark/80">{t("errors.noFields")}</p>
+        <p className={dark ? "text-white/80" : "text-dark/80"}>
+          {formT("errors.noFields")}
+        </p>
       </div>
     );
   }
@@ -276,7 +296,8 @@ export const FormClient: React.FC<FormClientProps> = ({
     <form
       onSubmit={handleSubmit}
       className={twMerge(
-        "p-6 rounded-[50px] border-2 border-primary-purple/20 bg-white",
+        "p-6 rounded-[50px] border-2 border-primary-purple/20",
+        dark ? "bg-dark" : "bg-white",
         "shadow-md",
         "md:p-8",
         "lg:p-10",
@@ -286,14 +307,20 @@ export const FormClient: React.FC<FormClientProps> = ({
         <div className="mb-4 p-6">
           <h3
             className={twMerge(
-              "text-[20px] font-semibold text-dark mb-2",
+              "text-[20px] font-semibold mb-2",
               "md:text-[24px]",
+              dark ? "text-white/90" : "text-dark",
             )}
           >
             {form.title}
           </h3>
           {form.description && (
-            <p className="text-[16px] leading-relaxed text-dark/80">
+            <p
+              className={twMerge(
+                "text-[16px] leading-relaxed",
+                dark ? "text-white/80" : "text-dark/80",
+              )}
+            >
               {form.description}
             </p>
           )}
@@ -303,8 +330,10 @@ export const FormClient: React.FC<FormClientProps> = ({
       {error && (
         <div
           className={twMerge(
-            "mb-6 p-4 bg-primary-purple/10 rounded-[30px]",
-            "border border-primary-purple/30",
+            "mb-6 p-4 rounded-[30px]",
+            dark
+              ? "bg-primary-purple/20 border border-primary-purple/40"
+              : "bg-primary-purple/10 border border-primary-purple/30",
           )}
         >
           <div className="flex items-center gap-3">
@@ -365,28 +394,28 @@ export const FormClient: React.FC<FormClientProps> = ({
           ): string => {
             switch (fieldType) {
               case "email":
-                return t("placeholders.email");
+                return formT("placeholders.email");
               case "tel":
-                return t("placeholders.tel");
+                return formT("placeholders.tel");
               case "number":
-                return t("placeholders.number");
+                return formT("placeholders.number");
               case "url":
-                return t("placeholders.url");
+                return formT("placeholders.url");
               case "date":
-                return t("placeholders.date");
+                return formT("placeholders.date");
               case "time":
-                return t("placeholders.time");
+                return formT("placeholders.time");
               case "datetime-local":
-                return t("placeholders.datetimeLocal");
+                return formT("placeholders.datetimeLocal");
               case "password":
-                return t("placeholders.password");
+                return formT("placeholders.password");
               case "search":
-                return t("placeholders.search");
+                return formT("placeholders.search");
               case "textarea":
-                return t("placeholders.textarea");
+                return formT("placeholders.textarea");
               case "text":
               default:
-                return t("placeholders.text");
+                return formT("placeholders.text");
             }
           };
 
@@ -394,17 +423,19 @@ export const FormClient: React.FC<FormClientProps> = ({
             "w-full px-5 py-3.5 rounded-[30px] text-[16px] leading-relaxed",
             "transition-all duration-300 focus:outline-none",
             "focus:ring-2 focus:ring-primary-purple/50 focus:ring-offset-2",
-            "bg-primary-lightpurple/5 border-2 border-primary-purple/20",
-            "text-dark placeholder-dark/50",
+            dark
+              ? "bg-primary-lightpurple/10 border-2 border-primary-purple/30"
+              : "bg-primary-lightpurple/5 border-2 border-primary-purple/20",
+            dark
+              ? "text-white/90 placeholder-white/50"
+              : "text-dark placeholder-dark/50",
             "focus:border-primary-purple hover:border-primary-purple/40",
           );
 
           return (
-            <motion.div
+            <AnimatedField
               key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              delay={index * 0.05}
               className={twMerge(
                 "space-y-1 md:space-y-2",
                 getFieldWidth(field.type as string),
@@ -414,7 +445,7 @@ export const FormClient: React.FC<FormClientProps> = ({
                 <label
                   className={twMerge(
                     "block text-[14px] font-semibold tracking-wide mb-2",
-                    "text-dark",
+                    dark ? "text-white/90" : "text-dark",
                   )}
                 >
                   {fieldName}
@@ -452,8 +483,13 @@ export const FormClient: React.FC<FormClientProps> = ({
                     return (
                       <div className="space-y-2">
                         {options.length === 0 ? (
-                          <p className="text-[14px] text-dark/60">
-                            {t("labels.noOptions")}
+                          <p
+                            className={twMerge(
+                              "text-[14px]",
+                              dark ? "text-white/60" : "text-dark/60",
+                            )}
+                          >
+                            {formT("labels.noOptions")}
                           </p>
                         ) : (
                           options.map((option, optionIndex) => {
@@ -480,12 +516,18 @@ export const FormClient: React.FC<FormClientProps> = ({
                                   "cursor-pointer transition-all duration-200",
                                   isSelected
                                     ? twMerge(
-                                        "bg-primary-purple/10",
+                                        dark
+                                          ? "bg-primary-purple/20"
+                                          : "bg-primary-purple/10",
                                         "border border-primary-purple",
                                       )
-                                    : "bg-primary-lightpurple/5",
+                                    : dark
+                                      ? "bg-primary-lightpurple/10"
+                                      : "bg-primary-lightpurple/5",
                                   !isSelected &&
-                                    "border border-primary-purple/20",
+                                    (dark
+                                      ? "border border-primary-purple/30"
+                                      : "border border-primary-purple/20"),
                                   !isSelected &&
                                     "hover:border-primary-purple/40",
                                 )}
@@ -521,7 +563,10 @@ export const FormClient: React.FC<FormClientProps> = ({
                                             "border-primary-purple",
                                           )
                                         : "border-primary-purple/30",
-                                      !isSelected && "bg-primary-lightpurple/5",
+                                      !isSelected &&
+                                        (dark
+                                          ? "bg-primary-lightpurple/10"
+                                          : "bg-primary-lightpurple/5"),
                                     )}
                                   >
                                     {isSelected && (
@@ -548,7 +593,9 @@ export const FormClient: React.FC<FormClientProps> = ({
                                     "flex-1 text-[16px]",
                                     isSelected
                                       ? "text-primary-purple font-medium"
-                                      : "text-dark",
+                                      : dark
+                                        ? "text-white/90"
+                                        : "text-dark",
                                   )}
                                 >
                                   {optionValue}
@@ -565,8 +612,13 @@ export const FormClient: React.FC<FormClientProps> = ({
                     return (
                       <div className="space-y-2">
                         {options.length === 0 ? (
-                          <p className="text-[14px] text-dark/60">
-                            {t("labels.noOptions")}
+                          <p
+                            className={twMerge(
+                              "text-[14px]",
+                              dark ? "text-white/60" : "text-dark/60",
+                            )}
+                          >
+                            {formT("labels.noOptions")}
                           </p>
                         ) : (
                           options.map((option, optionIndex) => {
@@ -592,12 +644,18 @@ export const FormClient: React.FC<FormClientProps> = ({
                                   "cursor-pointer transition-all duration-200",
                                   isSelected
                                     ? twMerge(
-                                        "bg-primary-purple/10",
+                                        dark
+                                          ? "bg-primary-purple/20"
+                                          : "bg-primary-purple/10",
                                         "border border-primary-purple",
                                       )
-                                    : "bg-primary-lightpurple/5",
+                                    : dark
+                                      ? "bg-primary-lightpurple/10"
+                                      : "bg-primary-lightpurple/5",
                                   !isSelected &&
-                                    "border border-primary-purple/20",
+                                    (dark
+                                      ? "border border-primary-purple/30"
+                                      : "border border-primary-purple/20"),
                                   !isSelected &&
                                     "hover:border-primary-purple/40",
                                 )}
@@ -625,9 +683,7 @@ export const FormClient: React.FC<FormClientProps> = ({
                                   <div
                                     className={twMerge(
                                       "flex items-center justify-center",
-                                      "w-5 h-5",
-                                      "rounded-full",
-                                      "border-2",
+                                      "w-5 h-5 rounded-full border-2",
                                       "transition-all duration-200",
                                       isSelected
                                         ? twMerge(
@@ -635,7 +691,10 @@ export const FormClient: React.FC<FormClientProps> = ({
                                             "border-primary-purple",
                                           )
                                         : "border-primary-purple/30",
-                                      !isSelected && "bg-primary-lightpurple/5",
+                                      !isSelected &&
+                                        (dark
+                                          ? "bg-primary-lightpurple/10"
+                                          : "bg-primary-lightpurple/5"),
                                     )}
                                   >
                                     {isSelected && (
@@ -675,11 +734,17 @@ export const FormClient: React.FC<FormClientProps> = ({
                     "flex items-center gap-3 p-4 rounded-[30px]",
                     "cursor-pointer transition-all duration-200",
                     fieldValue === "true" || fieldValue === "on"
-                      ? "bg-primary-purple/10 border border-primary-purple"
-                      : "bg-primary-lightpurple/5",
+                      ? dark
+                        ? "bg-primary-purple/20 border border-primary-purple"
+                        : "bg-primary-purple/10 border border-primary-purple"
+                      : dark
+                        ? "bg-primary-lightpurple/10"
+                        : "bg-primary-lightpurple/5",
                     fieldValue !== "true" &&
                       fieldValue !== "on" &&
-                      "border border-primary-purple/20",
+                      (dark
+                        ? "border border-primary-purple/30"
+                        : "border border-primary-purple/20"),
                     fieldValue !== "true" &&
                       fieldValue !== "on" &&
                       "hover:border-primary-purple/40",
@@ -701,12 +766,17 @@ export const FormClient: React.FC<FormClientProps> = ({
                     />
                     <div
                       className={twMerge(
-                        "w-5 h-5 rounded border-2",
                         "flex items-center justify-center",
+                        "w-5 h-5 rounded border-2",
                         "transition-all duration-200",
                         fieldValue === "true" || fieldValue === "on"
                           ? "bg-primary-purple border-primary-purple"
-                          : "border-primary-purple/30 bg-white",
+                          : dark
+                            ? twMerge(
+                                "border-primary-purple/30",
+                                "bg-primary-lightpurple/10",
+                              )
+                            : "border-primary-purple/30 bg-white",
                       )}
                     >
                       {(fieldValue === "true" || fieldValue === "on") && (
@@ -733,7 +803,9 @@ export const FormClient: React.FC<FormClientProps> = ({
                       "text-[14px] flex-1",
                       fieldValue === "true" || fieldValue === "on"
                         ? "text-primary-purple font-medium"
-                        : "text-dark",
+                        : dark
+                          ? "text-white/90"
+                          : "text-dark",
                     )}
                   >
                     {(() => {
@@ -871,11 +943,18 @@ export const FormClient: React.FC<FormClientProps> = ({
                             "cursor-pointer transition-all duration-200",
                             isSelected
                               ? twMerge(
-                                  "bg-primary-purple/10",
+                                  dark
+                                    ? "bg-primary-purple/20"
+                                    : "bg-primary-purple/10",
                                   "border border-primary-purple",
                                 )
-                              : "bg-primary-lightpurple/5",
-                            !isSelected && "border border-primary-purple/20",
+                              : dark
+                                ? "bg-primary-lightpurple/10"
+                                : "bg-primary-lightpurple/5",
+                            !isSelected &&
+                              (dark
+                                ? "border border-primary-purple/30"
+                                : "border border-primary-purple/20"),
                             !isSelected && "hover:border-primary-purple/40",
                           )}
                         >
@@ -901,7 +980,12 @@ export const FormClient: React.FC<FormClientProps> = ({
                                 "transition-all duration-200",
                                 isSelected
                                   ? "bg-primary-purple border-primary-purple"
-                                  : "border-primary-purple/30 bg-white",
+                                  : dark
+                                    ? twMerge(
+                                        "border-primary-purple/30",
+                                        "bg-primary-lightpurple/10",
+                                      )
+                                    : "border-primary-purple/30 bg-white",
                               )}
                             >
                               {isSelected && (
@@ -918,7 +1002,9 @@ export const FormClient: React.FC<FormClientProps> = ({
                               "flex-1 text-[16px]",
                               isSelected
                                 ? "text-primary-purple font-medium"
-                                : "text-dark",
+                                : dark
+                                  ? "text-white/90"
+                                  : "text-dark",
                             )}
                           >
                             {optionValue}
@@ -937,8 +1023,7 @@ export const FormClient: React.FC<FormClientProps> = ({
                     multiple
                     className={twMerge(
                       "w-full px-4 py-3 rounded-[30px] text-[16px]",
-                      "transition-all duration-300 bg-primary-lightpurple/5",
-                      "border-2 border-primary-purple/20 text-dark",
+                      "transition-all duration-300",
                       "file:mr-4 file:py-2 file:px-4 file:rounded-[20px]",
                       "file:border-0 file:text-[14px] file:font-semibold",
                       "file:bg-primary-purple file:text-white",
@@ -947,14 +1032,23 @@ export const FormClient: React.FC<FormClientProps> = ({
                       "focus:ring-primary-purple/50",
                       "focus:border-primary-purple",
                       "hover:border-primary-purple/40",
+                      dark
+                        ? "bg-primary-lightpurple/10 border-2 border-primary-purple/30"
+                        : "bg-primary-lightpurple/5 border-2 border-primary-purple/20",
+                      dark ? "text-white/90" : "text-dark",
                     )}
                     required={isRequired}
                     accept="image/*,.pdf,.doc,.docx,.txt"
                   />
                   {fileData[fieldName] && fileData[fieldName].length > 0 && (
-                    <div className="space-y-1.5 text-dark/80">
+                    <div
+                      className={twMerge(
+                        "space-y-1.5",
+                        dark ? "text-white/80" : "text-dark/80",
+                      )}
+                    >
                       <p className="text-[14px] font-medium">
-                        {t("labels.selectedFiles", {
+                        {formT("labels.selectedFiles", {
                           count: fileData[fieldName].length,
                         })}
                       </p>
@@ -969,7 +1063,7 @@ export const FormClient: React.FC<FormClientProps> = ({
                             {(file.size / 1024 / 1024).toFixed(2)} MB)
                             {fileIndex === fileData[fieldName].length - 1 && (
                               <span className="ml-2">
-                                - {t("labels.total")}{" "}
+                                - {formT("labels.total")}{" "}
                                 {(totalSize / 1024 / 1024).toFixed(2)} MB
                               </span>
                             )}
@@ -990,44 +1084,46 @@ export const FormClient: React.FC<FormClientProps> = ({
                   required={isRequired}
                 />
               )}
-            </motion.div>
+            </AnimatedField>
           );
         })}
 
         {/* Submit button */}
-        <motion.button
-          type="submit"
-          disabled={isLoading}
-          whileHover={{ scale: isLoading ? 1 : 1.01 }}
-          whileTap={{ scale: isLoading ? 1 : 0.99 }}
-          className={twMerge(
-            "w-full mt-6 px-8 py-4 rounded-[30px] font-semibold",
-            "text-[16px] text-white bg-primary-purple",
-            "hover:bg-primary-purple/90 transition-all duration-200",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "flex items-center justify-center gap-2",
-          )}
-        >
-          {isLoading ? (
-            <>
-              <motion.span
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                className={twMerge(
-                  "w-5 h-5 border-2 border-white",
-                  "border-t-transparent rounded-full",
-                )}
-              />
-              {t("labels.submitting")}
-            </>
-          ) : (
-            t("labels.submit")
-          )}
-        </motion.button>
+        <AnimatedButton delay={form.fields.length * 0.05}>
+          <motion.button
+            type="submit"
+            disabled={isLoading}
+            whileHover={{ scale: isLoading ? 1 : 1.01 }}
+            whileTap={{ scale: isLoading ? 1 : 0.99 }}
+            className={twMerge(
+              "w-full mt-6 px-8 py-4 rounded-[30px] font-semibold",
+              "text-[16px] text-white bg-primary-purple",
+              "hover:bg-primary-purple/90 transition-all duration-200",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              "flex items-center justify-center gap-2",
+            )}
+          >
+            {isLoading ? (
+              <>
+                <motion.span
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  className={twMerge(
+                    "w-5 h-5 border-2 border-white",
+                    "border-t-transparent rounded-full",
+                  )}
+                />
+                {formT("labels.submitting")}
+              </>
+            ) : (
+              formT("labels.submit")
+            )}
+          </motion.button>
+        </AnimatedButton>
       </div>
     </form>
   );
