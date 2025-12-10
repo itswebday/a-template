@@ -1,4 +1,4 @@
-import { RichTextField } from "@/fields";
+import { RichTextField } from "@/fields/RichTextField";
 import {
   getBlockStyleFields,
   getButtonLinkFields,
