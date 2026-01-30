@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Tenant library (itswebday)
+
+Shared pages and components are imported from the **itswebday** package (deployed on Vercel). In `package.json`, replace `your-org/itswebday` with your GitHub org/repo. Use a tag instead of `#main` for a pinned version (e.g. `#v1.0.0`). To publish via npm instead, set the dependency to `"itswebday": "^0.1.0"` and run `npm publish` from the itswebday repo when releasing updates.
+
 ## Getting Started
 
 First, run the development server:
