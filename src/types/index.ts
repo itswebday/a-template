@@ -1,1 +1,1 @@
-export type LocaleOption = "en" | "nl";
+export { type LocaleOption } from "./locales";

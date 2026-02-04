@@ -1,11 +1,3 @@
-import "./globals.css";
-
-const RootLayout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
-  return <>{children}</>;
-};
+import { RootLayout } from "itswebday/layouts";
 
 export default RootLayout;

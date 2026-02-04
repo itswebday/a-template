@@ -11,7 +11,7 @@ export const getSectionRegistry = async (
     );
   }
 
-  const sections = await import(`itswebday/sections/${tenantSlug}`);
+  const sections = await import(`itswebday/${tenantSlug}`);
 
   return sections.sectionRegistry as SectionRegistry;
 };
