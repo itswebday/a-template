@@ -1,5 +1,5 @@
 import { renderPage } from "itswebday";
-import { getPage, getPagePaths } from "itswebday/data";
+import { getCachedPage, getCachedPagePaths } from "itswebday/data";
 import { DEFAULT_LOCALE, LOCALES } from "@/constants";
 import { getSectionRegistry } from "@/utils/itswebday";
 import { createSupabaseAnonClient } from "@/utils/supabase/server";
@@ -7,9 +7,9 @@ import { createSupabaseAnonClient } from "@/utils/supabase/server";
 const page = renderPage({
   createSupabaseClient: createSupabaseAnonClient,
   tenantSlug: process.env.NEXT_PUBLIC_TENANT_SLUG ?? "",
-  getSectionRegistry,
-  getCachedPage: getPage,
-  getCachedPagePaths: getPagePaths,
+  getSectionRegistry: getSectionRegistry,
+  getCachedPage: getCachedPage,
+  getCachedPagePaths: getCachedPagePaths,
   locales: LOCALES,
   defaultLocale: DEFAULT_LOCALE,
   baseUrl: process.env.NEXT_PUBLIC_APP_URL ?? "",
@@ -17,14 +17,12 @@ const page = renderPage({
   useDraftMode: false,
 });
 
-export default function Page() {
-  return <h1>Hello World</h1>;
-}
+export default page.default;
 
-export const generateMetadata = async (
-  props: Parameters<typeof page.generateMetadata>[0],
-) => page.generateMetadata(props);
+// export const generateMetadata = async (
+//   props: Parameters<typeof page.generateMetadata>[0],
+// ) => page.generateMetadata(props);
 
-export const generateStaticParams = async () => page.generateStaticParams();
+// export const generateStaticParams = async () => page.generateStaticParams();
 
-export const revalidate = 3600;
+// export const revalidate = 3600;
