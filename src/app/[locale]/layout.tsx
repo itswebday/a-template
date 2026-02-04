@@ -1,18 +1,28 @@
 import type { ReactNode } from "react";
+import * as evolv365 from "itswebday/evolv365";
+import * as zubaidshah from "itswebday/zubaidshah";
 import "itswebday/tenants/styles.css";
 
-const tenantSlug = process.env.NEXT_PUBLIC_TENANT_SLUG ?? "";
+const TENANT_MODULES = {
+  evolv365,
+  zubaidshah,
+} as const;
 
-const getTenant = async () => {
-  if (!tenantSlug) {
-    throw new Error("NEXT_PUBLIC_TENANT_SLUG is required for the main app.");
+const getTenant = () => {
+  const slug = process.env
+    .NEXT_PUBLIC_TENANT_SLUG as keyof typeof TENANT_MODULES;
+
+  if (!slug || !(slug in TENANT_MODULES)) {
+    throw new Error(
+      "NEXT_PUBLIC_TENANT_SLUG is required and must be a valid tenant (evolv365, zubaidshah).",
+    );
   }
 
-  return import(`itswebday/${tenantSlug}`);
+  return TENANT_MODULES[slug];
 };
 
-export const generateMetadata = async () => {
-  const tenant = await getTenant();
+export const generateMetadata = () => {
+  const tenant = getTenant();
 
   return tenant.metadata ?? {};
 };
@@ -21,8 +31,8 @@ type PageLayoutProps = Readonly<{
   children: ReactNode;
 }>;
 
-const PageLayout = async ({ children }: PageLayoutProps) => {
-  const tenant = await getTenant();
+const PageLayout = ({ children }: PageLayoutProps) => {
+  const tenant = getTenant();
   const HomeLayout = tenant.HomeLayout;
 
   return <HomeLayout>{children}</HomeLayout>;
