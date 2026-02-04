@@ -19,10 +19,10 @@ const page = renderPage({
 
 export default page.default;
 
-// export const generateMetadata = async (
-//   props: Parameters<typeof page.generateMetadata>[0],
-// ) => page.generateMetadata(props);
+export const generateMetadata = async (
+  props: Parameters<typeof page.generateMetadata>[0],
+) => page.generateMetadata(props);
 
 // export const generateStaticParams = async () => page.generateStaticParams();
 
-// export const revalidate = 3600;
+export const revalidate = 3600;
