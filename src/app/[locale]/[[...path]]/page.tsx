@@ -17,7 +17,9 @@ const page = renderPage({
   useDraftMode: false,
 });
 
-export default page.default;
+export default function Page() {
+  return <h1>Hello World</h1>;
+}
 
 export const generateMetadata = async (
   props: Parameters<typeof page.generateMetadata>[0],
