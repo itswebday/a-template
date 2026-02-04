@@ -1,5 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 const getSupabaseEnv = () => {
@@ -16,6 +16,24 @@ const getSupabaseEnv = () => {
   return { url, publishableKey };
 };
 
+/**
+ * Anon client for static generation. Does not use cookies; safe to use in
+ * generateStaticParams, generateMetadata, and page render when you need
+ * static/ISR. RLS applies as anonymous.
+ */
+export const createSupabaseAnonClient = (): Promise<SupabaseClient> => {
+  const { url, publishableKey } = getSupabaseEnv();
+
+  return Promise.resolve(
+    createClient(url, publishableKey, { auth: { persistSession: false } }),
+  );
+};
+
+/**
+ * Server client with cookies (auth session). Use for WebStudio, auth callback,
+ * and any route that needs the current user. Cannot be used during static
+ * generation.
+ */
 export const createSupabaseServerClient = async (): Promise<SupabaseClient> => {
   const { url, publishableKey } = getSupabaseEnv();
   const cookieStore = await cookies();
