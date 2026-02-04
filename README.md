@@ -38,3 +38,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Private itswebday repo (GitHub)
+
+If **itswebday** is a private GitHub repo, add a **GitHub Personal Access Token** in Vercel so the build can install it:
+
+1. In GitHub: **Settings → Developer settings → Personal access tokens** → create a token with `repo` (read) scope.
+2. In Vercel: open your project → **Settings → Environment Variables** → add `GITHUB_TOKEN` with that token (mark as **Sensitive**).
+
+The project uses a custom install command so `npm install` uses HTTPS with this token instead of SSH. Redeploy after saving the variable.
